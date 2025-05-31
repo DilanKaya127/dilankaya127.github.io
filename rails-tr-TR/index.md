@@ -11,8 +11,7 @@ Bu kılavuzlar, Ruby on Rails ile daha üretken olmanıza yardımcı olmak için
 
 Bu kılavuzlar Rails'in temellerini öğrenmenize yardımcı olacaktır.
 
-- [Rails ile Başlarken]({% link guides/tr/getting_started.md %}) - Rails'i nasıl kuracağınızı ve ilk uygulamanızı nasıl oluşturacağınızı öğrenin.
-
+- [Rails ile Başlarken]({% link rails-tr-TR/guides/tr/getting_started.md %}) - Rails'i nasıl kuracağınızı ve ilk uygulamanızı nasıl oluşturacağınızı öğrenin.
 
 ## Notlar
 

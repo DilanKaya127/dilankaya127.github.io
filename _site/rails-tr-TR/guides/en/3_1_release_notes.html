@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3 1 Release Notes - </title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <a href="/">Rails Kılavuzları</a>
+                </h1>
+                <nav class="nav">
+                    <a href="/">Ana Sayfa</a>
+                    <a href="https://dilankaya127.github.io">Portföy</a>
+                    <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="guide-container">
+    <aside class="guide-sidebar">
+        <div class="guide-toc">
+            <h3>İçindekiler</h3>
+            <div id="toc"></div>
+        </div>
+        
+        <div class="guide-nav">
+            <h3>Diğer Kılavuzlar</h3>
+            <ul>
+                <li><a href="/rails-tr-TR/guides/tr/getting_started">Rails ile Başlarken</a></li>
+                <li><a href="/rails-tr-TR/guides/en/active_record_basics">Active Record Temelleri</a></li>
+                <li><a href="/rails-tr-TR/guides//en/action_controller_overview">Action Controller</a></li>
+                <li><a href="/rails-tr-TR/guides/tr/action_cable_overview">Action Cable</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <article class="guide-content">
+        <header class="guide-header">
+            <h1>3 1 Release Notes</h1>
+            
+        </header>
+
+        <div class="guide-body">
+            <p><strong>DO NOT READ THIS FILE ON GITHUB, GUIDES ARE PUBLISHED ON <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a>.</strong></p>
+
+<h1 id="ruby-on-rails-31-release-notes">Ruby on Rails 3.1 Release Notes</h1>
+
+<p>Highlights in Rails 3.1:</p>
+
+<ul>
+  <li>Streaming</li>
+  <li>Reversible Migrations</li>
+  <li>Assets Pipeline</li>
+  <li>jQuery as the default JavaScript library</li>
+</ul>
+
+<p>These release notes cover only the major changes. To learn about various bug
+fixes and changes, please refer to the changelogs or check out the <a href="https://github.com/rails/rails/commits/3-1-stable">list of
+commits</a> in the main Rails
+repository on GitHub.</p>
+
+<hr />
+
+<h2 id="upgrading-to-rails-31">Upgrading to Rails 3.1</h2>
+
+<p>If you’re upgrading an existing application, it’s a great idea to have good test coverage before going in. You should also first upgrade to Rails 3 in case you haven’t and make sure your application still runs as expected before attempting to update to Rails 3.1. Then take heed of the following changes:</p>
+
+<h3 id="rails-31-requires-at-least-ruby-187">Rails 3.1 requires at least Ruby 1.8.7</h3>
+
+<p>Rails 3.1 requires Ruby 1.8.7 or higher. Support for all of the previous Ruby versions has been dropped officially and you should upgrade as early as possible. Rails 3.1 is also compatible with Ruby 1.9.2.</p>
+
+<p>TIP: Note that Ruby 1.8.7 p248 and p249 have marshalling bugs that crash Rails. Ruby Enterprise Edition have these fixed since release 1.8.7-2010.02 though. On the 1.9 front, Ruby 1.9.1 is not usable because it outright segfaults, so if you want to use 1.9.x jump on 1.9.2 for smooth sailing.</p>
+
+<h3 id="what-to-update-in-your-apps">What to update in your apps</h3>
+
+<p>The following changes are meant for upgrading your application to Rails 3.1.3, the latest 3.1.x version of Rails.</p>
+
+<h4 id="gemfile">Gemfile</h4>
+
+<p>Make the following changes to your <code class="language-plaintext highlighter-rouge">Gemfile</code>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gem</span> <span class="s2">"rails"</span><span class="p">,</span> <span class="s2">"= 3.1.3"</span>
+<span class="n">gem</span> <span class="s2">"mysql2"</span>
+
+<span class="c1"># Needed for the new asset pipeline</span>
+<span class="n">group</span> <span class="ss">:assets</span> <span class="k">do</span>
+  <span class="n">gem</span> <span class="s2">"sass-rails"</span><span class="p">,</span>   <span class="s2">"~&gt; 3.1.5"</span>
+  <span class="n">gem</span> <span class="s2">"coffee-rails"</span><span class="p">,</span> <span class="s2">"~&gt; 3.1.1"</span>
+  <span class="n">gem</span> <span class="s2">"uglifier"</span><span class="p">,</span>     <span class="s2">"&gt;= 1.0.3"</span>
+<span class="k">end</span>
+
+<span class="c1"># jQuery is the default JavaScript library in Rails 3.1</span>
+<span class="n">gem</span> <span class="s2">"jquery-rails"</span>
+</code></pre></div></div>
+
+<h4 id="configapplicationrb">config/application.rb</h4>
+
+<ul>
+  <li>
+    <p>The asset pipeline requires the following additions:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">enabled</span> <span class="o">=</span> <span class="kp">true</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">version</span> <span class="o">=</span> <span class="s1">'1.0'</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>If your application is using the “/assets” route for a resource you may want change the prefix used for assets to avoid conflicts:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1"># Defaults to '/assets'</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">prefix</span> <span class="o">=</span> <span class="s1">'/asset-files'</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h4 id="configenvironmentsdevelopmentrb">config/environments/development.rb</h4>
+
+<ul>
+  <li>
+    <p>Remove the RJS setting <code class="language-plaintext highlighter-rouge">config.action_view.debug_rjs = true</code>.</p>
+  </li>
+  <li>
+    <p>Add the following, if you enable the asset pipeline.</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1"># Do not compress assets</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">compress</span> <span class="o">=</span> <span class="kp">false</span>
+
+  <span class="c1"># Expands the lines which load the assets</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">debug</span> <span class="o">=</span> <span class="kp">true</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h4 id="configenvironmentsproductionrb">config/environments/production.rb</h4>
+
+<ul>
+  <li>
+    <p>Again, most of the changes below are for the asset pipeline. You can read more about these in the <a href="asset_pipeline.html">Asset Pipeline</a> guide.</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1"># Compress JavaScripts and CSS</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">compress</span> <span class="o">=</span> <span class="kp">true</span>
+
+  <span class="c1"># Don't fallback to assets pipeline if a precompiled asset is missed</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">compile</span> <span class="o">=</span> <span class="kp">false</span>
+
+  <span class="c1"># Generate digests for assets URLs</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">digest</span> <span class="o">=</span> <span class="kp">true</span>
+
+  <span class="c1"># Defaults to Rails.root.join("public/assets")</span>
+  <span class="c1"># config.assets.manifest = YOUR_PATH</span>
+
+  <span class="c1"># Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)</span>
+  <span class="c1"># config.assets.precompile `= %w( admin.js admin.css )</span>
+
+
+  <span class="c1"># Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.</span>
+  <span class="c1"># config.force_ssl = true</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h4 id="configenvironmentstestrb">config/environments/test.rb</h4>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Configure static asset server for tests with Cache-Control for performance</span>
+<span class="n">config</span><span class="p">.</span><span class="nf">serve_static_assets</span> <span class="o">=</span> <span class="kp">true</span>
+<span class="n">config</span><span class="p">.</span><span class="nf">static_cache_control</span> <span class="o">=</span> <span class="s2">"public, max-age=3600"</span>
+</code></pre></div></div>
+
+<h4 id="configinitializerswrap_parametersrb">config/initializers/wrap_parameters.rb</h4>
+
+<ul>
+  <li>
+    <p>Add this file with the following contents, if you wish to wrap parameters into a nested hash. This is on by default in new applications.</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1"># Be sure to restart your server when you modify this file.</span>
+  <span class="c1"># This file contains settings for ActionController::ParamsWrapper which</span>
+  <span class="c1"># is enabled by default.</span>
+
+  <span class="c1"># Enable parameter wrapping for JSON. You can disable this by setting :format to an empty array.</span>
+  <span class="no">ActiveSupport</span><span class="p">.</span><span class="nf">on_load</span><span class="p">(</span><span class="ss">:action_controller</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">wrap_parameters</span> <span class="ss">:format</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="ss">:json</span><span class="p">]</span>
+  <span class="k">end</span>
+
+  <span class="c1"># Disable root element in JSON by default.</span>
+  <span class="no">ActiveSupport</span><span class="p">.</span><span class="nf">on_load</span><span class="p">(</span><span class="ss">:active_record</span><span class="p">)</span> <span class="k">do</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">include_root_in_json</span> <span class="o">=</span> <span class="kp">false</span>
+  <span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h4 id="remove-cache-and-concat-options-in-asset-helpers-references-in-views">Remove :cache and :concat options in asset helpers references in views</h4>
+
+<ul>
+  <li>With the Asset Pipeline the :cache and :concat options aren’t used anymore, delete these options from your views.</li>
+</ul>
+
+<h2 id="creating-a-rails-31-application">Creating a Rails 3.1 application</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># You should have the 'rails' RubyGem installed</span>
+<span class="nv">$ </span>rails new myapp
+<span class="nv">$ </span><span class="nb">cd </span>myapp
+</code></pre></div></div>
+
+<h3 id="vendoring-gems">Vendoring Gems</h3>
+
+<p>Rails now uses a <code class="language-plaintext highlighter-rouge">Gemfile</code> in the application root to determine the gems you require for your application to start. This <code class="language-plaintext highlighter-rouge">Gemfile</code> is processed by the <a href="https://github.com/carlhuda/bundler">Bundler</a> gem, which then installs all your dependencies. It can even install all the dependencies locally to your application so that it doesn’t depend on the system gems.</p>
+
+<p>More information: - <a href="https://bundler.io/">bundler homepage</a></p>
+
+<h3 id="living-on-the-edge">Living on the Edge</h3>
+
+<p><code class="language-plaintext highlighter-rouge">Bundler</code> and <code class="language-plaintext highlighter-rouge">Gemfile</code> makes freezing your Rails application easy as pie with the new dedicated <code class="language-plaintext highlighter-rouge">bundle</code> command. If you want to bundle straight from the Git repository, you can pass the <code class="language-plaintext highlighter-rouge">--edge</code> flag:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails new myapp <span class="nt">--edge</span>
+</code></pre></div></div>
+
+<p>If you have a local checkout of the Rails repository and want to generate an application using that, you can pass the <code class="language-plaintext highlighter-rouge">--dev</code> flag:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ruby /path/to/rails/railties/bin/rails new myapp <span class="nt">--dev</span>
+</code></pre></div></div>
+
+<h2 id="rails-architectural-changes">Rails Architectural Changes</h2>
+
+<h3 id="assets-pipeline">Assets Pipeline</h3>
+
+<p>The major change in Rails 3.1 is the Assets Pipeline. It makes CSS and JavaScript first-class code citizens and enables proper organization, including use in plugins and engines.</p>
+
+<p>The assets pipeline is powered by <a href="https://github.com/rails/sprockets">Sprockets</a> and is covered in the <a href="asset_pipeline.html">Asset Pipeline</a> guide.</p>
+
+<h3 id="http-streaming">HTTP Streaming</h3>
+
+<p>HTTP Streaming is another change that is new in Rails 3.1. This lets the browser download your stylesheets and JavaScript files while the server is still generating the response. This requires Ruby 1.9.2, is opt-in and requires support from the web server as well, but the popular combo of NGINX and Unicorn is ready to take advantage of it.</p>
+
+<h3 id="default-js-library-is-now-jquery">Default JS library is now jQuery</h3>
+
+<p>jQuery is the default JavaScript library that ships with Rails 3.1. But if you use Prototype, it’s simple to switch.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails new myapp <span class="nt">-j</span> prototype
+</code></pre></div></div>
+
+<h3 id="identity-map">Identity Map</h3>
+
+<p>Active Record has an Identity Map in Rails 3.1. An identity map keeps previously instantiated records and returns the object associated with the record if accessed again. The identity map is created on a per-request basis and is flushed at request completion.</p>
+
+<p>Rails 3.1 comes with the identity map turned off by default.</p>
+
+<h2 id="railties">Railties</h2>
+
+<ul>
+  <li>
+    <p>jQuery is the new default JavaScript library.</p>
+  </li>
+  <li>
+    <p>jQuery and Prototype are no longer vendored and is provided from now on by the <code class="language-plaintext highlighter-rouge">jquery-rails</code> and <code class="language-plaintext highlighter-rouge">prototype-rails</code> gems.</p>
+  </li>
+  <li>
+    <p>The application generator accepts an option <code class="language-plaintext highlighter-rouge">-j</code> which can be an arbitrary string. If passed “foo”, the gem “foo-rails” is added to the <code class="language-plaintext highlighter-rouge">Gemfile</code>, and the application JavaScript manifest requires “foo” and “foo_ujs”. Currently only “prototype-rails” and “jquery-rails” exist and provide those files via the asset pipeline.</p>
+  </li>
+  <li>
+    <p>Generating an application or a plugin runs <code class="language-plaintext highlighter-rouge">bundle install</code> unless <code class="language-plaintext highlighter-rouge">--skip-gemfile</code> or <code class="language-plaintext highlighter-rouge">--skip-bundle</code> is specified.</p>
+  </li>
+  <li>
+    <p>The controller and resource generators will now automatically produce asset stubs (this can be turned off with <code class="language-plaintext highlighter-rouge">--skip-assets</code>). These stubs will use CoffeeScript and Sass, if those libraries are available.</p>
+  </li>
+  <li>
+    <p>Scaffold and app generators use the Ruby 1.9 style hash when running on Ruby 1.9. To generate old style hash, <code class="language-plaintext highlighter-rouge">--old-style-hash</code> can be passed.</p>
+  </li>
+  <li>
+    <p>Scaffold controller generator creates format block for JSON instead of XML.</p>
+  </li>
+  <li>
+    <p>Active Record logging is directed to STDOUT and shown inline in the console.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">config.force_ssl</code> configuration which loads <code class="language-plaintext highlighter-rouge">Rack::SSL</code> middleware and force all requests to be under HTTPS protocol.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">rails plugin new</code> command which generates a Rails plugin with gemspec, tests and a dummy application for testing.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">Rack::Etag</code> and <code class="language-plaintext highlighter-rouge">Rack::ConditionalGet</code> to the default middleware stack.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">Rack::Cache</code> to the default middleware stack.</p>
+  </li>
+  <li>
+    <p>Engines received a major update - You can mount them at any path, enable assets, run generators, etc.</p>
+  </li>
+</ul>
+
+<h2 id="action-pack">Action Pack</h2>
+
+<h3 id="action-controller">Action Controller</h3>
+
+<ul>
+  <li>
+    <p>A warning is given out if the CSRF token authenticity cannot be verified.</p>
+  </li>
+  <li>
+    <p>Specify <code class="language-plaintext highlighter-rouge">force_ssl</code> in a controller to force the browser to transfer data via HTTPS protocol on that particular controller. To limit to specific actions, <code class="language-plaintext highlighter-rouge">:only</code> or <code class="language-plaintext highlighter-rouge">:except</code> can be used.</p>
+  </li>
+  <li>
+    <p>Sensitive query string parameters specified in <code class="language-plaintext highlighter-rouge">config.filter_parameters</code> will now be filtered out from the request paths in the log.</p>
+  </li>
+  <li>
+    <p>URL parameters which return <code class="language-plaintext highlighter-rouge">nil</code> for <code class="language-plaintext highlighter-rouge">to_param</code> are now removed from the query string.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">ActionController::ParamsWrapper</code> to wrap parameters into a nested hash, and will be turned on for JSON request in new applications by default. This can be customized in <code class="language-plaintext highlighter-rouge">config/initializers/wrap_parameters.rb</code>.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">config.action_controller.include_all_helpers</code>. By default <code class="language-plaintext highlighter-rouge">helper :all</code> is done in <code class="language-plaintext highlighter-rouge">ActionController::Base</code>, which includes all the helpers by default. Setting <code class="language-plaintext highlighter-rouge">include_all_helpers</code> to <code class="language-plaintext highlighter-rouge">false</code> will result in including only application_helper and the helper corresponding to controller (like foo_helper for foo_controller).</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">url_for</code> and named URL helpers now accept <code class="language-plaintext highlighter-rouge">:subdomain</code> and <code class="language-plaintext highlighter-rouge">:domain</code> as options.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">Base.http_basic_authenticate_with</code> to do simple http basic authentication with a single class method call.</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+    <span class="no">USER_NAME</span><span class="p">,</span> <span class="no">PASSWORD</span> <span class="o">=</span> <span class="s2">"dhh"</span><span class="p">,</span> <span class="s2">"secret"</span>
+
+    <span class="n">before_filter</span> <span class="ss">:authenticate</span><span class="p">,</span> <span class="ss">:except</span> <span class="o">=&gt;</span> <span class="p">[</span> <span class="ss">:index</span> <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">index</span>
+      <span class="n">render</span> <span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s2">"Everyone can see me!"</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">edit</span>
+      <span class="n">render</span> <span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s2">"I'm only accessible if you know the password"</span>
+    <span class="k">end</span>
+
+    <span class="kp">private</span>
+      <span class="k">def</span> <span class="nf">authenticate</span>
+        <span class="n">authenticate_or_request_with_http_basic</span> <span class="k">do</span> <span class="o">|</span><span class="n">user_name</span><span class="p">,</span> <span class="n">password</span><span class="o">|</span>
+          <span class="n">user_name</span> <span class="o">==</span> <span class="no">USER_NAME</span> <span class="o">&amp;&amp;</span> <span class="n">password</span> <span class="o">==</span> <span class="no">PASSWORD</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+  <span class="k">end</span>
+</code></pre></div>    </div>
+
+    <p>..can now be written as</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+    <span class="n">http_basic_authenticate_with</span> <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s2">"dhh"</span><span class="p">,</span> <span class="ss">:password</span> <span class="o">=&gt;</span> <span class="s2">"secret"</span><span class="p">,</span> <span class="ss">:except</span> <span class="o">=&gt;</span> <span class="ss">:index</span>
+
+    <span class="k">def</span> <span class="nf">index</span>
+      <span class="n">render</span> <span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s2">"Everyone can see me!"</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">edit</span>
+      <span class="n">render</span> <span class="ss">:text</span> <span class="o">=&gt;</span> <span class="s2">"I'm only accessible if you know the password"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Added streaming support, you can enable it with:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+    <span class="n">stream</span>
+  <span class="k">end</span>
+</code></pre></div>    </div>
+
+    <p>You can restrict it to some actions by using <code class="language-plaintext highlighter-rouge">:only</code> or <code class="language-plaintext highlighter-rouge">:except</code>. Please read the docs at <a href="https://api.rubyonrails.org/v3.1.0/classes/ActionController/Streaming.html"><code class="language-plaintext highlighter-rouge">ActionController::Streaming</code></a> for more information.</p>
+  </li>
+  <li>
+    <p>The redirect route method now also accepts a hash of options which will only change the parts of the URL in question, or an object which responds to call, allowing for redirects to be reused.</p>
+  </li>
+</ul>
+
+<h3 id="action-dispatch">Action Dispatch</h3>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">config.action_dispatch.x_sendfile_header</code> now defaults to <code class="language-plaintext highlighter-rouge">nil</code> and <code class="language-plaintext highlighter-rouge">config/environments/production.rb</code> doesn’t set any particular value for it. This allows servers to set it through <code class="language-plaintext highlighter-rouge">X-Sendfile-Type</code>.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ActionDispatch::MiddlewareStack</code> now uses composition over inheritance and is no longer an array.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">ActionDispatch::Request.ignore_accept_header</code> to ignore accept headers.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">Rack::Cache</code> to the default stack.</p>
+  </li>
+  <li>
+    <p>Moved etag responsibility from <code class="language-plaintext highlighter-rouge">ActionDispatch::Response</code> to the middleware stack.</p>
+  </li>
+  <li>
+    <p>Rely on <code class="language-plaintext highlighter-rouge">Rack::Session</code> stores API for more compatibility across the Ruby world. This is backwards incompatible since <code class="language-plaintext highlighter-rouge">Rack::Session</code> expects <code class="language-plaintext highlighter-rouge">#get_session</code> to accept four arguments and requires <code class="language-plaintext highlighter-rouge">#destroy_session</code> instead of simply <code class="language-plaintext highlighter-rouge">#destroy</code>.</p>
+  </li>
+  <li>
+    <p>Template lookup now searches further up in the inheritance chain.</p>
+  </li>
+</ul>
+
+<h3 id="action-view">Action View</h3>
+
+<ul>
+  <li>
+    <p>Added an <code class="language-plaintext highlighter-rouge">:authenticity_token</code> option to <code class="language-plaintext highlighter-rouge">form_tag</code> for custom handling or to omit the token by passing <code class="language-plaintext highlighter-rouge">:authenticity_token =&gt; false</code>.</p>
+  </li>
+  <li>
+    <p>Created <code class="language-plaintext highlighter-rouge">ActionView::Renderer</code> and specified an API for <code class="language-plaintext highlighter-rouge">ActionView::Context</code>.</p>
+  </li>
+  <li>
+    <p>In place <code class="language-plaintext highlighter-rouge">SafeBuffer</code> mutation is prohibited in Rails 3.1.</p>
+  </li>
+  <li>
+    <p>Added HTML5 <code class="language-plaintext highlighter-rouge">button_tag</code> helper.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">file_field</code> automatically adds <code class="language-plaintext highlighter-rouge">:multipart =&gt; true</code> to the enclosing form.</p>
+  </li>
+  <li>
+    <p>Added a convenience idiom to generate HTML5 data-* attributes in tag helpers from a <code class="language-plaintext highlighter-rouge">:data</code> hash of options:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">tag</span><span class="p">(</span><span class="s2">"div"</span><span class="p">,</span> <span class="ss">:data</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s1">'Stephen'</span><span class="p">,</span> <span class="ss">:city_state</span> <span class="o">=&gt;</span> <span class="sx">%w(Chicago IL)</span><span class="p">})</span>
+  <span class="c1"># =&gt; &lt;div data-name="Stephen" data-city-state="[&amp;quot;Chicago&amp;quot;,&amp;quot;IL&amp;quot;]" /&gt;</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>Keys are dasherized. Values are JSON-encoded, except for strings and symbols.</p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">csrf_meta_tag</code> is renamed to <code class="language-plaintext highlighter-rouge">csrf_meta_tags</code> and aliases <code class="language-plaintext highlighter-rouge">csrf_meta_tag</code> for backwards compatibility.</p>
+  </li>
+  <li>
+    <p>The old template handler API is deprecated and the new API simply requires a template handler to respond to call.</p>
+  </li>
+  <li>
+    <p>rhtml and rxml are finally removed as template handlers.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">config.action_view.cache_template_loading</code> is brought back which allows to decide whether templates should be cached or not.</p>
+  </li>
+  <li>
+    <p>The submit form helper does not generate an id “object_name_id” anymore.</p>
+  </li>
+  <li>
+    <p>Allows <code class="language-plaintext highlighter-rouge">FormHelper#form_for</code> to specify the <code class="language-plaintext highlighter-rouge">:method</code> as a direct option instead of through the <code class="language-plaintext highlighter-rouge">:html</code> hash. <code class="language-plaintext highlighter-rouge">form_for(@post, remote: true, method: :delete)</code> instead of <code class="language-plaintext highlighter-rouge">form_for(@post, remote: true, html: { method: :delete })</code>.</p>
+  </li>
+  <li>
+    <p>Provided <code class="language-plaintext highlighter-rouge">JavaScriptHelper#j()</code> as an alias for <code class="language-plaintext highlighter-rouge">JavaScriptHelper#escape_javascript()</code>. This supersedes the <code class="language-plaintext highlighter-rouge">Object#j()</code> method that the JSON gem adds within templates using the JavaScriptHelper.</p>
+  </li>
+  <li>
+    <p>Allows AM/PM format in datetime selectors.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">auto_link</code> has been removed from Rails and extracted into the <a href="https://github.com/tenderlove/rails_autolink">rails_autolink gem</a></p>
+  </li>
+</ul>
+
+<h2 id="active-record">Active Record</h2>
+
+<ul>
+  <li>
+    <p>Added a class method <code class="language-plaintext highlighter-rouge">pluralize_table_names</code> to singularize/pluralize table names of individual models. Previously this could only be set globally for all models through <code class="language-plaintext highlighter-rouge">ActiveRecord::Base.pluralize_table_names</code>.</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">pluralize_table_names</span> <span class="o">=</span> <span class="kp">false</span>
+  <span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Added block setting of attributes to singular associations. The block will get called after the instance is initialized.</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+    <span class="n">has_one</span> <span class="ss">:account</span>
+  <span class="k">end</span>
+
+  <span class="n">user</span><span class="p">.</span><span class="nf">build_account</span><span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="o">|</span> <span class="n">a</span><span class="p">.</span><span class="nf">credit_limit</span> <span class="o">=</span> <span class="mf">100.0</span> <span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">ActiveRecord::Base.attribute_names</code> to return a list of attribute names. This will return an empty array if the model is abstract or the table does not exist.</p>
+  </li>
+  <li>
+    <p>CSV Fixtures are deprecated and support will be removed in Rails 3.2.0.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ActiveRecord#new</code>, <code class="language-plaintext highlighter-rouge">ActiveRecord#create</code> and <code class="language-plaintext highlighter-rouge">ActiveRecord#update_attributes</code> all accept a second hash as an option that allows you to specify which role to consider when assigning attributes. This is built on top of Active Model’s new mass assignment capabilities:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+    <span class="n">attr_accessible</span> <span class="ss">:title</span>
+    <span class="n">attr_accessible</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:published_at</span><span class="p">,</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="ss">:admin</span>
+  <span class="k">end</span>
+
+  <span class="no">Post</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:post</span><span class="p">],</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="ss">:admin</span><span class="p">)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">default_scope</code> can now take a block, lambda, or any other object which responds to call for lazy evaluation.</p>
+  </li>
+  <li>
+    <p>Default scopes are now evaluated at the latest possible moment, to avoid problems where scopes would be created which would implicitly contain the default scope, which would then be impossible to get rid of via Model.unscoped.</p>
+  </li>
+  <li>
+    <p>PostgreSQL adapter only supports PostgreSQL version 8.2 and higher.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ConnectionManagement</code> middleware is changed to clean up the connection pool after the rack body has been flushed.</p>
+  </li>
+  <li>
+    <p>Added an <code class="language-plaintext highlighter-rouge">update_column</code> method on Active Record. This new method updates a given attribute on an object, skipping validations and callbacks. It is recommended to use <code class="language-plaintext highlighter-rouge">update_attributes</code> or <code class="language-plaintext highlighter-rouge">update_attribute</code> unless you are sure you do not want to execute any callback, including the modification of the <code class="language-plaintext highlighter-rouge">updated_at</code> column. It should not be called on new records.</p>
+  </li>
+  <li>
+    <p>Associations with a <code class="language-plaintext highlighter-rouge">:through</code> option can now use any association as the through or source association, including other associations which have a <code class="language-plaintext highlighter-rouge">:through</code> option and <code class="language-plaintext highlighter-rouge">has_and_belongs_to_many</code> associations.</p>
+  </li>
+  <li>
+    <p>The configuration for the current database connection is now accessible via <code class="language-plaintext highlighter-rouge">ActiveRecord::Base.connection_config</code>.</p>
+  </li>
+  <li>
+    <p>limits and offsets are removed from COUNT queries unless both are supplied.</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="no">People</span><span class="p">.</span><span class="nf">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">count</span>           <span class="c1"># =&gt; 'SELECT COUNT(*) FROM people'</span>
+  <span class="no">People</span><span class="p">.</span><span class="nf">offset</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">count</span>          <span class="c1"># =&gt; 'SELECT COUNT(*) FROM people'</span>
+  <span class="no">People</span><span class="p">.</span><span class="nf">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">offset</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">count</span> <span class="c1"># =&gt; 'SELECT COUNT(*) FROM people LIMIT 1 OFFSET 1'</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ActiveRecord::Associations::AssociationProxy</code> has been split. There is now an <code class="language-plaintext highlighter-rouge">Association</code> class (and subclasses) which are responsible for operating on associations, and then a separate, thin wrapper called <code class="language-plaintext highlighter-rouge">CollectionProxy</code>, which proxies collection associations. This prevents namespace pollution, separates concerns, and will allow further refactorings.</p>
+  </li>
+  <li>
+    <p>Singular associations (<code class="language-plaintext highlighter-rouge">has_one</code>, <code class="language-plaintext highlighter-rouge">belongs_to</code>) no longer have a proxy and simply returns the associated record or <code class="language-plaintext highlighter-rouge">nil</code>. This means that you should not use undocumented methods such as <code class="language-plaintext highlighter-rouge">bob.mother.create</code> - use <code class="language-plaintext highlighter-rouge">bob.create_mother</code> instead.</p>
+  </li>
+  <li>
+    <p>Support the <code class="language-plaintext highlighter-rouge">:dependent</code> option on <code class="language-plaintext highlighter-rouge">has_many :through</code> associations. For historical and practical reasons, <code class="language-plaintext highlighter-rouge">:delete_all</code> is the default deletion strategy employed by <code class="language-plaintext highlighter-rouge">association.delete(*records)</code>, despite the fact that the default strategy is <code class="language-plaintext highlighter-rouge">:nullify</code> for regular has_many. Also, this only works at all if the source reflection is a belongs_to. For other situations, you should directly modify the through association.</p>
+  </li>
+  <li>
+    <p>The behavior of <code class="language-plaintext highlighter-rouge">association.destroy</code> for <code class="language-plaintext highlighter-rouge">has_and_belongs_to_many</code> and <code class="language-plaintext highlighter-rouge">has_many :through</code> is changed. From now on, ‘destroy’ or ‘delete’ on an association will be taken to mean ‘get rid of the link’, not (necessarily) ‘get rid of the associated records’.</p>
+  </li>
+  <li>
+    <p>Previously, <code class="language-plaintext highlighter-rouge">has_and_belongs_to_many.destroy(*records)</code> would destroy the records themselves. It would not delete any records in the join table. Now, it deletes the records in the join table.</p>
+  </li>
+  <li>
+    <p>Previously, <code class="language-plaintext highlighter-rouge">has_many_through.destroy(*records)</code> would destroy the records themselves, and the records in the join table. [Note: This has not always been the case; previous version of Rails only deleted the records themselves.] Now, it destroys only the records in the join table.</p>
+  </li>
+  <li>
+    <p>Note that this change is backwards-incompatible to an extent, but there is unfortunately no way to ‘deprecate’ it before changing it. The change is being made in order to have consistency as to the meaning of ‘destroy’ or ‘delete’ across the different types of associations. If you wish to destroy the records themselves, you can do <code class="language-plaintext highlighter-rouge">records.association.each(&amp;:destroy)</code>.</p>
+  </li>
+  <li>
+    <p>Add <code class="language-plaintext highlighter-rouge">:bulk =&gt; true</code> option to <code class="language-plaintext highlighter-rouge">change_table</code> to make all the schema changes defined in a block using a single ALTER statement.</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">change_table</span><span class="p">(</span><span class="ss">:users</span><span class="p">,</span> <span class="ss">:bulk</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+    <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:company_name</span>
+    <span class="n">t</span><span class="p">.</span><span class="nf">change</span> <span class="ss">:birthdate</span><span class="p">,</span> <span class="ss">:datetime</span>
+  <span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Removed support for accessing attributes on a <code class="language-plaintext highlighter-rouge">has_and_belongs_to_many</code> join table. <code class="language-plaintext highlighter-rouge">has_many :through</code> needs to be used.</p>
+  </li>
+  <li>
+    <p>Added a <code class="language-plaintext highlighter-rouge">create_association!</code> method for <code class="language-plaintext highlighter-rouge">has_one</code> and <code class="language-plaintext highlighter-rouge">belongs_to</code> associations.</p>
+  </li>
+  <li>
+    <p>Migrations are now reversible, meaning that Rails will figure out how to reverse your migrations. To use reversible migrations, just define the <code class="language-plaintext highlighter-rouge">change</code> method.</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">class</span> <span class="nc">MyMigration</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+    <span class="k">def</span> <span class="nf">change</span>
+      <span class="n">create_table</span><span class="p">(</span><span class="ss">:horses</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+        <span class="n">t</span><span class="p">.</span><span class="nf">column</span> <span class="ss">:content</span><span class="p">,</span> <span class="ss">:text</span>
+        <span class="n">t</span><span class="p">.</span><span class="nf">column</span> <span class="ss">:remind_at</span><span class="p">,</span> <span class="ss">:datetime</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Some things cannot be automatically reversed for you. If you know how to reverse those things, you should define <code class="language-plaintext highlighter-rouge">up</code> and <code class="language-plaintext highlighter-rouge">down</code> in your migration. If you define something in change that cannot be reversed, an <code class="language-plaintext highlighter-rouge">IrreversibleMigration</code> exception will be raised when going down.</p>
+  </li>
+  <li>
+    <p>Migrations now use instance methods rather than class methods:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">class</span> <span class="nc">FooMigration</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+    <span class="k">def</span> <span class="nf">up</span> <span class="c1"># Not self.up</span>
+      <span class="c1"># ...</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Migration files generated from model and constructive migration generators (for example, add_name_to_users) use the reversible migration’s <code class="language-plaintext highlighter-rouge">change</code> method instead of the ordinary <code class="language-plaintext highlighter-rouge">up</code> and <code class="language-plaintext highlighter-rouge">down</code> methods.</p>
+  </li>
+  <li>
+    <p>Removed support for interpolating string SQL conditions on associations. Instead, a proc should be used.</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">has_many</span> <span class="ss">:things</span><span class="p">,</span> <span class="ss">:conditions</span> <span class="o">=&gt;</span> <span class="s1">'foo = #{bar}'</span>          <span class="c1"># before</span>
+  <span class="n">has_many</span> <span class="ss">:things</span><span class="p">,</span> <span class="ss">:conditions</span> <span class="o">=&gt;</span> <span class="nb">proc</span> <span class="p">{</span> <span class="s2">"foo = </span><span class="si">#{</span><span class="n">bar</span><span class="si">}</span><span class="s2">"</span> <span class="p">}</span> <span class="c1"># after</span>
+</code></pre></div>    </div>
+
+    <p>Inside the proc, <code class="language-plaintext highlighter-rouge">self</code> is the object which is the owner of the association, unless you are eager loading the association, in which case <code class="language-plaintext highlighter-rouge">self</code> is the class which the association is within.</p>
+
+    <p>You can have any “normal” conditions inside the proc, so the following will work too:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">has_many</span> <span class="ss">:things</span><span class="p">,</span> <span class="ss">:conditions</span> <span class="o">=&gt;</span> <span class="nb">proc</span> <span class="p">{</span> <span class="p">[</span><span class="s2">"foo = ?"</span><span class="p">,</span> <span class="n">bar</span><span class="p">]</span> <span class="p">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Previously <code class="language-plaintext highlighter-rouge">:insert_sql</code> and <code class="language-plaintext highlighter-rouge">:delete_sql</code> on <code class="language-plaintext highlighter-rouge">has_and_belongs_to_many</code> association allowed you to call ‘record’ to get the record being inserted or deleted. This is now passed as an argument to the proc.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">ActiveRecord::Base#has_secure_password</code> (via <code class="language-plaintext highlighter-rouge">ActiveModel::SecurePassword</code>) to encapsulate dead-simple password usage with BCrypt encryption and salting.</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1"># Schema: User(name:string, password_digest:string, password_salt:string)</span>
+  <span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+    <span class="n">has_secure_password</span>
+  <span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>When a model is generated <code class="language-plaintext highlighter-rouge">add_index</code> is added by default for <code class="language-plaintext highlighter-rouge">belongs_to</code> or <code class="language-plaintext highlighter-rouge">references</code> columns.</p>
+  </li>
+  <li>
+    <p>Setting the id of a <code class="language-plaintext highlighter-rouge">belongs_to</code> object will update the reference to the object.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ActiveRecord::Base#dup</code> and <code class="language-plaintext highlighter-rouge">ActiveRecord::Base#clone</code> semantics have changed to closer match normal Ruby dup and clone semantics.</p>
+  </li>
+  <li>
+    <p>Calling <code class="language-plaintext highlighter-rouge">ActiveRecord::Base#clone</code> will result in a shallow copy of the record, including copying the frozen state. No callbacks will be called.</p>
+  </li>
+  <li>
+    <p>Calling <code class="language-plaintext highlighter-rouge">ActiveRecord::Base#dup</code> will duplicate the record, including calling after initialize hooks. Frozen state will not be copied, and all associations will be cleared. A duped record will return <code class="language-plaintext highlighter-rouge">true</code> for <code class="language-plaintext highlighter-rouge">new_record?</code>, have a <code class="language-plaintext highlighter-rouge">nil</code> id field, and is saveable.</p>
+  </li>
+  <li>
+    <p>The query cache now works with prepared statements. No changes in the applications are required.</p>
+  </li>
+</ul>
+
+<h2 id="active-model">Active Model</h2>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">attr_accessible</code> accepts an option <code class="language-plaintext highlighter-rouge">:as</code> to specify a role.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">InclusionValidator</code>, <code class="language-plaintext highlighter-rouge">ExclusionValidator</code>, and <code class="language-plaintext highlighter-rouge">FormatValidator</code> now accepts an option which can be a proc, a lambda, or anything that respond to <code class="language-plaintext highlighter-rouge">call</code>. This option will be called with the current record as an argument and returns an object which respond to <code class="language-plaintext highlighter-rouge">include?</code> for <code class="language-plaintext highlighter-rouge">InclusionValidator</code> and <code class="language-plaintext highlighter-rouge">ExclusionValidator</code>, and returns a regular expression object for <code class="language-plaintext highlighter-rouge">FormatValidator</code>.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">ActiveModel::SecurePassword</code> to encapsulate dead-simple password usage with BCrypt encryption and salting.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ActiveModel::AttributeMethods</code> allows attributes to be defined on demand.</p>
+  </li>
+  <li>
+    <p>Added support for selectively enabling and disabling observers.</p>
+  </li>
+  <li>
+    <p>Alternate <code class="language-plaintext highlighter-rouge">I18n</code> namespace lookup is no longer supported.</p>
+  </li>
+</ul>
+
+<h2 id="active-resource">Active Resource</h2>
+
+<ul>
+  <li>
+    <p>The default format has been changed to JSON for all requests. If you want to continue to use XML you will need to set <code class="language-plaintext highlighter-rouge">self.format = :xml</code> in the class. For example,</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveResource</span><span class="o">::</span><span class="no">Base</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">format</span> <span class="o">=</span> <span class="ss">:xml</span>
+  <span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="active-support">Active Support</h2>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ActiveSupport::Dependencies</code> now raises <code class="language-plaintext highlighter-rouge">NameError</code> if it finds an existing constant in <code class="language-plaintext highlighter-rouge">load_missing_constant</code>.</p>
+  </li>
+  <li>
+    <p>Added a new reporting method <code class="language-plaintext highlighter-rouge">Kernel#quietly</code> which silences both <code class="language-plaintext highlighter-rouge">STDOUT</code> and <code class="language-plaintext highlighter-rouge">STDERR</code>.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">String#inquiry</code> as a convenience method for turning a String into a <code class="language-plaintext highlighter-rouge">StringInquirer</code> object.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">Object#in?</code> to test if an object is included in another object.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">LocalCache</code> strategy is now a real middleware class and no longer an anonymous class.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ActiveSupport::Dependencies::ClassCache</code> class has been introduced for holding references to reloadable classes.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ActiveSupport::Dependencies::Reference</code> has been refactored to take direct advantage of the new <code class="language-plaintext highlighter-rouge">ClassCache</code>.</p>
+  </li>
+  <li>
+    <p>Backports <code class="language-plaintext highlighter-rouge">Range#cover?</code> as an alias for <code class="language-plaintext highlighter-rouge">Range#include?</code> in Ruby 1.8.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">weeks_ago</code> and <code class="language-plaintext highlighter-rouge">prev_week</code> to Date/DateTime/Time.</p>
+  </li>
+  <li>
+    <p>Added <code class="language-plaintext highlighter-rouge">before_remove_const</code> callback to <code class="language-plaintext highlighter-rouge">ActiveSupport::Dependencies.remove_unloadable_constants!</code>.</p>
+  </li>
+</ul>
+
+<p>Deprecations:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ActiveSupport::SecureRandom</code> is deprecated in favor of <code class="language-plaintext highlighter-rouge">SecureRandom</code> from the Ruby standard library.</li>
+</ul>
+
+<h2 id="credits">Credits</h2>
+
+<p>See the <a href="https://contributors.rubyonrails.org/">full list of contributors to Rails</a> for the many people who spent many hours making Rails, the stable and robust framework it is. Kudos to all of them.</p>
+
+<p>Rails 3.1 Release Notes were compiled by <a href="https://github.com/vijaydev">Vijay Dev</a></p>
+
+        </div>
+
+        <footer class="guide-footer">
+            <div class="feedback">
+                <h3>Geri Bildirim</h3>
+                <p>Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri bildirimlerinizi bekliyoruz.</p>
+                <p>Lütfen <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub Issues</a> üzerinden katkıda bulunun.</p>
+            </div>
+        </footer>
+    </article>
+</div>
+
+<script>
+// İçindekiler tablosunu otomatik oluştur
+document.addEventListener('DOMContentLoaded', function() {
+    const toc = document.getElementById('toc');
+    const headings = document.querySelectorAll('.guide-content h2, .guide-content h3, .guide-content h4');
+    
+    if (headings.length > 0) {
+        const tocList = document.createElement('ul');
+        
+        headings.forEach(function(heading, index) {
+            const id = 'heading-' + index;
+            heading.id = id;
+            
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.textContent = heading.textContent;
+            a.className = 'toc-' + heading.tagName.toLowerCase();
+            
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+        
+        toc.appendChild(tocList);
+    }
+});
+</script>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Rails Kılavuzları Türkçe Çevirisi. Gönüllüler tarafından hazırlanmıştır.</p>
+            <p>Orijinal dokümantasyon <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine aittir.</p>
+        </div>
+    </footer>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

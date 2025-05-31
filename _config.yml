@@ -19,6 +19,7 @@ collections:
   guides:
     output: true
     permalink: /:name/
+    permalink: /guides/:path/
 
 # Defaults
 defaults:
