@@ -1,5 +1,4 @@
 ---
----
 layout: guide
 title: Rails ile Başlarken
 description: Bu kılavuz rails ile başlarken konusunu ele alır.

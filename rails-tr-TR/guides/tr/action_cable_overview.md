@@ -1,5 +1,4 @@
 ---
----
 layout: guide
 title: Action Cable'a Genel Bakış
 description: Bu kılavuz action cable'a genel bakış konusunu ele alır.

@@ -1,7 +1,7 @@
 # Site settings
 title: "Rails Dokümantasyonu - Türkçe"
 description: "Ruby on Rails Kılavuzlarının Türkçe Çevirisi"
-baseurl: "/rails-tr-TR"
+# baseurl: "/rails-tr-TR"
 url: "https://dilankaya127.github.io"
 
 # Build settings
