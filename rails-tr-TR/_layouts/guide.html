@@ -1,0 +1,73 @@
+---
+layout: default
+---
+
+<div class="guide-container">
+    <aside class="guide-sidebar">
+        <div class="guide-toc">
+            <h3>İçindekiler</h3>
+            <div id="toc"></div>
+        </div>
+        
+        <div class="guide-nav">
+            <h3>Diğer Kılavuzlar</h3>
+            <ul>
+                <li><a href="{{ '/guides/getting_started' | relative_url }}">Rails ile Başlarken</a></li>
+                <li><a href="{{ '/guides/active_record_basics' | relative_url }}">Active Record Temelleri</a></li>
+                <li><a href="{{ '/guides/action_controller_overview' | relative_url }}">Action Controller</a></li>
+                <li><a href="{{ '/guides/action_view_overview' | relative_url }}">Action View</a></li>
+                <li><a href="{{ '/guides/routing' | relative_url }}">Yönlendirme</a></li>
+                <li><a href="{{ '/guides/action_cable_overview' | relative_url }}">Action Cable</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <article class="guide-content">
+        <header class="guide-header">
+            <h1>{{ page.title }}</h1>
+            {% if page.description %}
+            <p class="guide-description">{{ page.description }}</p>
+            {% endif %}
+        </header>
+
+        <div class="guide-body">
+            {{ content }}
+        </div>
+
+        <footer class="guide-footer">
+            <div class="feedback">
+                <h3>Geri Bildirim</h3>
+                <p>Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri bildirimlerinizi bekliyoruz.</p>
+                <p>Lütfen <a href="https://github.com/dilankaya127/rails-tr-TR/issues">GitHub Issues</a> üzerinden katkıda bulunun.</p>
+            </div>
+        </footer>
+    </article>
+</div>
+
+<script>
+// İçindekiler tablosunu otomatik oluştur
+document.addEventListener('DOMContentLoaded', function() {
+    const toc = document.getElementById('toc');
+    const headings = document.querySelectorAll('.guide-content h2, .guide-content h3, .guide-content h4');
+    
+    if (headings.length > 0) {
+        const tocList = document.createElement('ul');
+        
+        headings.forEach(function(heading, index) {
+            const id = 'heading-' + index;
+            heading.id = id;
+            
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.textContent = heading.textContent;
+            a.className = 'toc-' + heading.tagName.toLowerCase();
+            
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+        
+        toc.appendChild(tocList);
+    }
+});
+</script>
