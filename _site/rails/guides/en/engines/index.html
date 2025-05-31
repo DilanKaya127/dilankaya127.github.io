@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engines - Rails Dokümantasyonu - Türkçe</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <a href="/">Rails Kılavuzları</a>
+                </h1>
+                <nav class="nav">
+                    <a href="/">Ana Sayfa</a>
+                    <a href="https://dilankaya127.github.io">Portföy</a>
+                    <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="guide-container">
+    <aside class="guide-sidebar">
+        <div class="guide-toc">
+            <h3>İçindekiler</h3>
+            <div id="toc"></div>
+        </div>
+        
+        <div class="guide-nav">
+            <h3>Diğer Kılavuzlar</h3>
+            <ul>
+                <li><a href="/rails/guides/tr/getting_started">Rails ile Başlarken</a></li>
+                <li><a href="/rails/guides/en/active_record_basics">Active Record Temelleri</a></li>
+                <li><a href="/rails/guides//en/action_controller_overview">Action Controller</a></li>
+                <li><a href="/rails/guides/tr/action_cable_overview">Action Cable</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <article class="guide-content">
+        <header class="guide-header">
+            <h1>Engines</h1>
+            
+        </header>
+
+        <div class="guide-body">
+            <p><strong>DO NOT READ THIS FILE ON GITHUB, GUIDES ARE PUBLISHED ON <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a>.</strong></p>
+
+<h1 id="getting-started-with-engines">Getting Started with Engines</h1>
+
+<p>In this guide you will learn about engines and how they can be used to provide
+additional functionality to their host applications through a clean and very
+easy-to-use interface.</p>
+
+<p>After reading this guide, you will know:</p>
+
+<ul>
+  <li>What makes an engine.</li>
+  <li>How to generate an engine.</li>
+  <li>How to build features for the engine.</li>
+  <li>How to hook the engine into an application.</li>
+  <li>How to override engine functionality in the application.</li>
+  <li>How to avoid loading Rails frameworks with Load and Configuration Hooks.</li>
+</ul>
+
+<hr />
+
+<h2 id="what-are-engines">What are Engines?</h2>
+
+<p>Engines can be considered miniature applications that provide functionality to
+their host applications. A Rails application is actually just a “supercharged”
+engine, with the <code class="language-plaintext highlighter-rouge">Rails::Application</code> class inheriting a lot of its behavior
+from <code class="language-plaintext highlighter-rouge">Rails::Engine</code>.</p>
+
+<p>Therefore, engines and applications can be thought of as almost the same thing,
+just with subtle differences, as you’ll see throughout this guide. Engines and
+applications also share a common structure.</p>
+
+<p>Engines are also closely related to plugins. The two share a common <code class="language-plaintext highlighter-rouge">lib</code>
+directory structure, and are both generated using the <code class="language-plaintext highlighter-rouge">rails plugin new</code>
+generator. The difference is that an engine is considered a “full plugin” by
+Rails (as indicated by the <code class="language-plaintext highlighter-rouge">--full</code> option that’s passed to the generator
+command). We’ll actually be using the <code class="language-plaintext highlighter-rouge">--mountable</code> option here, which includes
+all the features of <code class="language-plaintext highlighter-rouge">--full</code>, and then some. This guide will refer to these
+“full plugins” simply as “engines” throughout. An engine <strong>can</strong> be a plugin,
+and a plugin <strong>can</strong> be an engine.</p>
+
+<p>The engine that will be created in this guide will be called “blorgh”. This
+engine will provide blogging functionality to its host applications, allowing
+for new articles and comments to be created. At the beginning of this guide, you
+will be working solely within the engine itself, but in later sections you’ll
+see how to hook it into an application.</p>
+
+<p>Engines can also be isolated from their host applications. This means that an
+application is able to have a path provided by a routing helper such as
+<code class="language-plaintext highlighter-rouge">articles_path</code> and use an engine that also provides a path also called
+<code class="language-plaintext highlighter-rouge">articles_path</code>, and the two would not clash. Along with this, controllers, models
+and table names are also namespaced. You’ll see how to do this later in this
+guide.</p>
+
+<p>It’s important to keep in mind at all times that the application should
+<strong>always</strong> take precedence over its engines. An application is the object that
+has final say in what goes on in its environment. The engine should
+only be enhancing it, rather than changing it drastically.</p>
+
+<p>To see demonstrations of other engines, check out
+<a href="https://github.com/plataformatec/devise">Devise</a>, an engine that provides
+authentication for its parent applications, or
+<a href="https://github.com/thredded/thredded">Thredded</a>, an engine that provides forum
+functionality. There’s also <a href="https://github.com/spree/spree">Spree</a> which
+provides an e-commerce platform, and
+<a href="https://github.com/refinery/refinerycms">Refinery CMS</a>, a CMS engine.</p>
+
+<p>Finally, engines would not have been possible without the work of James Adam,
+Piotr Sarnacki, the Rails Core Team, and a number of other people. If you ever
+meet them, don’t forget to say thanks!</p>
+
+<h2 id="generating-an-engine">Generating an Engine</h2>
+
+<p>To generate an engine, you will need to run the plugin generator and pass it
+options as appropriate to the need. For the “blorgh” example, you will need to
+create a “mountable” engine, running this command in a terminal:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails plugin new blorgh <span class="nt">--mountable</span>
+</code></pre></div></div>
+
+<p>The full list of options for the plugin generator may be seen by typing:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails plugin <span class="nt">--help</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">--mountable</code> option tells the generator that you want to create a
+“mountable” and namespace-isolated engine. This generator will provide the same
+skeleton structure as would the <code class="language-plaintext highlighter-rouge">--full</code> option. The <code class="language-plaintext highlighter-rouge">--full</code> option tells the
+generator that you want to create an engine, including a skeleton structure
+that provides the following:</p>
+
+<ul>
+  <li>An <code class="language-plaintext highlighter-rouge">app</code> directory tree</li>
+  <li>
+    <p>A <code class="language-plaintext highlighter-rouge">config/routes.rb</code> file:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+<span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>A file at <code class="language-plaintext highlighter-rouge">lib/blorgh/engine.rb</code>, which is identical in function to a
+standard Rails application’s <code class="language-plaintext highlighter-rouge">config/application.rb</code> file:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Blorgh</span>
+  <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>The <code class="language-plaintext highlighter-rouge">--mountable</code> option will add to the <code class="language-plaintext highlighter-rouge">--full</code> option:</p>
+
+<ul>
+  <li>Asset manifest files (<code class="language-plaintext highlighter-rouge">blorgh_manifest.js</code> and <code class="language-plaintext highlighter-rouge">application.css</code>)</li>
+  <li>A namespaced <code class="language-plaintext highlighter-rouge">ApplicationController</code> stub</li>
+  <li>A namespaced <code class="language-plaintext highlighter-rouge">ApplicationHelper</code> stub</li>
+  <li>A layout view template for the engine</li>
+  <li>
+    <p>Namespace isolation to <code class="language-plaintext highlighter-rouge">config/routes.rb</code>:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Blorgh</span><span class="o">::</span><span class="no">Engine</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+<span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Namespace isolation to <code class="language-plaintext highlighter-rouge">lib/blorgh/engine.rb</code>:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Blorgh</span>
+  <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
+    <span class="n">isolate_namespace</span> <span class="no">Blorgh</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>Additionally, the <code class="language-plaintext highlighter-rouge">--mountable</code> option tells the generator to mount the engine
+inside the dummy testing application located at <code class="language-plaintext highlighter-rouge">test/dummy</code> by adding the
+following to the dummy application’s routes file at
+<code class="language-plaintext highlighter-rouge">test/dummy/config/routes.rb</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mount</span> <span class="no">Blorgh</span><span class="o">::</span><span class="no">Engine</span> <span class="o">=&gt;</span> <span class="s2">"/blorgh"</span>
+</code></pre></div></div>
+
+<h3 id="inside-an-engine">Inside an Engine</h3>
+
+<h4 id="critical-files">Critical Files</h4>
+
+<p>At the root of this brand new engine’s directory lives a <code class="language-plaintext highlighter-rouge">blorgh.gemspec</code> file.
+When you include the engine into an application later on, you will do so with
+this line in the Rails application’s <code class="language-plaintext highlighter-rouge">Gemfile</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gem</span> <span class="s2">"blorgh"</span><span class="p">,</span> <span class="ss">path: </span><span class="s2">"engines/blorgh"</span>
+</code></pre></div></div>
+
+<p>Don’t forget to run <code class="language-plaintext highlighter-rouge">bundle install</code> as usual. By specifying it as a gem within
+the <code class="language-plaintext highlighter-rouge">Gemfile</code>, Bundler will load it as such, parsing this <code class="language-plaintext highlighter-rouge">blorgh.gemspec</code> file
+and requiring a file within the <code class="language-plaintext highlighter-rouge">lib</code> directory called <code class="language-plaintext highlighter-rouge">lib/blorgh.rb</code>. This
+file requires the <code class="language-plaintext highlighter-rouge">blorgh/engine.rb</code> file (located at <code class="language-plaintext highlighter-rouge">lib/blorgh/engine.rb</code>)
+and defines a base module called <code class="language-plaintext highlighter-rouge">Blorgh</code>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"blorgh/engine"</span>
+
+<span class="k">module</span> <span class="nn">Blorgh</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>TIP: Some engines choose to use this file to put global configuration options
+for their engine. It’s a relatively good idea, so if you want to offer
+configuration options, the file where your engine’s <code class="language-plaintext highlighter-rouge">module</code> is defined is
+perfect for that. Place the methods inside the module and you’ll be good to go.</p>
+
+<p>Within <code class="language-plaintext highlighter-rouge">lib/blorgh/engine.rb</code> is the base class for the engine:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Blorgh</span>
+  <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
+    <span class="n">isolate_namespace</span> <span class="no">Blorgh</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>By inheriting from the <code class="language-plaintext highlighter-rouge">Rails::Engine</code> class, this gem notifies Rails that
+there’s an engine at the specified path, and will correctly mount the engine
+inside the application, performing tasks such as adding the <code class="language-plaintext highlighter-rouge">app</code> directory of
+the engine to the load path for models, mailers, controllers, and views.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">isolate_namespace</code> method here deserves special notice. This call is
+responsible for isolating the controllers, models, routes, and other things into
+their own namespace, away from similar components inside the application.
+Without this, there is a possibility that the engine’s components could “leak”
+into the application, causing unwanted disruption, or that important engine
+components could be overridden by similarly named things within the application.
+One of the examples of such conflicts is helpers. Without calling
+<code class="language-plaintext highlighter-rouge">isolate_namespace</code>, the engine’s helpers would be included in an application’s
+controllers.</p>
+
+<p>NOTE: It is <strong>highly</strong> recommended that the <code class="language-plaintext highlighter-rouge">isolate_namespace</code> line be left
+within the <code class="language-plaintext highlighter-rouge">Engine</code> class definition. Without it, classes generated in an engine
+<strong>may</strong> conflict with an application.</p>
+
+<p>What this isolation of the namespace means is that a model generated by a call
+to <code class="language-plaintext highlighter-rouge">bin/rails generate model</code>, such as <code class="language-plaintext highlighter-rouge">bin/rails generate model article</code>, won’t be called <code class="language-plaintext highlighter-rouge">Article</code>, but
+instead be namespaced and called <code class="language-plaintext highlighter-rouge">Blorgh::Article</code>. In addition, the table for the
+model is namespaced, becoming <code class="language-plaintext highlighter-rouge">blorgh_articles</code>, rather than simply <code class="language-plaintext highlighter-rouge">articles</code>.
+Similar to the model namespacing, a controller called <code class="language-plaintext highlighter-rouge">ArticlesController</code> becomes
+<code class="language-plaintext highlighter-rouge">Blorgh::ArticlesController</code> and the views for that controller will not be at
+<code class="language-plaintext highlighter-rouge">app/views/articles</code>, but <code class="language-plaintext highlighter-rouge">app/views/blorgh/articles</code> instead. Mailers, jobs
+and helpers are namespaced as well.</p>
+
+<p>Finally, routes will also be isolated within the engine. This is one of the most
+important parts about namespacing, and is discussed later in the
+<a href="#routes">Routes</a> section of this guide.</p>
+
+<h4 id="app-directory"><code class="language-plaintext highlighter-rouge">app</code> Directory</h4>
+
+<p>Inside the <code class="language-plaintext highlighter-rouge">app</code> directory are the standard <code class="language-plaintext highlighter-rouge">assets</code>, <code class="language-plaintext highlighter-rouge">controllers</code>, <code class="language-plaintext highlighter-rouge">helpers</code>,
+<code class="language-plaintext highlighter-rouge">jobs</code>, <code class="language-plaintext highlighter-rouge">mailers</code>, <code class="language-plaintext highlighter-rouge">models</code>, and <code class="language-plaintext highlighter-rouge">views</code> directories that you should be familiar with
+from an application. We’ll look more into models in a future section, when we’re writing the engine.</p>
+
+<p>Within the <code class="language-plaintext highlighter-rouge">app/assets</code> directory, there are the <code class="language-plaintext highlighter-rouge">images</code> and
+<code class="language-plaintext highlighter-rouge">stylesheets</code> directories which, again, you should be familiar with due to their
+similarity to an application. One difference here, however, is that each
+directory contains a sub-directory with the engine name. Because this engine is
+going to be namespaced, its assets should be too.</p>
+
+<p>Within the <code class="language-plaintext highlighter-rouge">app/controllers</code> directory there is a <code class="language-plaintext highlighter-rouge">blorgh</code> directory that
+contains a file called <code class="language-plaintext highlighter-rouge">application_controller.rb</code>. This file will provide any
+common functionality for the controllers of the engine. The <code class="language-plaintext highlighter-rouge">blorgh</code> directory
+is where the other controllers for the engine will go. By placing them within
+this namespaced directory, you prevent them from possibly clashing with
+identically-named controllers within other engines or even within the
+application.</p>
+
+<p>NOTE: The <code class="language-plaintext highlighter-rouge">ApplicationController</code> class inside an engine is named just like a
+Rails application in order to make it easier for you to convert your
+applications into engines.</p>
+
+<p>Just like for <code class="language-plaintext highlighter-rouge">app/controllers</code>, you will find a <code class="language-plaintext highlighter-rouge">blorgh</code> subdirectory under
+the <code class="language-plaintext highlighter-rouge">app/helpers</code>, <code class="language-plaintext highlighter-rouge">app/jobs</code>, <code class="language-plaintext highlighter-rouge">app/mailers</code> and <code class="language-plaintext highlighter-rouge">app/models</code> directories
+containing the associated <code class="language-plaintext highlighter-rouge">application_*.rb</code> file for gathering common
+functionalities. By placing your files under this subdirectory and namespacing
+your objects, you prevent them from possibly clashing with identically-named
+elements within other engines or even within the application.</p>
+
+<p>Lastly, the <code class="language-plaintext highlighter-rouge">app/views</code> directory contains a <code class="language-plaintext highlighter-rouge">layouts</code> folder, which contains a
+file at <code class="language-plaintext highlighter-rouge">blorgh/application.html.erb</code>. This file allows you to specify a layout
+for the engine. If this engine is to be used as a stand-alone engine, then you
+would add any customization to its layout in this file, rather than the
+application’s <code class="language-plaintext highlighter-rouge">app/views/layouts/application.html.erb</code> file.</p>
+
+<p>If you don’t want to force a layout on to users of the engine, then you can
+delete this file and reference a different layout in the controllers of your
+engine.</p>
+
+<h4 id="bin-directory"><code class="language-plaintext highlighter-rouge">bin</code> Directory</h4>
+
+<p>This directory contains one file, <code class="language-plaintext highlighter-rouge">bin/rails</code>, which enables you to use the
+<code class="language-plaintext highlighter-rouge">rails</code> sub-commands and generators just like you would within an application.
+This means that you will be able to generate new controllers and models for this
+engine very easily by running commands like this:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails generate model
+</code></pre></div></div>
+
+<p>Keep in mind, of course, that anything generated with these commands inside of
+an engine that has <code class="language-plaintext highlighter-rouge">isolate_namespace</code> in the <code class="language-plaintext highlighter-rouge">Engine</code> class will be namespaced.</p>
+
+<h4 id="test-directory"><code class="language-plaintext highlighter-rouge">test</code> Directory</h4>
+
+<p>The <code class="language-plaintext highlighter-rouge">test</code> directory is where tests for the engine will go. To test the engine,
+there is a cut-down version of a Rails application embedded within it at
+<code class="language-plaintext highlighter-rouge">test/dummy</code>. This application will mount the engine in the
+<code class="language-plaintext highlighter-rouge">test/dummy/config/routes.rb</code> file:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+  <span class="n">mount</span> <span class="no">Blorgh</span><span class="o">::</span><span class="no">Engine</span> <span class="o">=&gt;</span> <span class="s2">"/blorgh"</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This line mounts the engine at the path <code class="language-plaintext highlighter-rouge">/blorgh</code>, which will make it accessible
+through the application only at that path.</p>
+
+<p>Inside the test directory there is the <code class="language-plaintext highlighter-rouge">test/integration</code> directory, where
+integration tests for the engine should be placed. Other directories can be
+created in the <code class="language-plaintext highlighter-rouge">test</code> directory as well. For example, you may wish to create a
+<code class="language-plaintext highlighter-rouge">test/models</code> directory for your model tests.</p>
+
+<h2 id="providing-engine-functionality">Providing Engine Functionality</h2>
+
+<p>The engine that this guide covers provides submitting articles and commenting
+functionality and follows a similar thread to the <a href="getting_started.html">Getting Started
+Guide</a>, with some new twists.</p>
+
+<p>NOTE: For this section, make sure to run the commands in the root of the
+<code class="language-plaintext highlighter-rouge">blorgh</code> engine’s directory.</p>
+
+<h3 id="generating-an-article-resource">Generating an Article Resource</h3>
+
+<p>The first thing to generate for a blog engine is the <code class="language-plaintext highlighter-rouge">Article</code> model and related
+controller. To quickly generate this, you can use the Rails scaffold generator.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails generate scaffold article title:string text:text
+</code></pre></div></div>
+
+<p>This command will output this information:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>invoke  active_record
+create    db/migrate/[timestamp]_create_blorgh_articles.rb
+create    app/models/blorgh/article.rb
+invoke    test_unit
+create      test/models/blorgh/article_test.rb
+create      test/fixtures/blorgh/articles.yml
+invoke  resource_route
+ route    resources :articles
+invoke  scaffold_controller
+create    app/controllers/blorgh/articles_controller.rb
+invoke    erb
+create      app/views/blorgh/articles
+create      app/views/blorgh/articles/index.html.erb
+create      app/views/blorgh/articles/edit.html.erb
+create      app/views/blorgh/articles/show.html.erb
+create      app/views/blorgh/articles/new.html.erb
+create      app/views/blorgh/articles/_form.html.erb
+create      app/views/blorgh/articles/_article.html.erb
+invoke    resource_route
+invoke    test_unit
+create      test/controllers/blorgh/articles_controller_test.rb
+create      test/system/blorgh/articles_test.rb
+invoke    helper
+create      app/helpers/blorgh/articles_helper.rb
+invoke      test_unit
+</code></pre></div></div>
+
+<p>The first thing that the scaffold generator does is invoke the <code class="language-plaintext highlighter-rouge">active_record</code>
+generator, which generates a migration and a model for the resource. Note here,
+however, that the migration is called <code class="language-plaintext highlighter-rouge">create_blorgh_articles</code> rather than the
+usual <code class="language-plaintext highlighter-rouge">create_articles</code>. This is due to the <code class="language-plaintext highlighter-rouge">isolate_namespace</code> method called in
+the <code class="language-plaintext highlighter-rouge">Blorgh::Engine</code> class’s definition. The model here is also namespaced,
+being placed at <code class="language-plaintext highlighter-rouge">app/models/blorgh/article.rb</code> rather than <code class="language-plaintext highlighter-rouge">app/models/article.rb</code> due
+to the <code class="language-plaintext highlighter-rouge">isolate_namespace</code> call within the <code class="language-plaintext highlighter-rouge">Engine</code> class.</p>
+
+<p>Next, the <code class="language-plaintext highlighter-rouge">test_unit</code> generator is invoked for this model, generating a model
+test at <code class="language-plaintext highlighter-rouge">test/models/blorgh/article_test.rb</code> (rather than
+<code class="language-plaintext highlighter-rouge">test/models/article_test.rb</code>) and a fixture at <code class="language-plaintext highlighter-rouge">test/fixtures/blorgh/articles.yml</code>
+(rather than <code class="language-plaintext highlighter-rouge">test/fixtures/articles.yml</code>).</p>
+
+<p>After that, a line for the resource is inserted into the <code class="language-plaintext highlighter-rouge">config/routes.rb</code> file
+for the engine. This line is simply <code class="language-plaintext highlighter-rouge">resources :articles</code>, turning the
+<code class="language-plaintext highlighter-rouge">config/routes.rb</code> file for the engine into this:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Blorgh</span><span class="o">::</span><span class="no">Engine</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+  <span class="n">resources</span> <span class="ss">:articles</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Note here that the routes are drawn upon the <code class="language-plaintext highlighter-rouge">Blorgh::Engine</code> object rather than
+the <code class="language-plaintext highlighter-rouge">YourApp::Application</code> class. This is so that the engine routes are confined
+to the engine itself and can be mounted at a specific point as shown in the
+<a href="#test-directory">test directory</a> section. It also causes the engine’s routes to
+be isolated from those routes that are within the application. The
+<a href="#routes">Routes</a> section of this guide describes it in detail.</p>
+
+<p>Next, the <code class="language-plaintext highlighter-rouge">scaffold_controller</code> generator is invoked, generating a controller
+called <code class="language-plaintext highlighter-rouge">Blorgh::ArticlesController</code> (at
+<code class="language-plaintext highlighter-rouge">app/controllers/blorgh/articles_controller.rb</code>) and its related views at
+<code class="language-plaintext highlighter-rouge">app/views/blorgh/articles</code>. This generator also generates tests for the
+controller (<code class="language-plaintext highlighter-rouge">test/controllers/blorgh/articles_controller_test.rb</code> and <code class="language-plaintext highlighter-rouge">test/system/blorgh/articles_test.rb</code>) and a helper (<code class="language-plaintext highlighter-rouge">app/helpers/blorgh/articles_helper.rb</code>).</p>
+
+<p>Everything this generator has created is neatly namespaced. The controller’s
+class is defined within the <code class="language-plaintext highlighter-rouge">Blorgh</code> module:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Blorgh</span>
+  <span class="k">class</span> <span class="nc">ArticlesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>NOTE: The <code class="language-plaintext highlighter-rouge">ArticlesController</code> class inherits from
+<code class="language-plaintext highlighter-rouge">Blorgh::ApplicationController</code>, not the application’s <code class="language-plaintext highlighter-rouge">ApplicationController</code>.</p>
+
+<p>The helper inside <code class="language-plaintext highlighter-rouge">app/helpers/blorgh/articles_helper.rb</code> is also namespaced:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Blorgh</span>
+  <span class="k">module</span> <span class="nn">ArticlesHelper</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This helps prevent conflicts with any other engine or application that may have
+an article resource as well.</p>
+
+<p>You can see what the engine has so far by running <code class="language-plaintext highlighter-rouge">bin/rails db:migrate</code> at the root
+of our engine to run the migration generated by the scaffold generator, and then
+running <code class="language-plaintext highlighter-rouge">bin/rails server</code> in <code class="language-plaintext highlighter-rouge">test/dummy</code>. When you open
+<code class="language-plaintext highlighter-rouge">http://localhost:3000/blorgh/articles</code> you will see the default scaffold that has
+been generated. Click around! You’ve just generated your first engine’s first
+functions.</p>
+
+<p>If you’d rather play around in the console, <code class="language-plaintext highlighter-rouge">bin/rails console</code> will also work just
+like a Rails application. Remember: the <code class="language-plaintext highlighter-rouge">Article</code> model is namespaced, so to
+reference it you must call it as <code class="language-plaintext highlighter-rouge">Blorgh::Article</code>.</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="no">Blorgh</span><span class="o">::</span><span class="no">Article</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">Blorgh</span><span class="o">::</span><span class="no">Article</span> <span class="ss">id: </span><span class="mi">1</span> <span class="o">...</span><span class="kt">&gt;</span>
+</code></pre></div></div>
+
+<p>One final thing is that the <code class="language-plaintext highlighter-rouge">articles</code> resource for this engine should be the root
+of the engine. Whenever someone goes to the root path where the engine is
+mounted, they should be shown a list of articles. This can be made to happen if
+this line is inserted into the <code class="language-plaintext highlighter-rouge">config/routes.rb</code> file inside the engine:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">root</span> <span class="ss">to: </span><span class="s2">"articles#index"</span>
+</code></pre></div></div>
+
+<p>Now people will only need to go to the root of the engine to see all the articles,
+rather than visiting <code class="language-plaintext highlighter-rouge">/articles</code>. This means that instead of
+<code class="language-plaintext highlighter-rouge">http://localhost:3000/blorgh/articles</code>, you only need to go to
+<code class="language-plaintext highlighter-rouge">http://localhost:3000/blorgh</code> now.</p>
+
+<h3 id="generating-a-comments-resource">Generating a Comments Resource</h3>
+
+<p>Now that the engine can create new articles, it only makes sense to add
+commenting functionality as well. To do this, you’ll need to generate a comment
+model, a comment controller, and then modify the articles scaffold to display
+comments and allow people to create new ones.</p>
+
+<p>From the engine root, run the model generator. Tell it to generate a
+<code class="language-plaintext highlighter-rouge">Comment</code> model, with the related table having two columns: an <code class="language-plaintext highlighter-rouge">article</code> references
+column and <code class="language-plaintext highlighter-rouge">text</code> text column.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails generate model Comment article:references text:text
+</code></pre></div></div>
+
+<p>This will output the following:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>invoke  active_record
+create    db/migrate/[timestamp]_create_blorgh_comments.rb
+create    app/models/blorgh/comment.rb
+invoke    test_unit
+create      test/models/blorgh/comment_test.rb
+create      test/fixtures/blorgh/comments.yml
+</code></pre></div></div>
+
+<p>This generator call will generate just the necessary model files it needs,
+namespacing the files under a <code class="language-plaintext highlighter-rouge">blorgh</code> directory and creating a model class
+called <code class="language-plaintext highlighter-rouge">Blorgh::Comment</code>. Now run the migration to create our blorgh_comments
+table:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails db:migrate
+</code></pre></div></div>
+
+<p>To show the comments on an article, edit <code class="language-plaintext highlighter-rouge">app/views/blorgh/articles/show.html.erb</code> and
+add this line before the “Edit” link:</p>
+
+<pre><code class="language-html+erb">&lt;h3&gt;Comments&lt;/h3&gt;
+&lt;%= render @article.comments %&gt;
+</code></pre>
+
+<p>This line will require there to be a <code class="language-plaintext highlighter-rouge">has_many</code> association for comments defined
+on the <code class="language-plaintext highlighter-rouge">Blorgh::Article</code> model, which there isn’t right now. To define one, open
+<code class="language-plaintext highlighter-rouge">app/models/blorgh/article.rb</code> and add this line into the model:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">has_many</span> <span class="ss">:comments</span>
+</code></pre></div></div>
+
+<p>Turning the model into this:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Blorgh</span>
+  <span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+    <span class="n">has_many</span> <span class="ss">:comments</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>NOTE: Because the <code class="language-plaintext highlighter-rouge">has_many</code> is defined inside a class that is inside the
+<code class="language-plaintext highlighter-rouge">Blorgh</code> module, Rails will know that you want to use the <code class="language-plaintext highlighter-rouge">Blorgh::Comment</code>
+model for these objects, so there’s no need to specify that using the
+<code class="language-plaintext highlighter-rouge">:class_name</code> option here.</p>
+
+<p>Next, there needs to be a form so that comments can be created on an article. To
+add this, put this line underneath the call to <code class="language-plaintext highlighter-rouge">render @article.comments</code> in
+<code class="language-plaintext highlighter-rouge">app/views/blorgh/articles/show.html.erb</code>:</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"blorgh/comments/form"</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>Next, the partial that this line will render needs to exist. Create a new
+directory at <code class="language-plaintext highlighter-rouge">app/views/blorgh/comments</code> and in it a new file called
+<code class="language-plaintext highlighter-rouge">_form.html.erb</code> which has this content to create the required partial:</p>
+
+<pre><code class="language-html+erb">&lt;h3&gt;New comment&lt;/h3&gt;
+&lt;%= form_with model: [@article, @article.comments.build] do |form| %&gt;
+  &lt;p&gt;
+    &lt;%= form.label :text %&gt;&lt;br&gt;
+    &lt;%= form.textarea :text %&gt;
+  &lt;/p&gt;
+  &lt;%= form.submit %&gt;
+&lt;% end %&gt;
+</code></pre>
+
+<p>When this form is submitted, it is going to attempt to perform a <code class="language-plaintext highlighter-rouge">POST</code> request
+to a route of <code class="language-plaintext highlighter-rouge">/articles/:article_id/comments</code> within the engine. This route doesn’t
+exist at the moment, but can be created by changing the <code class="language-plaintext highlighter-rouge">resources :articles</code> line
+inside <code class="language-plaintext highlighter-rouge">config/routes.rb</code> into these lines:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">resources</span> <span class="ss">:articles</span> <span class="k">do</span>
+  <span class="n">resources</span> <span class="ss">:comments</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This creates a nested route for the comments, which is what the form requires.</p>
+
+<p>The route now exists, but the controller that this route goes to does not. To
+create it, run this command from the engine root:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails generate controller comments
+</code></pre></div></div>
+
+<p>This will generate the following things:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>create  app/controllers/blorgh/comments_controller.rb
+invoke  erb
+ exist    app/views/blorgh/comments
+invoke  test_unit
+create    test/controllers/blorgh/comments_controller_test.rb
+invoke  helper
+create    app/helpers/blorgh/comments_helper.rb
+invoke    test_unit
+</code></pre></div></div>
+
+<p>The form will be making a <code class="language-plaintext highlighter-rouge">POST</code> request to <code class="language-plaintext highlighter-rouge">/articles/:article_id/comments</code>, which
+will correspond with the <code class="language-plaintext highlighter-rouge">create</code> action in <code class="language-plaintext highlighter-rouge">Blorgh::CommentsController</code>. This
+action needs to be created, which can be done by putting the following lines
+inside the class definition in <code class="language-plaintext highlighter-rouge">app/controllers/blorgh/comments_controller.rb</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">create</span>
+  <span class="vi">@article</span> <span class="o">=</span> <span class="no">Article</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:article_id</span><span class="p">])</span>
+  <span class="vi">@comment</span> <span class="o">=</span> <span class="vi">@article</span><span class="p">.</span><span class="nf">comments</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">comment_params</span><span class="p">)</span>
+  <span class="n">flash</span><span class="p">[</span><span class="ss">:notice</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Comment has been created!"</span>
+  <span class="n">redirect_to</span> <span class="n">articles_path</span>
+<span class="k">end</span>
+
+<span class="kp">private</span>
+  <span class="k">def</span> <span class="nf">comment_params</span>
+    <span class="n">params</span><span class="p">.</span><span class="nf">expect</span><span class="p">(</span><span class="ss">comment: </span><span class="p">[</span><span class="ss">:text</span><span class="p">])</span>
+  <span class="k">end</span>
+</code></pre></div></div>
+
+<p>This is the final step required to get the new comment form working. Displaying
+the comments, however, is not quite right yet. If you were to create a comment
+right now, you would see this error:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Missing partial blorgh/comments/_comment with {:handlers=&gt;[:erb, :builder],
+:formats=&gt;[:html], :locale=&gt;[:en, :en]}. Searched in:   *
+"/Users/ryan/Sites/side_projects/blorgh/test/dummy/app/views"   *
+"/Users/ryan/Sites/side_projects/blorgh/app/views"
+</code></pre></div></div>
+
+<p>The engine is unable to find the partial required for rendering the comments.
+Rails looks first in the application’s (<code class="language-plaintext highlighter-rouge">test/dummy</code>) <code class="language-plaintext highlighter-rouge">app/views</code> directory and
+then in the engine’s <code class="language-plaintext highlighter-rouge">app/views</code> directory. When it can’t find it, it will throw
+this error. The engine knows to look for <code class="language-plaintext highlighter-rouge">blorgh/comments/_comment</code> because the
+model object it is receiving is from the <code class="language-plaintext highlighter-rouge">Blorgh::Comment</code> class.</p>
+
+<p>This partial will be responsible for rendering just the comment text, for now.
+Create a new file at <code class="language-plaintext highlighter-rouge">app/views/blorgh/comments/_comment.html.erb</code> and put this
+line inside it:</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">comment_counter</span> <span class="o">+</span> <span class="mi">1</span> <span class="cp">%&gt;</span>. <span class="cp">&lt;%=</span> <span class="n">comment</span><span class="p">.</span><span class="nf">text</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">comment_counter</code> local variable is given to us by the <code class="language-plaintext highlighter-rouge">&lt;%= render
+@article.comments %&gt;</code> call, which will define it automatically and increment the
+counter as it iterates through each comment. It’s used in this example to
+display a small number next to each comment when it’s created.</p>
+
+<p>That completes the comment function of the blogging engine. Now it’s time to use
+it within an application.</p>
+
+<h2 id="hooking-into-an-application">Hooking Into an Application</h2>
+
+<p>Using an engine within an application is very easy. This section covers how to
+mount the engine into an application and the initial setup required, as well as
+linking the engine to a <code class="language-plaintext highlighter-rouge">User</code> class provided by the application to provide
+ownership for articles and comments within the engine.</p>
+
+<h3 id="mounting-the-engine">Mounting the Engine</h3>
+
+<p>First, the engine needs to be specified inside the application’s <code class="language-plaintext highlighter-rouge">Gemfile</code>. If
+there isn’t an application handy to test this out in, generate one using the
+<code class="language-plaintext highlighter-rouge">rails new</code> command outside of the engine directory like this:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails new unicorn
+</code></pre></div></div>
+
+<p>Usually, specifying the engine inside the <code class="language-plaintext highlighter-rouge">Gemfile</code> would be done by specifying it
+as a normal, everyday gem.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gem</span> <span class="s2">"devise"</span>
+</code></pre></div></div>
+
+<p>However, because you are developing the <code class="language-plaintext highlighter-rouge">blorgh</code> engine on your local machine,
+you will need to specify the <code class="language-plaintext highlighter-rouge">:path</code> option in your <code class="language-plaintext highlighter-rouge">Gemfile</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gem</span> <span class="s2">"blorgh"</span><span class="p">,</span> <span class="ss">path: </span><span class="s2">"engines/blorgh"</span>
+</code></pre></div></div>
+
+<p>Then run <code class="language-plaintext highlighter-rouge">bundle</code> to install the gem.</p>
+
+<p>As described earlier, by placing the gem in the <code class="language-plaintext highlighter-rouge">Gemfile</code> it will be loaded when
+Rails is loaded. It will first require <code class="language-plaintext highlighter-rouge">lib/blorgh.rb</code> from the engine, then
+<code class="language-plaintext highlighter-rouge">lib/blorgh/engine.rb</code>, which is the file that defines the major pieces of
+functionality for the engine.</p>
+
+<p>To make the engine’s functionality accessible from within an application, it
+needs to be mounted in that application’s <code class="language-plaintext highlighter-rouge">config/routes.rb</code> file:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mount</span> <span class="no">Blorgh</span><span class="o">::</span><span class="no">Engine</span><span class="p">,</span> <span class="ss">at: </span><span class="s2">"/blog"</span>
+</code></pre></div></div>
+
+<p>This line will mount the engine at <code class="language-plaintext highlighter-rouge">/blog</code> in the application. Making it
+accessible at <code class="language-plaintext highlighter-rouge">http://localhost:3000/blog</code> when the application runs with <code class="language-plaintext highlighter-rouge">bin/rails
+server</code>.</p>
+
+<p>NOTE: Other engines, such as Devise, handle this a little differently by making
+you specify custom helpers (such as <code class="language-plaintext highlighter-rouge">devise_for</code>) in the routes. These helpers
+do exactly the same thing, mounting pieces of the engines’s functionality at a
+pre-defined path which may be customizable.</p>
+
+<h3 id="engine-setup">Engine Setup</h3>
+
+<p>The engine contains migrations for the <code class="language-plaintext highlighter-rouge">blorgh_articles</code> and <code class="language-plaintext highlighter-rouge">blorgh_comments</code>
+table which need to be created in the application’s database so that the
+engine’s models can query them correctly. To copy these migrations into the
+application run the following command from the application’s root:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails blorgh:install:migrations
+</code></pre></div></div>
+
+<p>If you have multiple engines that need migrations copied over, use
+<code class="language-plaintext highlighter-rouge">railties:install:migrations</code> instead:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails railties:install:migrations
+</code></pre></div></div>
+
+<p>You can specify a custom path in the source engine for the migrations by specifying MIGRATIONS_PATH.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails railties:install:migrations <span class="nv">MIGRATIONS_PATH</span><span class="o">=</span>db_blourgh
+</code></pre></div></div>
+
+<p>If you have multiple databases you can also specify the target database by specifying DATABASE.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails railties:install:migrations <span class="nv">DATABASE</span><span class="o">=</span>animals
+</code></pre></div></div>
+
+<p>This command, when run for the first time, will copy over all the migrations
+from the engine. When run the next time, it will only copy over migrations that
+haven’t been copied over already. The first run for this command will output
+something such as this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Copied migration [timestamp_1]_create_blorgh_articles.blorgh.rb from blorgh
+Copied migration [timestamp_2]_create_blorgh_comments.blorgh.rb from blorgh
+</code></pre></div></div>
+
+<p>The first timestamp (<code class="language-plaintext highlighter-rouge">[timestamp_1]</code>) will be the current time, and the second
+timestamp (<code class="language-plaintext highlighter-rouge">[timestamp_2]</code>) will be the current time plus a second. The reason
+for this is so that the migrations for the engine are run after any existing
+migrations in the application.</p>
+
+<p>To run these migrations within the context of the application, simply run <code class="language-plaintext highlighter-rouge">bin/rails
+db:migrate</code>. When accessing the engine through <code class="language-plaintext highlighter-rouge">http://localhost:3000/blog</code>, the
+articles will be empty. This is because the table created inside the application is
+different from the one created within the engine. Go ahead, play around with the
+newly mounted engine. You’ll find that it’s the same as when it was only an
+engine.</p>
+
+<p>If you would like to run migrations only from one engine, you can do it by
+specifying <code class="language-plaintext highlighter-rouge">SCOPE</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails db:migrate <span class="nv">SCOPE</span><span class="o">=</span>blorgh
+</code></pre></div></div>
+
+<p>This may be useful if you want to revert engine’s migrations before removing it.
+To revert all migrations from blorgh engine you can run code such as:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails db:migrate <span class="nv">SCOPE</span><span class="o">=</span>blorgh <span class="nv">VERSION</span><span class="o">=</span>0
+</code></pre></div></div>
+
+<h3 id="using-a-class-provided-by-the-application">Using a Class Provided by the Application</h3>
+
+<h4 id="using-a-model-provided-by-the-application">Using a Model Provided by the Application</h4>
+
+<p>When an engine is created, it may want to use specific classes from an
+application to provide links between the pieces of the engine and the pieces of
+the application. In the case of the <code class="language-plaintext highlighter-rouge">blorgh</code> engine, making articles and comments
+have authors would make a lot of sense.</p>
+
+<p>A typical application might have a <code class="language-plaintext highlighter-rouge">User</code> class that would be used to represent
+authors for an article or a comment. But there could be a case where the
+application calls this class something different, such as <code class="language-plaintext highlighter-rouge">Person</code>. For this
+reason, the engine should not hardcode associations specifically for a <code class="language-plaintext highlighter-rouge">User</code>
+class.</p>
+
+<p>To keep it simple in this case, the application will have a class called <code class="language-plaintext highlighter-rouge">User</code>
+that represents the users of the application (we’ll get into making this
+configurable further on). It can be generated using this command inside the
+application:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails generate model user name:string
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">bin/rails db:migrate</code> command needs to be run here to ensure that our
+application has the <code class="language-plaintext highlighter-rouge">users</code> table for future use.</p>
+
+<p>Also, to keep it simple, the articles form will have a new text field called
+<code class="language-plaintext highlighter-rouge">author_name</code>, where users can elect to put their name. The engine will then
+take this name and either create a new <code class="language-plaintext highlighter-rouge">User</code> object from it, or find one that
+already has that name. The engine will then associate the article with the found or
+created <code class="language-plaintext highlighter-rouge">User</code> object.</p>
+
+<p>First, the <code class="language-plaintext highlighter-rouge">author_name</code> text field needs to be added to the
+<code class="language-plaintext highlighter-rouge">app/views/blorgh/articles/_form.html.erb</code> partial inside the engine. This can be
+added above the <code class="language-plaintext highlighter-rouge">title</code> field with this code:</p>
+
+<pre><code class="language-html+erb">&lt;div class="field"&gt;
+  &lt;%= form.label :author_name %&gt;&lt;br&gt;
+  &lt;%= form.text_field :author_name %&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>Next, we need to update our <code class="language-plaintext highlighter-rouge">Blorgh::ArticlesController#article_params</code> method to
+permit the new form parameter:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">article_params</span>
+  <span class="n">params</span><span class="p">.</span><span class="nf">expect</span><span class="p">(</span><span class="ss">article: </span><span class="p">[</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:text</span><span class="p">,</span> <span class="ss">:author_name</span><span class="p">])</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">Blorgh::Article</code> model should then have some code to convert the <code class="language-plaintext highlighter-rouge">author_name</code>
+field into an actual <code class="language-plaintext highlighter-rouge">User</code> object and associate it as that article’s <code class="language-plaintext highlighter-rouge">author</code>
+before the article is saved. It will also need to have an <code class="language-plaintext highlighter-rouge">attr_accessor</code> set up
+for this field, so that the setter and getter methods are defined for it.</p>
+
+<p>To do all this, you’ll need to add the <code class="language-plaintext highlighter-rouge">attr_accessor</code> for <code class="language-plaintext highlighter-rouge">author_name</code>, the
+association for the author and the <code class="language-plaintext highlighter-rouge">before_validation</code> call into
+<code class="language-plaintext highlighter-rouge">app/models/blorgh/article.rb</code>. The <code class="language-plaintext highlighter-rouge">author</code> association will be hard-coded to the
+<code class="language-plaintext highlighter-rouge">User</code> class for the time being.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">attr_accessor</span> <span class="ss">:author_name</span>
+<span class="n">belongs_to</span> <span class="ss">:author</span><span class="p">,</span> <span class="ss">class_name: </span><span class="s2">"User"</span>
+
+<span class="n">before_validation</span> <span class="ss">:set_author</span>
+
+<span class="kp">private</span>
+  <span class="k">def</span> <span class="nf">set_author</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">author</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_or_create_by</span><span class="p">(</span><span class="ss">name: </span><span class="n">author_name</span><span class="p">)</span>
+  <span class="k">end</span>
+</code></pre></div></div>
+
+<p>By representing the <code class="language-plaintext highlighter-rouge">author</code> association’s object with the <code class="language-plaintext highlighter-rouge">User</code> class, a link
+is established between the engine and the application. There needs to be a way
+of associating the records in the <code class="language-plaintext highlighter-rouge">blorgh_articles</code> table with the records in the
+<code class="language-plaintext highlighter-rouge">users</code> table. Because the association is called <code class="language-plaintext highlighter-rouge">author</code>, there should be an
+<code class="language-plaintext highlighter-rouge">author_id</code> column added to the <code class="language-plaintext highlighter-rouge">blorgh_articles</code> table.</p>
+
+<p>To generate this new column, run this command within the engine:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails generate migration add_author_id_to_blorgh_articles author_id:integer
+</code></pre></div></div>
+
+<p>NOTE: Due to the migration’s name and the column specification after it, Rails
+will automatically know that you want to add a column to a specific table and
+write that into the migration for you. You don’t need to tell it any more than
+this.</p>
+
+<p>This migration will need to be run on the application. To do that, it must first
+be copied using this command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails blorgh:install:migrations
+</code></pre></div></div>
+
+<p>Notice that only <em>one</em> migration was copied over here. This is because the first
+two migrations were copied over the first time this command was run.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NOTE Migration [timestamp]_create_blorgh_articles.blorgh.rb from blorgh has been skipped. Migration with the same name already exists.
+NOTE Migration [timestamp]_create_blorgh_comments.blorgh.rb from blorgh has been skipped. Migration with the same name already exists.
+Copied migration [timestamp]_add_author_id_to_blorgh_articles.blorgh.rb from blorgh
+</code></pre></div></div>
+
+<p>Run the migration using:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails db:migrate
+</code></pre></div></div>
+
+<p>Now with all the pieces in place, an action will take place that will associate
+an author - represented by a record in the <code class="language-plaintext highlighter-rouge">users</code> table - with an article,
+represented by the <code class="language-plaintext highlighter-rouge">blorgh_articles</code> table from the engine.</p>
+
+<p>Finally, the author’s name should be displayed on the article’s page. Add this code
+above the “Title” output inside <code class="language-plaintext highlighter-rouge">app/views/blorgh/articles/_article.html.erb</code>:</p>
+
+<pre><code class="language-html+erb">&lt;p&gt;
+  &lt;strong&gt;Author:&lt;/strong&gt;
+  &lt;%= article.author.name %&gt;
+&lt;/p&gt;
+</code></pre>
+
+<h4 id="using-a-controller-provided-by-the-application">Using a Controller Provided by the Application</h4>
+
+<p>Because Rails controllers generally share code for things like authentication
+and accessing session variables, they inherit from <code class="language-plaintext highlighter-rouge">ApplicationController</code> by
+default. Rails engines, however are scoped to run independently from the main
+application, so each engine gets a scoped <code class="language-plaintext highlighter-rouge">ApplicationController</code>. This
+namespace prevents code collisions, but often engine controllers need to access
+methods in the main application’s <code class="language-plaintext highlighter-rouge">ApplicationController</code>. An easy way to
+provide this access is to change the engine’s scoped <code class="language-plaintext highlighter-rouge">ApplicationController</code> to
+inherit from the main application’s <code class="language-plaintext highlighter-rouge">ApplicationController</code>. For our Blorgh
+engine this would be done by changing
+<code class="language-plaintext highlighter-rouge">app/controllers/blorgh/application_controller.rb</code> to look like:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Blorgh</span>
+  <span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">ApplicationController</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>By default, the engine’s controllers inherit from
+<code class="language-plaintext highlighter-rouge">Blorgh::ApplicationController</code>. So, after making this change they will have
+access to the main application’s <code class="language-plaintext highlighter-rouge">ApplicationController</code>, as though they were
+part of the main application.</p>
+
+<p>This change does require that the engine is run from a Rails application that
+has an <code class="language-plaintext highlighter-rouge">ApplicationController</code>.</p>
+
+<h3 id="configuring-an-engine">Configuring an Engine</h3>
+
+<p>This section covers how to make the <code class="language-plaintext highlighter-rouge">User</code> class configurable, followed by
+general configuration tips for the engine.</p>
+
+<h4 id="setting-configuration-settings-in-the-application">Setting Configuration Settings in the Application</h4>
+
+<p>The next step is to make the class that represents a <code class="language-plaintext highlighter-rouge">User</code> in the application
+customizable for the engine. This is because that class may not always be
+<code class="language-plaintext highlighter-rouge">User</code>, as previously explained. To make this setting customizable, the engine
+will have a configuration setting called <code class="language-plaintext highlighter-rouge">author_class</code> that will be used to
+specify which class represents users inside the application.</p>
+
+<p>To define this configuration setting, you should use a <code class="language-plaintext highlighter-rouge">mattr_accessor</code> inside
+the <code class="language-plaintext highlighter-rouge">Blorgh</code> module for the engine. Add this line to <code class="language-plaintext highlighter-rouge">lib/blorgh.rb</code> inside the
+engine:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mattr_accessor</span> <span class="ss">:author_class</span>
+</code></pre></div></div>
+
+<p>This method works like its siblings, <code class="language-plaintext highlighter-rouge">attr_accessor</code> and <code class="language-plaintext highlighter-rouge">cattr_accessor</code>, but
+provides a setter and getter method on the module with the specified name. To
+use it, it must be referenced using <code class="language-plaintext highlighter-rouge">Blorgh.author_class</code>.</p>
+
+<p>The next step is to switch the <code class="language-plaintext highlighter-rouge">Blorgh::Article</code> model over to this new setting.
+Change the <code class="language-plaintext highlighter-rouge">belongs_to</code> association inside this model
+(<code class="language-plaintext highlighter-rouge">app/models/blorgh/article.rb</code>) to this:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">belongs_to</span> <span class="ss">:author</span><span class="p">,</span> <span class="ss">class_name: </span><span class="no">Blorgh</span><span class="p">.</span><span class="nf">author_class</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">set_author</code> method in the <code class="language-plaintext highlighter-rouge">Blorgh::Article</code> model should also use this class:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">self</span><span class="p">.</span><span class="nf">author</span> <span class="o">=</span> <span class="no">Blorgh</span><span class="p">.</span><span class="nf">author_class</span><span class="p">.</span><span class="nf">constantize</span><span class="p">.</span><span class="nf">find_or_create_by</span><span class="p">(</span><span class="ss">name: </span><span class="n">author_name</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>To save having to call <code class="language-plaintext highlighter-rouge">constantize</code> on the <code class="language-plaintext highlighter-rouge">author_class</code> result all the time,
+you could instead just override the <code class="language-plaintext highlighter-rouge">author_class</code> getter method inside the
+<code class="language-plaintext highlighter-rouge">Blorgh</code> module in the <code class="language-plaintext highlighter-rouge">lib/blorgh.rb</code> file to always call <code class="language-plaintext highlighter-rouge">constantize</code> on the
+saved value before returning the result:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">author_class</span>
+  <span class="vc">@@author_class</span><span class="p">.</span><span class="nf">constantize</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This would then turn the above code for <code class="language-plaintext highlighter-rouge">set_author</code> into this:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">self</span><span class="p">.</span><span class="nf">author</span> <span class="o">=</span> <span class="no">Blorgh</span><span class="p">.</span><span class="nf">author_class</span><span class="p">.</span><span class="nf">find_or_create_by</span><span class="p">(</span><span class="ss">name: </span><span class="n">author_name</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Resulting in something a little shorter, and more implicit in its behavior. The
+<code class="language-plaintext highlighter-rouge">author_class</code> method should always return a <code class="language-plaintext highlighter-rouge">Class</code> object.</p>
+
+<p>Since we changed the <code class="language-plaintext highlighter-rouge">author_class</code> method to return a <code class="language-plaintext highlighter-rouge">Class</code> instead of a
+<code class="language-plaintext highlighter-rouge">String</code>, we must also modify our <code class="language-plaintext highlighter-rouge">belongs_to</code> definition in the <code class="language-plaintext highlighter-rouge">Blorgh::Article</code>
+model:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">belongs_to</span> <span class="ss">:author</span><span class="p">,</span> <span class="ss">class_name: </span><span class="no">Blorgh</span><span class="p">.</span><span class="nf">author_class</span><span class="p">.</span><span class="nf">to_s</span>
+</code></pre></div></div>
+
+<p>To set this configuration setting within the application, an initializer should
+be used. By using an initializer, the configuration will be set up before the
+application starts and calls the engine’s models, which may depend on this
+configuration setting existing.</p>
+
+<p>Create a new initializer at <code class="language-plaintext highlighter-rouge">config/initializers/blorgh.rb</code> inside the
+application where the <code class="language-plaintext highlighter-rouge">blorgh</code> engine is installed and put this content in it:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Blorgh</span><span class="p">.</span><span class="nf">author_class</span> <span class="o">=</span> <span class="s2">"User"</span>
+</code></pre></div></div>
+
+<p>WARNING: It’s very important here to use the <code class="language-plaintext highlighter-rouge">String</code> version of the class,
+rather than the class itself. If you were to use the class, Rails would attempt
+to load that class and then reference the related table. This could lead to
+problems if the table didn’t already exist. Therefore, a <code class="language-plaintext highlighter-rouge">String</code> should be
+used and then converted to a class using <code class="language-plaintext highlighter-rouge">constantize</code> in the engine later on.</p>
+
+<p>Go ahead and try to create a new article. You will see that it works exactly in the
+same way as before, except this time the engine is using the configuration
+setting in <code class="language-plaintext highlighter-rouge">config/initializers/blorgh.rb</code> to learn what the class is.</p>
+
+<p>There are now no strict dependencies on what the class is, only what the API for
+the class must be. The engine simply requires this class to define a
+<code class="language-plaintext highlighter-rouge">find_or_create_by</code> method which returns an object of that class, to be
+associated with an article when it’s created. This object, of course, should have
+some sort of identifier by which it can be referenced.</p>
+
+<h4 id="general-engine-configuration">General Engine Configuration</h4>
+
+<p>Within an engine, there may come a time where you wish to use things such as
+initializers, internationalization, or other configuration options. The great
+news is that these things are entirely possible, because a Rails engine shares
+much the same functionality as a Rails application. In fact, a Rails
+application’s functionality is actually a superset of what is provided by
+engines!</p>
+
+<p>If you wish to use an initializer - code that should run before the engine is
+loaded - the place for it is the <code class="language-plaintext highlighter-rouge">config/initializers</code> folder. This directory’s
+functionality is explained in the <a href="configuring.html#initializers">Initializers
+section</a> of the Configuring guide, and works
+precisely the same way as the <code class="language-plaintext highlighter-rouge">config/initializers</code> directory inside an
+application. The same thing goes if you want to use a standard initializer.</p>
+
+<p>For locales, simply place the locale files in the <code class="language-plaintext highlighter-rouge">config/locales</code> directory,
+just like you would in an application.</p>
+
+<h2 id="testing-an-engine">Testing an Engine</h2>
+
+<p>When an engine is generated, there is a smaller dummy application created inside
+it at <code class="language-plaintext highlighter-rouge">test/dummy</code>. This application is used as a mounting point for the engine,
+to make testing the engine extremely simple. You may extend this application by
+generating controllers, models, or views from within the directory, and then use
+those to test your engine.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">test</code> directory should be treated like a typical Rails testing environment,
+allowing for unit, functional, and integration tests.</p>
+
+<h3 id="functional-tests">Functional Tests</h3>
+
+<p>A matter worth taking into consideration when writing functional tests is that
+the tests are going to be running on an application - the <code class="language-plaintext highlighter-rouge">test/dummy</code>
+application - rather than your engine. This is due to the setup of the testing
+environment; an engine needs an application as a host for testing its main
+functionality, especially controllers. This means that if you were to make a
+typical <code class="language-plaintext highlighter-rouge">GET</code> to a controller in a controller’s functional test like this:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Blorgh</span>
+  <span class="k">class</span> <span class="nc">FooControllerTest</span> <span class="o">&lt;</span> <span class="no">ActionDispatch</span><span class="o">::</span><span class="no">IntegrationTest</span>
+    <span class="kp">include</span> <span class="no">Engine</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">url_helpers</span>
+
+    <span class="k">def</span> <span class="nf">test_index</span>
+      <span class="n">get</span> <span class="n">foos_url</span>
+      <span class="c1"># ...</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>It may not function correctly. This is because the application doesn’t know how
+to route these requests to the engine unless you explicitly tell it <strong>how</strong>. To
+do this, you must set the <code class="language-plaintext highlighter-rouge">@routes</code> instance variable to the engine’s route set
+in your setup code:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Blorgh</span>
+  <span class="k">class</span> <span class="nc">FooControllerTest</span> <span class="o">&lt;</span> <span class="no">ActionDispatch</span><span class="o">::</span><span class="no">IntegrationTest</span>
+    <span class="kp">include</span> <span class="no">Engine</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">url_helpers</span>
+
+    <span class="n">setup</span> <span class="k">do</span>
+      <span class="vi">@routes</span> <span class="o">=</span> <span class="no">Engine</span><span class="p">.</span><span class="nf">routes</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">test_index</span>
+      <span class="n">get</span> <span class="n">foos_url</span>
+      <span class="c1"># ...</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This tells the application that you still want to perform a <code class="language-plaintext highlighter-rouge">GET</code> request to the
+<code class="language-plaintext highlighter-rouge">index</code> action of this controller, but you want to use the engine’s route to get
+there, rather than the application’s one.</p>
+
+<p>This also ensures that the engine’s URL helpers will work as expected in your
+tests.</p>
+
+<h2 id="improving-engine-functionality">Improving Engine Functionality</h2>
+
+<p>This section explains how to add and/or override engine MVC functionality in the
+main Rails application.</p>
+
+<h3 id="overriding-models-and-controllers">Overriding Models and Controllers</h3>
+
+<p>Engine models and controllers can be reopened by the parent application to extend or decorate them.</p>
+
+<p>Overrides may be organized in a dedicated directory <code class="language-plaintext highlighter-rouge">app/overrides</code>, ignored by the autoloader, and preloaded in a <code class="language-plaintext highlighter-rouge">to_prepare</code> callback:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># config/application.rb</span>
+<span class="k">module</span> <span class="nn">MyApp</span>
+  <span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="no">Rails</span><span class="o">::</span><span class="no">Application</span>
+    <span class="c1"># ...</span>
+
+    <span class="n">overrides</span> <span class="o">=</span> <span class="s2">"</span><span class="si">#{</span><span class="no">Rails</span><span class="p">.</span><span class="nf">root</span><span class="si">}</span><span class="s2">/app/overrides"</span>
+    <span class="no">Rails</span><span class="p">.</span><span class="nf">autoloaders</span><span class="p">.</span><span class="nf">main</span><span class="p">.</span><span class="nf">ignore</span><span class="p">(</span><span class="n">overrides</span><span class="p">)</span>
+
+    <span class="n">config</span><span class="p">.</span><span class="nf">to_prepare</span> <span class="k">do</span>
+      <span class="no">Dir</span><span class="p">.</span><span class="nf">glob</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">overrides</span><span class="si">}</span><span class="s2">/**/*_override.rb"</span><span class="p">).</span><span class="nf">sort</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">override</span><span class="o">|</span>
+        <span class="nb">load</span> <span class="n">override</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h4 id="reopening-existing-classes-using-class_eval">Reopening Existing Classes Using <code class="language-plaintext highlighter-rouge">class_eval</code></h4>
+
+<p>For example, in order to override the engine model</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Blorgh/app/models/blorgh/article.rb</span>
+<span class="k">module</span> <span class="nn">Blorgh</span>
+  <span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>you just create a file that <em>reopens</em> that class:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># MyApp/app/overrides/models/blorgh/article_override.rb</span>
+<span class="no">Blorgh</span><span class="o">::</span><span class="no">Article</span><span class="p">.</span><span class="nf">class_eval</span> <span class="k">do</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>It is very important that the override <em>reopens</em> the class or module. Using the <code class="language-plaintext highlighter-rouge">class</code> or <code class="language-plaintext highlighter-rouge">module</code> keywords would define them if they were not already in memory, which would be incorrect because the definition lives in the engine. Using <code class="language-plaintext highlighter-rouge">class_eval</code> as shown above ensures you are reopening.</p>
+
+<h4 id="reopening-existing-classes-using-activesupportconcern">Reopening Existing Classes Using ActiveSupport::Concern</h4>
+
+<p>Using <code class="language-plaintext highlighter-rouge">Class#class_eval</code> is great for simple adjustments, but for more complex
+class modifications, you might want to consider using [<code class="language-plaintext highlighter-rouge">ActiveSupport::Concern</code>]
+(https://api.rubyonrails.org/classes/ActiveSupport/Concern.html).
+ActiveSupport::Concern manages load order of interlinked dependent modules and
+classes at run time allowing you to significantly modularize your code.</p>
+
+<p><strong>Adding</strong> <code class="language-plaintext highlighter-rouge">Article#time_since_created</code> and <strong>Overriding</strong> <code class="language-plaintext highlighter-rouge">Article#summary</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># MyApp/app/models/blorgh/article.rb</span>
+
+<span class="k">class</span> <span class="nc">Blorgh::Article</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="kp">include</span> <span class="no">Blorgh</span><span class="o">::</span><span class="no">Concerns</span><span class="o">::</span><span class="no">Models</span><span class="o">::</span><span class="no">Article</span>
+
+  <span class="k">def</span> <span class="nf">time_since_created</span>
+    <span class="no">Time</span><span class="p">.</span><span class="nf">current</span> <span class="o">-</span> <span class="n">created_at</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">summary</span>
+    <span class="s2">"</span><span class="si">#{</span><span class="n">title</span><span class="si">}</span><span class="s2"> - </span><span class="si">#{</span><span class="n">truncate</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Blorgh/app/models/blorgh/article.rb</span>
+<span class="k">module</span> <span class="nn">Blorgh</span>
+  <span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+    <span class="kp">include</span> <span class="no">Blorgh</span><span class="o">::</span><span class="no">Concerns</span><span class="o">::</span><span class="no">Models</span><span class="o">::</span><span class="no">Article</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Blorgh/lib/concerns/models/article.rb</span>
+
+<span class="k">module</span> <span class="nn">Blorgh::Concerns::Models::Article</span>
+  <span class="kp">extend</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Concern</span>
+
+  <span class="c1"># `included do` causes the block to be evaluated in the context</span>
+  <span class="c1"># in which the module is included (i.e. Blorgh::Article),</span>
+  <span class="c1"># rather than in the module itself.</span>
+  <span class="n">included</span> <span class="k">do</span>
+    <span class="nb">attr_accessor</span> <span class="ss">:author_name</span>
+    <span class="n">belongs_to</span> <span class="ss">:author</span><span class="p">,</span> <span class="ss">class_name: </span><span class="s2">"User"</span>
+
+    <span class="n">before_validation</span> <span class="ss">:set_author</span>
+
+    <span class="kp">private</span>
+      <span class="k">def</span> <span class="nf">set_author</span>
+        <span class="nb">self</span><span class="p">.</span><span class="nf">author</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_or_create_by</span><span class="p">(</span><span class="ss">name: </span><span class="n">author_name</span><span class="p">)</span>
+      <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">summary</span>
+    <span class="s2">"</span><span class="si">#{</span><span class="n">title</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+
+  <span class="k">module</span> <span class="nn">ClassMethods</span>
+    <span class="k">def</span> <span class="nf">some_class_method</span>
+      <span class="s2">"some class method string"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="autoloading-and-engines">Autoloading and Engines</h3>
+
+<p>Please check the <a href="autoloading_and_reloading_constants.html#autoloading-and-engines">Autoloading and Reloading Constants</a>
+guide for more information about autoloading and engines.</p>
+
+<h3 id="overriding-views">Overriding Views</h3>
+
+<p>When Rails looks for a view to render, it will first look in the <code class="language-plaintext highlighter-rouge">app/views</code>
+directory of the application. If it cannot find the view there, it will check in
+the <code class="language-plaintext highlighter-rouge">app/views</code> directories of all engines that have this directory.</p>
+
+<p>When the application is asked to render the view for <code class="language-plaintext highlighter-rouge">Blorgh::ArticlesController</code>’s
+index action, it will first look for the path
+<code class="language-plaintext highlighter-rouge">app/views/blorgh/articles/index.html.erb</code> within the application. If it cannot
+find it, it will look inside the engine.</p>
+
+<p>You can override this view in the application by simply creating a new file at
+<code class="language-plaintext highlighter-rouge">app/views/blorgh/articles/index.html.erb</code>. Then you can completely change what
+this view would normally output.</p>
+
+<p>Try this now by creating a new file at <code class="language-plaintext highlighter-rouge">app/views/blorgh/articles/index.html.erb</code>
+and put this content in it:</p>
+
+<pre><code class="language-html+erb">&lt;h1&gt;Articles&lt;/h1&gt;
+&lt;%= link_to "New Article", new_article_path %&gt;
+&lt;% @articles.each do |article| %&gt;
+  &lt;h2&gt;&lt;%= article.title %&gt;&lt;/h2&gt;
+  &lt;small&gt;By &lt;%= article.author %&gt;&lt;/small&gt;
+  &lt;%= simple_format(article.text) %&gt;
+  &lt;hr&gt;
+&lt;% end %&gt;
+</code></pre>
+
+<h3 id="routes">Routes</h3>
+
+<p>Routes inside an engine are isolated from the application by default. This is
+done by the <code class="language-plaintext highlighter-rouge">isolate_namespace</code> call inside the <code class="language-plaintext highlighter-rouge">Engine</code> class. This essentially
+means that the application and its engines can have identically named routes and
+they will not clash.</p>
+
+<p>Routes inside an engine are drawn on the <code class="language-plaintext highlighter-rouge">Engine</code> class within
+<code class="language-plaintext highlighter-rouge">config/routes.rb</code>, like this:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Blorgh</span><span class="o">::</span><span class="no">Engine</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+  <span class="n">resources</span> <span class="ss">:articles</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>By having isolated routes such as this, if you wish to link to an area of an
+engine from within an application, you will need to use the engine’s routing
+proxy method. Calls to normal routing methods such as <code class="language-plaintext highlighter-rouge">articles_path</code> may end up
+going to undesired locations if both the application and the engine have such a
+helper defined.</p>
+
+<p>For instance, the following example would go to the application’s <code class="language-plaintext highlighter-rouge">articles_path</code>
+if that template was rendered from the application, or the engine’s <code class="language-plaintext highlighter-rouge">articles_path</code>
+if it was rendered from the engine:</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Blog articles"</span><span class="p">,</span> <span class="n">articles_path</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>To make this route always use the engine’s <code class="language-plaintext highlighter-rouge">articles_path</code> routing helper method,
+we must call the method on the routing proxy method that shares the same name as
+the engine.</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Blog articles"</span><span class="p">,</span> <span class="n">blorgh</span><span class="p">.</span><span class="nf">articles_path</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>If you wish to reference the application inside the engine in a similar way, use
+the <code class="language-plaintext highlighter-rouge">main_app</code> helper:</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">"Home"</span><span class="p">,</span> <span class="n">main_app</span><span class="p">.</span><span class="nf">root_path</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>If you were to use this inside an engine, it would <strong>always</strong> go to the
+application’s root. If you were to leave off the <code class="language-plaintext highlighter-rouge">main_app</code> “routing proxy”
+method call, it could potentially go to the engine’s or application’s root,
+depending on where it was called from.</p>
+
+<p>If a template rendered from within an engine attempts to use one of the
+application’s routing helper methods, it may result in an undefined method call.
+If you encounter such an issue, ensure that you’re not attempting to call the
+application’s routing methods without the <code class="language-plaintext highlighter-rouge">main_app</code> prefix from within the
+engine.</p>
+
+<h3 id="assets">Assets</h3>
+
+<p>Assets within an engine work in an identical way to a full application. Because
+the engine class inherits from <code class="language-plaintext highlighter-rouge">Rails::Engine</code>, the application will know to
+look up assets in the engine’s <code class="language-plaintext highlighter-rouge">app/assets</code> and <code class="language-plaintext highlighter-rouge">lib/assets</code> directories.</p>
+
+<p>Like all of the other components of an engine, the assets should be namespaced.
+This means that if you have an asset called <code class="language-plaintext highlighter-rouge">style.css</code>, it should be placed at
+<code class="language-plaintext highlighter-rouge">app/assets/stylesheets/[engine name]/style.css</code>, rather than
+<code class="language-plaintext highlighter-rouge">app/assets/stylesheets/style.css</code>. If this asset isn’t namespaced, there is a
+possibility that the host application could have an asset named identically, in
+which case the application’s asset would take precedence and the engine’s one
+would be ignored.</p>
+
+<p>Imagine that you did have an asset located at
+<code class="language-plaintext highlighter-rouge">app/assets/stylesheets/blorgh/style.css</code>. To include this asset inside an
+application, just use <code class="language-plaintext highlighter-rouge">stylesheet_link_tag</code> and reference the asset as if it
+were inside the engine:</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s2">"blorgh/style.css"</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>You can also specify these assets as dependencies of other assets using Asset
+Pipeline require statements in processed files:</p>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">/*
+ *= require blorgh/style
+ */</span>
+</code></pre></div></div>
+
+<p>INFO. Remember that in order to use languages like Sass or CoffeeScript, you
+should add the relevant library to your engine’s <code class="language-plaintext highlighter-rouge">.gemspec</code>.</p>
+
+<h3 id="separate-assets-and-precompiling">Separate Assets and Precompiling</h3>
+
+<p>There are some situations where your engine’s assets are not required by the
+host application. For example, say that you’ve created an admin functionality
+that only exists for your engine. In this case, the host application doesn’t
+need to require <code class="language-plaintext highlighter-rouge">admin.css</code> or <code class="language-plaintext highlighter-rouge">admin.js</code>. Only the gem’s admin layout needs
+these assets. It doesn’t make sense for the host app to include
+<code class="language-plaintext highlighter-rouge">"blorgh/admin.css"</code> in its stylesheets. In this situation, you should
+explicitly define these assets for precompilation.  This tells Sprockets to add
+your engine assets when <code class="language-plaintext highlighter-rouge">bin/rails assets:precompile</code> is triggered.</p>
+
+<p>You can define assets for precompilation in <code class="language-plaintext highlighter-rouge">engine.rb</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">initializer</span> <span class="s2">"blorgh.assets.precompile"</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
+  <span class="n">app</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">precompile</span> <span class="o">+=</span> <span class="sx">%w( admin.js admin.css )</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>For more information, read the <a href="asset_pipeline.html">Asset Pipeline guide</a>.</p>
+
+<h3 id="other-gem-dependencies">Other Gem Dependencies</h3>
+
+<p>Gem dependencies inside an engine should be specified inside the <code class="language-plaintext highlighter-rouge">.gemspec</code> file
+at the root of the engine. The reason is that the engine may be installed as a
+gem. If dependencies were to be specified inside the <code class="language-plaintext highlighter-rouge">Gemfile</code>, these would not
+be recognized by a traditional gem install and so they would not be installed,
+causing the engine to malfunction.</p>
+
+<p>To specify a dependency that should be installed with the engine during a
+traditional <code class="language-plaintext highlighter-rouge">gem install</code>, specify it inside the <code class="language-plaintext highlighter-rouge">Gem::Specification</code> block
+inside the <code class="language-plaintext highlighter-rouge">.gemspec</code> file in the engine:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">s</span><span class="p">.</span><span class="nf">add_dependency</span> <span class="s2">"moo"</span>
+</code></pre></div></div>
+
+<p>To specify a dependency that should only be installed as a development
+dependency of the application, specify it like this:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">s</span><span class="p">.</span><span class="nf">add_development_dependency</span> <span class="s2">"moo"</span>
+</code></pre></div></div>
+
+<p>Both kinds of dependencies will be installed when <code class="language-plaintext highlighter-rouge">bundle install</code> is run inside
+of the application. The development dependencies for the gem will only be used
+when the development and tests for the engine are running.</p>
+
+<p>Note that if you want to immediately require dependencies when the engine is
+required, you should require them before the engine’s initialization. For
+example:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"other_engine/engine"</span>
+<span class="nb">require</span> <span class="s2">"yet_another_engine/engine"</span>
+
+<span class="k">module</span> <span class="nn">MyEngine</span>
+  <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+        </div>
+
+        <footer class="guide-footer">
+            <div class="feedback">
+                <h3>Geri Bildirim</h3>
+                <p>Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri bildirimlerinizi bekliyoruz.</p>
+                <p>Lütfen <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub Issues</a> üzerinden katkıda bulunun.</p>
+            </div>
+        </footer>
+    </article>
+</div>
+
+<script>
+// İçindekiler tablosunu otomatik oluştur
+document.addEventListener('DOMContentLoaded', function() {
+    const toc = document.getElementById('toc');
+    const headings = document.querySelectorAll('.guide-content h2, .guide-content h3, .guide-content h4');
+    
+    if (headings.length > 0) {
+        const tocList = document.createElement('ul');
+        
+        headings.forEach(function(heading, index) {
+            const id = 'heading-' + index;
+            heading.id = id;
+            
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.textContent = heading.textContent;
+            a.className = 'toc-' + heading.tagName.toLowerCase();
+            
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+        
+        toc.appendChild(tocList);
+    }
+});
+</script>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Rails Kılavuzları Türkçe Çevirisi. Gönüllüler tarafından hazırlanmıştır.</p>
+            <p>Orijinal dokümantasyon <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine aittir.</p>
+        </div>
+    </footer>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

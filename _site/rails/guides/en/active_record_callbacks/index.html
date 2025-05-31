@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Active Record Callbacks - Rails Dokümantasyonu - Türkçe</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <a href="/">Rails Kılavuzları</a>
+                </h1>
+                <nav class="nav">
+                    <a href="/">Ana Sayfa</a>
+                    <a href="https://dilankaya127.github.io">Portföy</a>
+                    <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="guide-container">
+    <aside class="guide-sidebar">
+        <div class="guide-toc">
+            <h3>İçindekiler</h3>
+            <div id="toc"></div>
+        </div>
+        
+        <div class="guide-nav">
+            <h3>Diğer Kılavuzlar</h3>
+            <ul>
+                <li><a href="/rails/guides/tr/getting_started">Rails ile Başlarken</a></li>
+                <li><a href="/rails/guides/en/active_record_basics">Active Record Temelleri</a></li>
+                <li><a href="/rails/guides//en/action_controller_overview">Action Controller</a></li>
+                <li><a href="/rails/guides/tr/action_cable_overview">Action Cable</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <article class="guide-content">
+        <header class="guide-header">
+            <h1>Active Record Callbacks</h1>
+            
+        </header>
+
+        <div class="guide-body">
+            <p><strong>DO NOT READ THIS FILE ON GITHUB, GUIDES ARE PUBLISHED ON <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a>.</strong></p>
+
+<h1 id="active-record-callbacks">Active Record Callbacks</h1>
+
+<p>This guide teaches you how to hook into the life cycle of your Active Record
+objects.</p>
+
+<p>After reading this guide, you will know:</p>
+
+<ul>
+  <li>When certain events occur during the life of an Active Record object.</li>
+  <li>How to register, run, and skip callbacks that respond to these events.</li>
+  <li>How to create relational, association, conditional, and transactional
+callbacks.</li>
+  <li>How to create objects that encapsulate common behavior for your callbacks to
+be reused.</li>
+</ul>
+
+<hr />
+
+<h2 id="the-object-life-cycle">The Object Life Cycle</h2>
+
+<p>During the normal operation of a Rails application, objects may be <a href="active_record_basics.html#crud-reading-and-writing-data">created,
+updated, and
+destroyed</a>. Active
+Record provides hooks into this object life cycle so that you can control your
+application and its data.</p>
+
+<p>Callbacks allow you to trigger logic before or after a change to an object’s
+state. They are methods that get called at certain moments of an object’s life
+cycle. With callbacks it is possible to write code that will run whenever an
+Active Record object is initialized, created, saved, updated, deleted,
+validated, or loaded from the database.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BirthdayCake</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_create</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Congratulations, the callback has run!"</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="no">BirthdayCake</span><span class="p">.</span><span class="nf">create</span>
+<span class="go">Congratulations, the callback has run!
+</span></code></pre></div></div>
+
+<p>As you will see, there are many life cycle events and multiple options to hook
+into these — either before, after, or even around them.</p>
+
+<h2 id="callback-registration">Callback Registration</h2>
+
+<p>To use the available callbacks, you need to implement and register them.
+Implementation can be done in a multitude of ways like using ordinary methods,
+blocks and procs, or defining custom callback objects using classes or modules.
+Let’s go through each of these implementation techniques.</p>
+
+<p>You can register the callbacks with a <strong>macro-style class method that calls an
+ordinary method</strong> for implementation.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">validates</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
+
+  <span class="n">before_validation</span> <span class="ss">:ensure_username_has_value</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">ensure_username_has_value</span>
+      <span class="k">if</span> <span class="n">username</span><span class="p">.</span><span class="nf">blank?</span>
+        <span class="nb">self</span><span class="p">.</span><span class="nf">username</span> <span class="o">=</span> <span class="n">email</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The <strong>macro-style class methods can also receive a block</strong>. Consider using this
+style if the code inside your block is so short that it fits in a single line:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">validates</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
+
+  <span class="n">before_validation</span> <span class="k">do</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">username</span> <span class="o">=</span> <span class="n">email</span> <span class="k">if</span> <span class="n">username</span><span class="p">.</span><span class="nf">blank?</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Alternatively, you can <strong>pass a proc to the callback</strong> to be triggered.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">validates</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
+
+  <span class="n">before_validation</span> <span class="o">-&gt;</span><span class="p">(</span><span class="n">user</span><span class="p">)</span> <span class="p">{</span> <span class="n">user</span><span class="p">.</span><span class="nf">username</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">email</span> <span class="k">if</span> <span class="n">user</span><span class="p">.</span><span class="nf">username</span><span class="p">.</span><span class="nf">blank?</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Lastly, you can define <a href="#callback-objects"><strong>a custom callback object</strong></a>, as
+shown below. We will cover these later in more detail.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">validates</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
+
+  <span class="n">before_validation</span> <span class="no">AddUsername</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">AddUsername</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">before_validation</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">record</span><span class="p">.</span><span class="nf">username</span><span class="p">.</span><span class="nf">blank?</span>
+      <span class="n">record</span><span class="p">.</span><span class="nf">username</span> <span class="o">=</span> <span class="n">record</span><span class="p">.</span><span class="nf">email</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="registering-callbacks-to-fire-on-life-cycle-events">Registering Callbacks to Fire on Life Cycle Events</h3>
+
+<p>Callbacks can also be registered to only fire on certain life cycle events, this
+can be done using the <code class="language-plaintext highlighter-rouge">:on</code> option and allows complete control over when and in
+what context your callbacks are triggered.</p>
+
+<p>NOTE: A context is like a category or a scenario in which you want certain
+validations to apply. When you validate an ActiveRecord model, you can specify a
+context to group validations. This allows you to have different sets of
+validations that apply in different situations. In Rails, there are certain
+default contexts for validations like :create, :update, and :save.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">validates</span> <span class="ss">:username</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
+
+  <span class="n">before_validation</span> <span class="ss">:ensure_username_has_value</span><span class="p">,</span> <span class="ss">on: :create</span>
+
+  <span class="c1"># :on takes an array as well</span>
+  <span class="n">after_validation</span> <span class="ss">:set_location</span><span class="p">,</span> <span class="ss">on: </span><span class="p">[</span> <span class="ss">:create</span><span class="p">,</span> <span class="ss">:update</span> <span class="p">]</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">ensure_username_has_value</span>
+      <span class="k">if</span> <span class="n">username</span><span class="p">.</span><span class="nf">blank?</span>
+        <span class="nb">self</span><span class="p">.</span><span class="nf">username</span> <span class="o">=</span> <span class="n">email</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">set_location</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">location</span> <span class="o">=</span> <span class="no">LocationService</span><span class="p">.</span><span class="nf">query</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>NOTE: It is considered good practice to declare callback methods as private. If
+left public, they can be called from outside of the model and violate the
+principle of object encapsulation.</p>
+
+<p>WARNING. Refrain from using methods like <code class="language-plaintext highlighter-rouge">update</code>, <code class="language-plaintext highlighter-rouge">save</code>, or any other methods
+that cause side effects on the object within your callback methods. <br /><br />
+For instance, avoid calling <code class="language-plaintext highlighter-rouge">update(attribute: "value")</code> inside a callback. This
+practice can modify the model’s state and potentially lead to unforeseen side
+effects during commit. <br /><br /> Instead, you can assign values directly (e.g.,
+<code class="language-plaintext highlighter-rouge">self.attribute = "value"</code>) in <code class="language-plaintext highlighter-rouge">before_create</code>, <code class="language-plaintext highlighter-rouge">before_update</code>, or earlier
+callbacks for a safer approach.</p>
+
+<h2 id="available-callbacks">Available Callbacks</h2>
+
+<p>Here is a list with all the available Active Record callbacks, listed <strong>in the
+order in which they will get called</strong> during the respective operations:</p>
+
+<h3 id="creating-an-object">Creating an Object</h3>
+
+<ul>
+  <li>[<code class="language-plaintext highlighter-rouge">before_validation</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">after_validation</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">before_save</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">around_save</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">before_create</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">around_create</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">after_create</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">after_save</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">after_commit</code>][] / [<code class="language-plaintext highlighter-rouge">after_rollback</code>][]</li>
+</ul>
+
+<p>See the <a href="active_record_callbacks.html#after-commit-and-after-rollback"><code class="language-plaintext highlighter-rouge">after_commit</code> / <code class="language-plaintext highlighter-rouge">after_rollback</code>
+section</a> for
+examples using these two callbacks.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">after_create</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-after_create
+[<code class="language-plaintext highlighter-rouge">after_commit</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html#method-i-after_commit
+[<code class="language-plaintext highlighter-rouge">after_rollback</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html#method-i-after_rollback
+[<code class="language-plaintext highlighter-rouge">after_save</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-after_save
+[<code class="language-plaintext highlighter-rouge">after_validation</code>]:
+    https://api.rubyonrails.org/classes/ActiveModel/Validations/Callbacks/ClassMethods.html#method-i-after_validation
+[<code class="language-plaintext highlighter-rouge">around_create</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-around_create
+[<code class="language-plaintext highlighter-rouge">around_save</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-around_save
+[<code class="language-plaintext highlighter-rouge">before_create</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-before_create
+[<code class="language-plaintext highlighter-rouge">before_save</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-before_save
+[<code class="language-plaintext highlighter-rouge">before_validation</code>]:
+    https://api.rubyonrails.org/classes/ActiveModel/Validations/Callbacks/ClassMethods.html#method-i-before_validation</p>
+
+<p>There are examples below that show how to use these callbacks. We’ve grouped
+them by the operation they are associated with, and lastly show how they can be
+used in combination.</p>
+
+<h4 id="validation-callbacks">Validation Callbacks</h4>
+
+<p>Validation callbacks are triggered whenever the record is validated directly via
+the
+<a href="https://api.rubyonrails.org/classes/ActiveModel/Validations.html#method-i-valid-3F"><code class="language-plaintext highlighter-rouge">valid?</code></a>
+( or its alias
+<a href="https://api.rubyonrails.org/classes/ActiveModel/Validations.html#method-i-validate"><code class="language-plaintext highlighter-rouge">validate</code></a>)
+or
+<a href="https://api.rubyonrails.org/classes/ActiveModel/Validations.html#method-i-invalid-3F"><code class="language-plaintext highlighter-rouge">invalid?</code></a>
+method, or indirectly via <code class="language-plaintext highlighter-rouge">create</code>, <code class="language-plaintext highlighter-rouge">update</code>, or <code class="language-plaintext highlighter-rouge">save</code>. They are called before
+and after the validation phase.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
+  <span class="n">before_validation</span> <span class="ss">:titleize_name</span>
+  <span class="n">after_validation</span> <span class="ss">:log_errors</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">titleize_name</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">name</span> <span class="o">=</span> <span class="nb">name</span><span class="p">.</span><span class="nf">downcase</span><span class="p">.</span><span class="nf">titleize</span> <span class="k">if</span> <span class="nb">name</span><span class="p">.</span><span class="nf">present?</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Name titleized to </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">log_errors</span>
+      <span class="k">if</span> <span class="n">errors</span><span class="p">.</span><span class="nf">any?</span>
+        <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="s2">"Validation failed: </span><span class="si">#{</span><span class="n">errors</span><span class="p">.</span><span class="nf">full_messages</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s1">', '</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="s2">""</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"john.doe@example.com"</span><span class="p">,</span> <span class="ss">password: </span><span class="s2">"abc123456"</span><span class="p">)</span>
+<span class="gp">=&gt; #&lt;User id: nil, email: "john.doe@example.com", created_at: nil, updated_at: nil, name: ""&gt;</span><span class="w">
+</span><span class="err">
+</span><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="nf">valid?</span>
+<span class="go">Name titleized to
+Validation failed: Name can't be blank
+</span><span class="p">=&gt;</span> <span class="kp">false</span>
+</code></pre></div></div>
+
+<h4 id="save-callbacks">Save Callbacks</h4>
+
+<p>Save callbacks are triggered whenever the record is persisted (i.e. “saved”) to
+the underlying database, via the <code class="language-plaintext highlighter-rouge">create</code>, <code class="language-plaintext highlighter-rouge">update</code>, or <code class="language-plaintext highlighter-rouge">save</code> methods. They are
+called before, after, and around the object is saved.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">before_save</span> <span class="ss">:hash_password</span>
+  <span class="n">around_save</span> <span class="ss">:log_saving</span>
+  <span class="n">after_save</span> <span class="ss">:update_cache</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">hash_password</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">password_digest</span> <span class="o">=</span> <span class="no">BCrypt</span><span class="o">::</span><span class="no">Password</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Password hashed for user with email: </span><span class="si">#{</span><span class="n">email</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">log_saving</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Saving user with email: </span><span class="si">#{</span><span class="n">email</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+      <span class="k">yield</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"User saved with email: </span><span class="si">#{</span><span class="n">email</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">update_cache</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">cache</span><span class="p">.</span><span class="nf">write</span><span class="p">([</span><span class="s2">"user_data"</span><span class="p">,</span> <span class="nb">self</span><span class="p">],</span> <span class="n">attributes</span><span class="p">)</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Update Cache"</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Jane Doe"</span><span class="p">,</span> <span class="ss">password: </span><span class="s2">"password"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"jane.doe@example.com"</span><span class="p">)</span>
+<span class="err">
+</span><span class="go">Password hashed for user with email: jane.doe@example.com
+Saving user with email: jane.doe@example.com
+User saved with email: jane.doe@example.com
+Update Cache
+</span><span class="gp">=&gt; #&lt;User id: 1, email: "jane.doe@example.com", created_at: "2024-03-20 16:02:43.685500000 +0000", updated_at: "2024-03-20 16:02:43.685500000 +0000", name: "Jane Doe"&gt;</span><span class="w">
+</span></code></pre></div></div>
+
+<h4 id="create-callbacks">Create Callbacks</h4>
+
+<p>Create callbacks are triggered whenever the record is persisted (i.e. “saved”)
+to the underlying database <strong>for the first time</strong> — in other words, when we’re
+saving a new record, via the <code class="language-plaintext highlighter-rouge">create</code> or <code class="language-plaintext highlighter-rouge">save</code> methods. They are called before,
+after and around the object is created.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">before_create</span> <span class="ss">:set_default_role</span>
+  <span class="n">around_create</span> <span class="ss">:log_creation</span>
+  <span class="n">after_create</span> <span class="ss">:send_welcome_email</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">set_default_role</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">role</span> <span class="o">=</span> <span class="s2">"user"</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"User role set to default: user"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">log_creation</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Creating user with email: </span><span class="si">#{</span><span class="n">email</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+      <span class="k">yield</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"User created with email: </span><span class="si">#{</span><span class="n">email</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">send_welcome_email</span>
+      <span class="no">UserMailer</span><span class="p">.</span><span class="nf">welcome_email</span><span class="p">(</span><span class="nb">self</span><span class="p">).</span><span class="nf">deliver_later</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"User welcome email sent to: </span><span class="si">#{</span><span class="n">email</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"John Doe"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"john.doe@example.com"</span><span class="p">)</span>
+<span class="err">
+</span><span class="go">User role set to default: user
+Creating user with email: john.doe@example.com
+User created with email: john.doe@example.com
+User welcome email sent to: john.doe@example.com
+</span><span class="gp">=&gt; #&lt;User id: 10, email: "john.doe@example.com", created_at: "2024-03-20 16:19:52.405195000 +0000", updated_at: "2024-03-20 16:19:52.405195000 +0000", name: "John Doe"&gt;</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="updating-an-object">Updating an Object</h3>
+
+<p>Update callbacks are triggered whenever an <strong>existing</strong> record is persisted
+(i.e. “saved”) to the underlying database. They are called before, after and
+around the object is updated.</p>
+
+<ul>
+  <li>[<code class="language-plaintext highlighter-rouge">before_validation</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">after_validation</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">before_save</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">around_save</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">before_update</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">around_update</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">after_update</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">after_save</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">after_commit</code>][] / [<code class="language-plaintext highlighter-rouge">after_rollback</code>][]</li>
+</ul>
+
+<p>[<code class="language-plaintext highlighter-rouge">after_update</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-after_update
+[<code class="language-plaintext highlighter-rouge">around_update</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-around_update
+[<code class="language-plaintext highlighter-rouge">before_update</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-before_update</p>
+
+<p>WARNING: The <code class="language-plaintext highlighter-rouge">after_save</code> callback is triggered on both create and update
+operations. However, it consistently executes after the more specific callbacks
+<code class="language-plaintext highlighter-rouge">after_create</code> and <code class="language-plaintext highlighter-rouge">after_update</code>, regardless of the sequence in which the macro
+calls were made. Similarly, before and around save callbacks follow the same
+rule: <code class="language-plaintext highlighter-rouge">before_save</code> runs before create/update, and <code class="language-plaintext highlighter-rouge">around_save</code> runs around
+create/update operations. It’s important to note that save callbacks will always
+run before/around/after the more specific create/update callbacks.</p>
+
+<p>We’ve already covered <a href="#validation-callbacks">validation</a> and
+<a href="#save-callbacks">save</a> callbacks. See the <a href="#after-commit-and-after-rollback"><code class="language-plaintext highlighter-rouge">after_commit</code> /
+<code class="language-plaintext highlighter-rouge">after_rollback</code> section</a> for examples using
+these two callbacks.</p>
+
+<h4 id="update-callbacks">Update Callbacks</h4>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">before_update</span> <span class="ss">:check_role_change</span>
+  <span class="n">around_update</span> <span class="ss">:log_updating</span>
+  <span class="n">after_update</span> <span class="ss">:send_update_email</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">check_role_change</span>
+      <span class="k">if</span> <span class="n">role_changed?</span>
+        <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"User role changed to </span><span class="si">#{</span><span class="n">role</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">log_updating</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Updating user with email: </span><span class="si">#{</span><span class="n">email</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+      <span class="k">yield</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"User updated with email: </span><span class="si">#{</span><span class="n">email</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">send_update_email</span>
+      <span class="no">UserMailer</span><span class="p">.</span><span class="nf">update_email</span><span class="p">(</span><span class="nb">self</span><span class="p">).</span><span class="nf">deliver_later</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Update email sent to: </span><span class="si">#{</span><span class="n">email</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"john.doe@example.com"</span><span class="p">,</span> <span class="ss">created_at: </span><span class="s2">"2024-03-20 16:19:52.405195000 +0000"</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="s2">"2024-03-20 16:19:52.405195000 +0000"</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"John Doe"</span><span class="p">,</span> <span class="ss">role: </span><span class="s2">"user"</span> <span class="kt">&gt;</span>
+
+<span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="nf">update</span><span class="p">(</span><span class="ss">role: </span><span class="s2">"admin"</span><span class="p">)</span>
+<span class="go">User role changed to admin
+Updating user with email: john.doe@example.com
+User updated with email: john.doe@example.com
+Update email sent to: john.doe@example.com
+</span></code></pre></div></div>
+
+<h4 id="using-a-combination-of-callbacks">Using a Combination of Callbacks</h4>
+
+<p>Often, you will need to use a combination of callbacks to achieve the desired
+behavior. For example, you may want to send a confirmation email after a user is
+created, but only if the user is new and not being updated. When a user is
+updated, you may want to notify an admin if critical information is changed. In
+this case, you can use <code class="language-plaintext highlighter-rouge">after_create</code> and <code class="language-plaintext highlighter-rouge">after_update</code> callbacks together.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_create</span> <span class="ss">:send_confirmation_email</span>
+  <span class="n">after_update</span> <span class="ss">:notify_admin_if_critical_info_updated</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">send_confirmation_email</span>
+      <span class="no">UserMailer</span><span class="p">.</span><span class="nf">confirmation_email</span><span class="p">(</span><span class="nb">self</span><span class="p">).</span><span class="nf">deliver_later</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Confirmation email sent to: </span><span class="si">#{</span><span class="n">email</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">notify_admin_if_critical_info_updated</span>
+      <span class="k">if</span> <span class="n">saved_change_to_email?</span> <span class="o">||</span> <span class="n">saved_change_to_phone_number?</span>
+        <span class="no">AdminMailer</span><span class="p">.</span><span class="nf">user_critical_info_updated</span><span class="p">(</span><span class="nb">self</span><span class="p">).</span><span class="nf">deliver_later</span>
+        <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Notification sent to admin about critical info update for: </span><span class="si">#{</span><span class="n">email</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"John Doe"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"john.doe@example.com"</span><span class="p">)</span>
+<span class="go">Confirmation email sent to: john.doe@example.com
+</span><span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"john.doe@example.com"</span><span class="p">,</span> <span class="o">...</span><span class="kt">&gt;</span>
+
+<span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="nf">update</span><span class="p">(</span><span class="ss">email: </span><span class="s2">"john.doe.new@example.com"</span><span class="p">)</span>
+<span class="go">Notification sent to admin about critical info update for: john.doe.new@example.com
+</span><span class="p">=&gt;</span> <span class="kp">true</span>
+</code></pre></div></div>
+
+<h3 id="destroying-an-object">Destroying an Object</h3>
+
+<p>Destroy callbacks are triggered whenever a record is destroyed, but ignored when
+a record is deleted. They are called before, after and around the object is
+destroyed.</p>
+
+<ul>
+  <li>[<code class="language-plaintext highlighter-rouge">before_destroy</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">around_destroy</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">after_destroy</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">after_commit</code>][] / [<code class="language-plaintext highlighter-rouge">after_rollback</code>][]</li>
+</ul>
+
+<p>[<code class="language-plaintext highlighter-rouge">after_destroy</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-after_destroy
+[<code class="language-plaintext highlighter-rouge">around_destroy</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-around_destroy
+[<code class="language-plaintext highlighter-rouge">before_destroy</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-before_destroy</p>
+
+<p>Find <a href="#after-commit-and-after-rollback">examples for using <code class="language-plaintext highlighter-rouge">after_commit</code> /
+<code class="language-plaintext highlighter-rouge">after_rollback</code></a>.</p>
+
+<h4 id="destroy-callbacks">Destroy Callbacks</h4>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">before_destroy</span> <span class="ss">:check_admin_count</span>
+  <span class="n">around_destroy</span> <span class="ss">:log_destroy_operation</span>
+  <span class="n">after_destroy</span> <span class="ss">:notify_users</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">check_admin_count</span>
+      <span class="k">if</span> <span class="n">admin?</span> <span class="o">&amp;&amp;</span> <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">role: </span><span class="s2">"admin"</span><span class="p">).</span><span class="nf">count</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="kp">throw</span> <span class="ss">:abort</span>
+      <span class="k">end</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Checked the admin count"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">log_destroy_operation</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"About to destroy user with ID </span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+      <span class="k">yield</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"User with ID </span><span class="si">#{</span><span class="nb">id</span><span class="si">}</span><span class="s2"> destroyed successfully"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">notify_users</span>
+      <span class="no">UserMailer</span><span class="p">.</span><span class="nf">deletion_email</span><span class="p">(</span><span class="nb">self</span><span class="p">).</span><span class="nf">deliver_later</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Notification sent to other users about user deletion"</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">=&gt; #&lt;User id: 1, email: "john.doe@example.com", created_at: "2024-03-20 16:19:52.405195000 +0000", updated_at: "2024-03-20 16:19:52.405195000 +0000", name: "John Doe", role: "admin"&gt;</span><span class="w">
+</span><span class="err">
+</span><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="nf">destroy</span>
+<span class="go">Checked the admin count
+About to destroy user with ID 1
+User with ID 1 destroyed successfully
+Notification sent to other users about user deletion
+</span></code></pre></div></div>
+
+<h3 id="after_initialize-and-after_find"><code class="language-plaintext highlighter-rouge">after_initialize</code> and <code class="language-plaintext highlighter-rouge">after_find</code></h3>
+
+<p>Whenever an Active Record object is instantiated, either by directly using <code class="language-plaintext highlighter-rouge">new</code>
+or when a record is loaded from the database, the [<code class="language-plaintext highlighter-rouge">after_initialize</code>][]
+callback will be called. It can be useful to avoid the need to directly override
+your Active Record <code class="language-plaintext highlighter-rouge">initialize</code> method.</p>
+
+<p>When loading a record from the database the [<code class="language-plaintext highlighter-rouge">after_find</code>][] callback will be
+called. <code class="language-plaintext highlighter-rouge">after_find</code> is called before <code class="language-plaintext highlighter-rouge">after_initialize</code> if both are defined.</p>
+
+<p>NOTE: The <code class="language-plaintext highlighter-rouge">after_initialize</code> and <code class="language-plaintext highlighter-rouge">after_find</code> callbacks have no <code class="language-plaintext highlighter-rouge">before_*</code>
+counterparts.</p>
+
+<p>They can be registered just like the other Active Record callbacks.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_initialize</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
+    <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"You have initialized an object!"</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">after_find</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
+    <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"You have found an object!"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="no">User</span><span class="p">.</span><span class="nf">new</span>
+<span class="go">You have initialized an object!
+</span><span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="kp">nil</span><span class="kt">&gt;</span>
+
+<span class="gp">irb&gt;</span><span class="w"> </span><span class="no">User</span><span class="p">.</span><span class="nf">first</span>
+<span class="go">You have found an object!
+You have initialized an object!
+</span><span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="kt">&gt;</span>
+</code></pre></div></div>
+
+<p>[<code class="language-plaintext highlighter-rouge">after_find</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-after_find
+[<code class="language-plaintext highlighter-rouge">after_initialize</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-after_initialize</p>
+
+<h3 id="after_touch"><code class="language-plaintext highlighter-rouge">after_touch</code></h3>
+
+<p>The [<code class="language-plaintext highlighter-rouge">after_touch</code>][] callback will be called whenever an Active Record object
+is touched. You can <a href="https://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-touch">read more about <code class="language-plaintext highlighter-rouge">touch</code> in the API
+docs</a>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_touch</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
+    <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"You have touched an object"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Kuldeep"</span><span class="p">)</span>
+<span class="gp">=&gt; #&lt;User id: 1, name: "Kuldeep", created_at: "2013-11-25 12:17:49", updated_at: "2013-11-25 12:17:49"&gt;</span><span class="w">
+</span><span class="err">
+</span><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="nf">touch</span>
+<span class="go">You have touched an object
+</span><span class="p">=&gt;</span> <span class="kp">true</span>
+</code></pre></div></div>
+
+<p>It can be used along with <code class="language-plaintext highlighter-rouge">belongs_to</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">belongs_to</span> <span class="ss">:library</span><span class="p">,</span> <span class="ss">touch: </span><span class="kp">true</span>
+  <span class="n">after_touch</span> <span class="k">do</span>
+    <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"A Book was touched"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Library</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:books</span>
+  <span class="n">after_touch</span> <span class="ss">:log_when_books_or_library_touched</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">log_when_books_or_library_touched</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Book/Library was touched"</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">last</span>
+<span class="gp">=&gt; #&lt;Book id: 1, library_id: 1, created_at: "2013-11-25 17:04:22", updated_at: "2013-11-25 17:05:05"&gt;</span><span class="w">
+</span><span class="err">
+</span><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">book</span><span class="p">.</span><span class="nf">touch</span> <span class="c1"># triggers book.library.touch</span>
+<span class="go">A Book was touched
+Book/Library was touched
+</span><span class="p">=&gt;</span> <span class="kp">true</span>
+</code></pre></div></div>
+
+<p>[<code class="language-plaintext highlighter-rouge">after_touch</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Callbacks/ClassMethods.html#method-i-after_touch</p>
+
+<h2 id="running-callbacks">Running Callbacks</h2>
+
+<p>The following methods trigger callbacks:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">create</code></li>
+  <li><code class="language-plaintext highlighter-rouge">create!</code></li>
+  <li><code class="language-plaintext highlighter-rouge">destroy</code></li>
+  <li><code class="language-plaintext highlighter-rouge">destroy!</code></li>
+  <li><code class="language-plaintext highlighter-rouge">destroy_all</code></li>
+  <li><code class="language-plaintext highlighter-rouge">destroy_by</code></li>
+  <li><code class="language-plaintext highlighter-rouge">save</code></li>
+  <li><code class="language-plaintext highlighter-rouge">save!</code></li>
+  <li><code class="language-plaintext highlighter-rouge">save(validate: false)</code></li>
+  <li><code class="language-plaintext highlighter-rouge">save!(validate: false)</code></li>
+  <li><code class="language-plaintext highlighter-rouge">toggle!</code></li>
+  <li><code class="language-plaintext highlighter-rouge">touch</code></li>
+  <li><code class="language-plaintext highlighter-rouge">update_attribute</code></li>
+  <li><code class="language-plaintext highlighter-rouge">update_attribute!</code></li>
+  <li><code class="language-plaintext highlighter-rouge">update</code></li>
+  <li><code class="language-plaintext highlighter-rouge">update!</code></li>
+  <li><code class="language-plaintext highlighter-rouge">valid?</code></li>
+  <li><code class="language-plaintext highlighter-rouge">validate</code></li>
+</ul>
+
+<p>Additionally, the <code class="language-plaintext highlighter-rouge">after_find</code> callback is triggered by the following finder
+methods:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">all</code></li>
+  <li><code class="language-plaintext highlighter-rouge">first</code></li>
+  <li><code class="language-plaintext highlighter-rouge">find</code></li>
+  <li><code class="language-plaintext highlighter-rouge">find_by</code></li>
+  <li><code class="language-plaintext highlighter-rouge">find_by!</code></li>
+  <li><code class="language-plaintext highlighter-rouge">find_by_*</code></li>
+  <li><code class="language-plaintext highlighter-rouge">find_by_*!</code></li>
+  <li><code class="language-plaintext highlighter-rouge">find_by_sql</code></li>
+  <li><code class="language-plaintext highlighter-rouge">last</code></li>
+  <li><code class="language-plaintext highlighter-rouge">sole</code></li>
+  <li><code class="language-plaintext highlighter-rouge">take</code></li>
+</ul>
+
+<p>The <code class="language-plaintext highlighter-rouge">after_initialize</code> callback is triggered every time a new object of the
+class is initialized.</p>
+
+<p>NOTE: The <code class="language-plaintext highlighter-rouge">find_by_*</code> and <code class="language-plaintext highlighter-rouge">find_by_*!</code> methods are dynamic finders generated
+automatically for every attribute. Learn more about them in the <a href="active_record_querying.html#dynamic-finders">Dynamic finders
+section</a>.</p>
+
+<h2 id="conditional-callbacks">Conditional Callbacks</h2>
+
+<p>As with <a href="active_record_validations.html">validations</a>, we can also make the
+calling of a callback method conditional on the satisfaction of a given
+predicate. We can do this using the <code class="language-plaintext highlighter-rouge">:if</code> and <code class="language-plaintext highlighter-rouge">:unless</code> options, which can take
+a symbol, a <code class="language-plaintext highlighter-rouge">Proc</code> or an <code class="language-plaintext highlighter-rouge">Array</code>.</p>
+
+<p>You may use the <code class="language-plaintext highlighter-rouge">:if</code> option when you want to specify under which conditions the
+callback <strong>should</strong> be called. If you want to specify the conditions under which
+the callback <strong>should not</strong> be called, then you may use the <code class="language-plaintext highlighter-rouge">:unless</code> option.</p>
+
+<h3 id="using-if-and-unless-with-a-symbol">Using <code class="language-plaintext highlighter-rouge">:if</code> and <code class="language-plaintext highlighter-rouge">:unless</code> with a <code class="language-plaintext highlighter-rouge">Symbol</code></h3>
+
+<p>You can associate the <code class="language-plaintext highlighter-rouge">:if</code> and <code class="language-plaintext highlighter-rouge">:unless</code> options with a symbol corresponding to
+the name of a predicate method that will get called right before the callback.</p>
+
+<p>When using the <code class="language-plaintext highlighter-rouge">:if</code> option, the callback <strong>won’t</strong> be executed if the predicate
+method returns <strong>false</strong>; when using the <code class="language-plaintext highlighter-rouge">:unless</code> option, the callback
+<strong>won’t</strong> be executed if the predicate method returns <strong>true</strong>. This is the most
+common option.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Order</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">before_save</span> <span class="ss">:normalize_card_number</span><span class="p">,</span> <span class="ss">if: :paid_with_card?</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Using this form of registration it is also possible to register several
+different predicates that should be called to check if the callback should be
+executed. We will cover this in the <a href="#multiple-callback-conditions">Multiple Callback Conditions
+section</a>.</p>
+
+<h3 id="using-if-and-unless-with-a-proc">Using <code class="language-plaintext highlighter-rouge">:if</code> and <code class="language-plaintext highlighter-rouge">:unless</code> with a <code class="language-plaintext highlighter-rouge">Proc</code></h3>
+
+<p>It is possible to associate <code class="language-plaintext highlighter-rouge">:if</code> and <code class="language-plaintext highlighter-rouge">:unless</code> with a <code class="language-plaintext highlighter-rouge">Proc</code> object. This
+option is best suited when writing short validation methods, usually one-liners:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Order</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">before_save</span> <span class="ss">:normalize_card_number</span><span class="p">,</span>
+    <span class="ss">if: </span><span class="o">-&gt;</span><span class="p">(</span><span class="n">order</span><span class="p">)</span> <span class="p">{</span> <span class="n">order</span><span class="p">.</span><span class="nf">paid_with_card?</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Since the proc is evaluated in the context of the object, it is also possible to
+write this as:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Order</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">before_save</span> <span class="ss">:normalize_card_number</span><span class="p">,</span> <span class="ss">if: </span><span class="o">-&gt;</span> <span class="p">{</span> <span class="n">paid_with_card?</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="multiple-callback-conditions">Multiple Callback Conditions</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">:if</code> and <code class="language-plaintext highlighter-rouge">:unless</code> options also accept an array of procs or method names as
+symbols:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Comment</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">before_save</span> <span class="ss">:filter_content</span><span class="p">,</span>
+    <span class="ss">if: </span><span class="p">[</span><span class="ss">:subject_to_parental_control?</span><span class="p">,</span> <span class="ss">:untrusted_author?</span><span class="p">]</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>You can easily include a proc in the list of conditions:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Comment</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">before_save</span> <span class="ss">:filter_content</span><span class="p">,</span>
+    <span class="ss">if: </span><span class="p">[</span><span class="ss">:subject_to_parental_control?</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">untrusted_author?</span> <span class="p">}]</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="using-both-if-and-unless">Using Both <code class="language-plaintext highlighter-rouge">:if</code> and <code class="language-plaintext highlighter-rouge">:unless</code></h3>
+
+<p>Callbacks can mix both <code class="language-plaintext highlighter-rouge">:if</code> and <code class="language-plaintext highlighter-rouge">:unless</code> in the same declaration:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Comment</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">before_save</span> <span class="ss">:filter_content</span><span class="p">,</span>
+    <span class="ss">if: </span><span class="o">-&gt;</span> <span class="p">{</span> <span class="n">forum</span><span class="p">.</span><span class="nf">parental_control?</span> <span class="p">},</span>
+    <span class="ss">unless: </span><span class="o">-&gt;</span> <span class="p">{</span> <span class="n">author</span><span class="p">.</span><span class="nf">trusted?</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The callback only runs when all the <code class="language-plaintext highlighter-rouge">:if</code> conditions and none of the <code class="language-plaintext highlighter-rouge">:unless</code>
+conditions are evaluated to <code class="language-plaintext highlighter-rouge">true</code>.</p>
+
+<h2 id="skipping-callbacks">Skipping Callbacks</h2>
+
+<p>Just as with <a href="active_record_validations.html">validations</a>, it is also possible
+to skip callbacks by using the following methods:</p>
+
+<ul>
+  <li>[<code class="language-plaintext highlighter-rouge">decrement!</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">decrement_counter</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">delete</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">delete_all</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">delete_by</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">increment!</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">increment_counter</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">insert</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">insert!</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">insert_all</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">insert_all!</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">touch_all</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">update_column</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">update_columns</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">update_all</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">update_counters</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">upsert</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">upsert_all</code>][]</li>
+</ul>
+
+<p>Let’s consider a <code class="language-plaintext highlighter-rouge">User</code> model where the <code class="language-plaintext highlighter-rouge">before_save</code> callback logs any changes
+to the user’s email address:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">before_save</span> <span class="ss">:log_email_change</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">log_email_change</span>
+      <span class="k">if</span> <span class="n">email_changed?</span>
+        <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Email changed from </span><span class="si">#{</span><span class="n">email_was</span><span class="si">}</span><span class="s2"> to </span><span class="si">#{</span><span class="n">email</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now, suppose there’s a scenario where you want to update the user’s email
+address without triggering the <code class="language-plaintext highlighter-rouge">before_save</code> callback to log the email change.
+You can use the <code class="language-plaintext highlighter-rouge">update_columns</code> method for this purpose:</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="nf">update_columns</span><span class="p">(</span><span class="ss">email: </span><span class="s1">'new_email@example.com'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The above will update the user’s email address without triggering the
+<code class="language-plaintext highlighter-rouge">before_save</code> callback.</p>
+
+<p>WARNING. These methods should be used with caution because there may be
+important business rules and application logic in callbacks that you do not want
+to bypass. Bypassing them without understanding the potential implications may
+lead to invalid data.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">decrement!</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-decrement-21
+[<code class="language-plaintext highlighter-rouge">decrement_counter</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/CounterCache/ClassMethods.html#method-i-decrement_counter
+[<code class="language-plaintext highlighter-rouge">delete</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-delete
+[<code class="language-plaintext highlighter-rouge">delete_all</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-delete_all
+[<code class="language-plaintext highlighter-rouge">delete_by</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-delete_by
+[<code class="language-plaintext highlighter-rouge">increment!</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-increment-21
+[<code class="language-plaintext highlighter-rouge">increment_counter</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/CounterCache/ClassMethods.html#method-i-increment_counter
+[<code class="language-plaintext highlighter-rouge">insert</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-insert
+[<code class="language-plaintext highlighter-rouge">insert!</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-insert-21
+[<code class="language-plaintext highlighter-rouge">insert_all</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-insert_all
+[<code class="language-plaintext highlighter-rouge">insert_all!</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-insert_all-21
+[<code class="language-plaintext highlighter-rouge">touch_all</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-touch_all
+[<code class="language-plaintext highlighter-rouge">update_column</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-update_column
+[<code class="language-plaintext highlighter-rouge">update_columns</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-update_columns
+[<code class="language-plaintext highlighter-rouge">update_all</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-update_all
+[<code class="language-plaintext highlighter-rouge">update_counters</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-update_counters
+[<code class="language-plaintext highlighter-rouge">upsert</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-upsert
+[<code class="language-plaintext highlighter-rouge">upsert_all</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Relation.html#method-i-upsert_all</p>
+
+<h2 id="suppressing-saving">Suppressing Saving</h2>
+
+<p>In certain scenarios, you may need to temporarily prevent records from being
+saved within your callbacks.
+This can be useful if you have a record with complex nested associations and want
+to skip saving specific records during certain operations without permanently disabling
+the callbacks or introducing complex conditional logic.</p>
+
+<p>Rails provides a mechanism to prevent saving records using the
+<a href="https://api.rubyonrails.org/classes/ActiveRecord/Suppressor.html"><code class="language-plaintext highlighter-rouge">ActiveRecord::Suppressor</code> module</a>.
+By using this module, you can wrap a block of code where you want to avoid
+saving records of a specific type that otherwise would be saved by the code block.</p>
+
+<p>Let’s consider a scenario where a user has many notifications.
+Creating a <code class="language-plaintext highlighter-rouge">User</code> will automatically create a <code class="language-plaintext highlighter-rouge">Notification</code> record as well.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:notifications</span>
+
+  <span class="n">after_create</span> <span class="ss">:create_welcome_notification</span>
+
+  <span class="k">def</span> <span class="nf">create_welcome_notification</span>
+    <span class="n">notifications</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">event: </span><span class="s2">"sign_up"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Notification</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>To create a user without creating a notification, we can use the
+ActiveRecord::Suppressor module as follows:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Notification</span><span class="p">.</span><span class="nf">suppress</span> <span class="k">do</span>
+  <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Jane"</span><span class="p">,</span> <span class="ss">email: </span><span class="s2">"jane@example.com"</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>In the above code, the <code class="language-plaintext highlighter-rouge">Notification.suppress</code> block ensures that the
+<code class="language-plaintext highlighter-rouge">Notification</code> is not saved during the creation of the “Jane” user.</p>
+
+<p>WARNING: Using the Active Record Suppressor can introduce complexity and
+unexpected behavior. Suppressing saving can obscure the intended flow of your
+application, leading to difficulties in understanding and maintaining the
+codebase over time. Carefully consider the implications of using the suppressor,
+ensuring thorough documentation and thoughtful testing to mitigate
+risks of unintended side effects and test failures.</p>
+
+<h2 id="halting-execution">Halting Execution</h2>
+
+<p>As you start registering new callbacks for your models, they will be queued for
+execution. This queue will include all of your model’s validations, the
+registered callbacks, and the database operation to be executed.</p>
+
+<p>The whole callback chain is wrapped in a transaction. If any callback raises an
+exception, the execution chain gets halted and a <strong>rollback</strong> is issued, and the
+error will be re-raised.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">before_validation</span> <span class="k">do</span>
+    <span class="k">raise</span> <span class="s2">"Price can't be negative"</span> <span class="k">if</span> <span class="n">total_price</span> <span class="o">&lt;</span> <span class="mi">0</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">Product</span><span class="p">.</span><span class="nf">create</span> <span class="c1"># raises "Price can't be negative"</span>
+</code></pre></div></div>
+
+<p>This unexpectedly breaks code that does not expect methods like <code class="language-plaintext highlighter-rouge">create</code> and
+<code class="language-plaintext highlighter-rouge">save</code> to raise exceptions.</p>
+
+<p>NOTE: If an exception occurs during the callback chain, Rails will re-raise it
+unless it is an <code class="language-plaintext highlighter-rouge">ActiveRecord::Rollback</code> or <code class="language-plaintext highlighter-rouge">ActiveRecord::RecordInvalid</code>
+exception. Instead, you should use <code class="language-plaintext highlighter-rouge">throw :abort</code> to intentionally halt the
+chain. If any callback throws <code class="language-plaintext highlighter-rouge">:abort</code>, the process will be aborted and <code class="language-plaintext highlighter-rouge">create</code>
+will return false.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">before_validation</span> <span class="k">do</span>
+    <span class="kp">throw</span> <span class="ss">:abort</span> <span class="k">if</span> <span class="n">total_price</span> <span class="o">&lt;</span> <span class="mi">0</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">Product</span><span class="p">.</span><span class="nf">create</span> <span class="c1"># =&gt; false</span>
+</code></pre></div></div>
+
+<p>However, it will raise an <code class="language-plaintext highlighter-rouge">ActiveRecord::RecordNotSaved</code> when calling <code class="language-plaintext highlighter-rouge">create!</code>.
+This exception indicates that the record was not saved due to the callback’s
+interruption.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">create!</span> <span class="c1"># =&gt; raises an ActiveRecord::RecordNotSaved</span>
+</code></pre></div></div>
+
+<p>When <code class="language-plaintext highlighter-rouge">throw :abort</code> is called in any destroy callback, <code class="language-plaintext highlighter-rouge">destroy</code> will return
+false:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">before_destroy</span> <span class="k">do</span>
+    <span class="kp">throw</span> <span class="ss">:abort</span> <span class="k">if</span> <span class="n">still_active?</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">User</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">destroy</span> <span class="c1"># =&gt; false</span>
+</code></pre></div></div>
+
+<p>However, it will raise an <code class="language-plaintext highlighter-rouge">ActiveRecord::RecordNotDestroyed</code> when calling
+<code class="language-plaintext highlighter-rouge">destroy!</code>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">destroy!</span> <span class="c1"># =&gt; raises an ActiveRecord::RecordNotDestroyed</span>
+</code></pre></div></div>
+
+<h2 id="association-callbacks">Association Callbacks</h2>
+
+<p>Association callbacks are similar to normal callbacks, but they are triggered by
+events in the life cycle of the associated collection. There are four available
+association callbacks:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">before_add</code></li>
+  <li><code class="language-plaintext highlighter-rouge">after_add</code></li>
+  <li><code class="language-plaintext highlighter-rouge">before_remove</code></li>
+  <li><code class="language-plaintext highlighter-rouge">after_remove</code></li>
+</ul>
+
+<p>You can define association callbacks by adding options to the association.</p>
+
+<p>Suppose you have an example where an author can have many books. However, before
+adding a book to the authors collection, you want to ensure that the author has
+not reached their book limit. You can do this by adding a <code class="language-plaintext highlighter-rouge">before_add</code> callback
+to check the limit.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">before_add: :check_limit</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">check_limit</span><span class="p">(</span><span class="n">_book</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">books</span><span class="p">.</span><span class="nf">count</span> <span class="o">&gt;=</span> <span class="mi">5</span>
+        <span class="n">errors</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="ss">:base</span><span class="p">,</span> <span class="s2">"Cannot add more than 5 books for this author"</span><span class="p">)</span>
+        <span class="kp">throw</span><span class="p">(</span><span class="ss">:abort</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>If a <code class="language-plaintext highlighter-rouge">before_add</code> callback throws <code class="language-plaintext highlighter-rouge">:abort</code>, the object does not get added to the
+collection.</p>
+
+<p>At times you may want to perform multiple actions on the associated object. In
+this case, you can stack callbacks on a single event by passing them as an
+array. Additionally, Rails passes the object being added or removed to the
+callback for you to use.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">before_add: </span><span class="p">[</span><span class="ss">:check_limit</span><span class="p">,</span> <span class="ss">:calculate_shipping_charges</span><span class="p">]</span>
+
+  <span class="k">def</span> <span class="nf">check_limit</span><span class="p">(</span><span class="n">_book</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">books</span><span class="p">.</span><span class="nf">count</span> <span class="o">&gt;=</span> <span class="mi">5</span>
+      <span class="n">errors</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="ss">:base</span><span class="p">,</span> <span class="s2">"Cannot add more than 5 books for this author"</span><span class="p">)</span>
+      <span class="kp">throw</span><span class="p">(</span><span class="ss">:abort</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">calculate_shipping_charges</span><span class="p">(</span><span class="n">book</span><span class="p">)</span>
+    <span class="n">weight_in_pounds</span> <span class="o">=</span> <span class="n">book</span><span class="p">.</span><span class="nf">weight_in_pounds</span> <span class="o">||</span> <span class="mi">1</span>
+    <span class="n">shipping_charges</span> <span class="o">=</span> <span class="n">weight_in_pounds</span> <span class="o">*</span> <span class="mi">2</span>
+
+    <span class="n">shipping_charges</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Similarly, if a <code class="language-plaintext highlighter-rouge">before_remove</code> callback throws <code class="language-plaintext highlighter-rouge">:abort</code>, the object does not
+get removed from the collection.</p>
+
+<p>NOTE: These callbacks are called only when the associated objects are added or
+removed through the association collection.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Triggers `before_add` callback</span>
+<span class="n">author</span><span class="p">.</span><span class="nf">books</span> <span class="o">&lt;&lt;</span> <span class="n">book</span>
+<span class="n">author</span><span class="p">.</span><span class="nf">books</span> <span class="o">=</span> <span class="p">[</span><span class="n">book</span><span class="p">,</span> <span class="n">book2</span><span class="p">]</span>
+
+<span class="c1"># Does not trigger the `before_add` callback</span>
+<span class="n">book</span><span class="p">.</span><span class="nf">update</span><span class="p">(</span><span class="ss">author_id: </span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="cascading-association-callbacks">Cascading Association Callbacks</h2>
+
+<p>Callbacks can be performed when associated objects are changed. They work
+through the model associations whereby life cycle events can cascade on
+associations and fire callbacks.</p>
+
+<p>Suppose an example where a user has many articles. A user’s articles should be
+destroyed if the user is destroyed. Let’s add an <code class="language-plaintext highlighter-rouge">after_destroy</code> callback to the
+<code class="language-plaintext highlighter-rouge">User</code> model by way of its association to the <code class="language-plaintext highlighter-rouge">Article</code> model:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:articles</span><span class="p">,</span> <span class="ss">dependent: :destroy</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_destroy</span> <span class="ss">:log_destroy_action</span>
+
+  <span class="k">def</span> <span class="nf">log_destroy_action</span>
+    <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Article destroyed"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">first</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="kt">&gt;</span>
+<span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="nf">articles</span><span class="p">.</span><span class="nf">create!</span>
+<span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">Article</span> <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">user_id: </span><span class="mi">1</span><span class="kt">&gt;</span>
+<span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="nf">destroy</span>
+<span class="go">Article destroyed
+</span><span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">User</span> <span class="ss">id: </span><span class="mi">1</span><span class="kt">&gt;</span>
+</code></pre></div></div>
+
+<p>WARNING: When using a <code class="language-plaintext highlighter-rouge">before_destroy</code> callback, it should be placed before
+<code class="language-plaintext highlighter-rouge">dependent: :destroy</code> associations (or use the <code class="language-plaintext highlighter-rouge">prepend: true</code> option), to
+ensure they execute before the records are deleted by <code class="language-plaintext highlighter-rouge">dependent: :destroy</code>.</p>
+
+<h2 id="transaction-callbacks">Transaction Callbacks</h2>
+
+<h3 id="after_commit-and-after_rollback"><code class="language-plaintext highlighter-rouge">after_commit</code> and <code class="language-plaintext highlighter-rouge">after_rollback</code></h3>
+
+<p>Two additional callbacks are triggered by the completion of a database
+transaction: [<code class="language-plaintext highlighter-rouge">after_commit</code>][] and [<code class="language-plaintext highlighter-rouge">after_rollback</code>][]. These callbacks are
+very similar to the <code class="language-plaintext highlighter-rouge">after_save</code> callback except that they don’t execute until
+after database changes have either been committed or rolled back. They are most
+useful when your Active Record models need to interact with external systems
+that are not part of the database transaction.</p>
+
+<p>Consider a <code class="language-plaintext highlighter-rouge">PictureFile</code> model that needs to delete a file after the
+corresponding record is destroyed.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PictureFile</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_destroy</span> <span class="ss">:delete_picture_file_from_disk</span>
+
+  <span class="k">def</span> <span class="nf">delete_picture_file_from_disk</span>
+    <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">exist?</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+      <span class="no">File</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>If anything raises an exception after the <code class="language-plaintext highlighter-rouge">after_destroy</code> callback is called and
+the transaction rolls back, then the file will have been deleted and the model
+will be left in an inconsistent state. For example, suppose that
+<code class="language-plaintext highlighter-rouge">picture_file_2</code> in the code below is not valid and the <code class="language-plaintext highlighter-rouge">save!</code> method raises an
+error.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">PictureFile</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+  <span class="n">picture_file_1</span><span class="p">.</span><span class="nf">destroy</span>
+  <span class="n">picture_file_2</span><span class="p">.</span><span class="nf">save!</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>By using the <code class="language-plaintext highlighter-rouge">after_commit</code> callback we can account for this case.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PictureFile</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_commit</span> <span class="ss">:delete_picture_file_from_disk</span><span class="p">,</span> <span class="ss">on: :destroy</span>
+
+  <span class="k">def</span> <span class="nf">delete_picture_file_from_disk</span>
+    <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">exist?</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+      <span class="no">File</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>NOTE: The <code class="language-plaintext highlighter-rouge">:on</code> option specifies when a callback will be fired. If you don’t
+supply the <code class="language-plaintext highlighter-rouge">:on</code> option the callback will fire for every life cycle event. <a href="#registering-callbacks-to-fire-on-life-cycle-events">Read
+more about <code class="language-plaintext highlighter-rouge">:on</code></a>.</p>
+
+<p>When a transaction completes, the <code class="language-plaintext highlighter-rouge">after_commit</code> or <code class="language-plaintext highlighter-rouge">after_rollback</code> callbacks
+are called for all models created, updated, or destroyed within that
+transaction. However, if an exception is raised within one of these callbacks,
+the exception will bubble up and any remaining <code class="language-plaintext highlighter-rouge">after_commit</code> or
+<code class="language-plaintext highlighter-rouge">after_rollback</code> methods will <em>not</em> be executed.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">after_commit</span> <span class="p">{</span> <span class="k">raise</span> <span class="s2">"Intentional Error"</span> <span class="p">}</span>
+  <span class="n">after_commit</span> <span class="p">{</span>
+    <span class="c1"># This won't get called because the previous after_commit raises an exception</span>
+    <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"This will not be logged"</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>WARNING. If your callback code raises an exception, you’ll need to rescue it and
+handle it within the callback in order to allow other callbacks to run.</p>
+
+<p><code class="language-plaintext highlighter-rouge">after_commit</code> makes very different guarantees than <code class="language-plaintext highlighter-rouge">after_save</code>,
+<code class="language-plaintext highlighter-rouge">after_update</code>, and <code class="language-plaintext highlighter-rouge">after_destroy</code>. For example, if an exception occurs in an
+<code class="language-plaintext highlighter-rouge">after_save</code> the transaction will be rolled back and the data will not be
+persisted.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">after_save</span> <span class="k">do</span>
+    <span class="c1"># If this fails the user won't be saved.</span>
+    <span class="no">EventLog</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="ss">event: </span><span class="s2">"user_saved"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>However, during <code class="language-plaintext highlighter-rouge">after_commit</code> the data was already persisted to the database,
+and thus any exception won’t roll anything back anymore.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">after_commit</span> <span class="k">do</span>
+    <span class="c1"># If this fails the user was already saved.</span>
+    <span class="no">EventLog</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="ss">event: </span><span class="s2">"user_saved"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The code executed within <code class="language-plaintext highlighter-rouge">after_commit</code> or <code class="language-plaintext highlighter-rouge">after_rollback</code> callbacks is itself
+not enclosed within a transaction.</p>
+
+<p>In the context of a single transaction, if you represent the same record in the
+database, there’s a crucial behavior in the <code class="language-plaintext highlighter-rouge">after_commit</code> and <code class="language-plaintext highlighter-rouge">after_rollback</code>
+callbacks to note. These callbacks are triggered only for the first object of
+the specific record that changes within the transaction. Other loaded objects,
+despite representing the same database record, will not have their respective
+<code class="language-plaintext highlighter-rouge">after_commit</code> or <code class="language-plaintext highlighter-rouge">after_rollback</code> callbacks triggered.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_commit</span> <span class="ss">:log_user_saved_to_db</span><span class="p">,</span> <span class="ss">on: :update</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">log_user_saved_to_db</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"User was saved to database"</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span>
+<span class="gp">irb&gt;</span><span class="w"> </span><span class="no">User</span><span class="p">.</span><span class="nf">transaction</span> <span class="p">{</span> <span class="n">user</span><span class="p">.</span><span class="nf">save</span><span class="p">;</span> <span class="n">user</span><span class="p">.</span><span class="nf">save</span> <span class="p">}</span>
+<span class="c"># User was saved to database
+</span></code></pre></div></div>
+
+<p>WARNING: This nuanced behavior is particularly impactful in scenarios where you
+expect independent callback execution for each object associated with the same
+database record. It can influence the flow and predictability of callback
+sequences, leading to potential inconsistencies in application logic following
+the transaction.</p>
+
+<h3 id="aliases-for-after_commit">Aliases for <code class="language-plaintext highlighter-rouge">after_commit</code></h3>
+
+<p>Using the <code class="language-plaintext highlighter-rouge">after_commit</code> callback only on create, update, or delete is common.
+Sometimes you may also want to use a single callback for both <code class="language-plaintext highlighter-rouge">create</code> and
+<code class="language-plaintext highlighter-rouge">update</code>. Here are some common aliases for these operations:</p>
+
+<ul>
+  <li>[<code class="language-plaintext highlighter-rouge">after_destroy_commit</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">after_create_commit</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">after_update_commit</code>][]</li>
+  <li>[<code class="language-plaintext highlighter-rouge">after_save_commit</code>][]</li>
+</ul>
+
+<p>Let’s go through some examples:</p>
+
+<p>Instead of using <code class="language-plaintext highlighter-rouge">after_commit</code> with the <code class="language-plaintext highlighter-rouge">on</code> option for a destroy like below:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PictureFile</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_commit</span> <span class="ss">:delete_picture_file_from_disk</span><span class="p">,</span> <span class="ss">on: :destroy</span>
+
+  <span class="k">def</span> <span class="nf">delete_picture_file_from_disk</span>
+    <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">exist?</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+      <span class="no">File</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>You can instead use the <code class="language-plaintext highlighter-rouge">after_destroy_commit</code>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PictureFile</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_destroy_commit</span> <span class="ss">:delete_picture_file_from_disk</span>
+
+  <span class="k">def</span> <span class="nf">delete_picture_file_from_disk</span>
+    <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">exist?</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+      <span class="no">File</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The same applies for <code class="language-plaintext highlighter-rouge">after_create_commit</code> and <code class="language-plaintext highlighter-rouge">after_update_commit</code>.</p>
+
+<p>However, if you use the <code class="language-plaintext highlighter-rouge">after_create_commit</code> and the <code class="language-plaintext highlighter-rouge">after_update_commit</code>
+callback with the same method name, it will only allow the last callback defined
+to take effect, as they both internally alias to <code class="language-plaintext highlighter-rouge">after_commit</code> which overrides
+previously defined callbacks with the same method name.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_create_commit</span> <span class="ss">:log_user_saved_to_db</span>
+  <span class="n">after_update_commit</span> <span class="ss">:log_user_saved_to_db</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">log_user_saved_to_db</span>
+      <span class="c1"># This only gets called once</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"User was saved to database"</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span> <span class="c1"># prints nothing</span>
+<span class="err">
+</span><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="nf">save</span> <span class="c1"># updating @user</span>
+<span class="go">User was saved to database
+</span></code></pre></div></div>
+
+<p>In this case, it’s better to use <code class="language-plaintext highlighter-rouge">after_save_commit</code> instead which is an alias
+for using the <code class="language-plaintext highlighter-rouge">after_commit</code> callback for both create and update:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_save_commit</span> <span class="ss">:log_user_saved_to_db</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">log_user_saved_to_db</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"User was saved to database"</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span> <span class="c1"># creating a User</span>
+<span class="go">User was saved to database
+</span><span class="err">
+</span><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">user</span><span class="p">.</span><span class="nf">save</span> <span class="c1"># updating user</span>
+<span class="go">User was saved to database
+</span></code></pre></div></div>
+
+<h3 id="transactional-callback-ordering">Transactional Callback Ordering</h3>
+
+<p>By default (from Rails 7.1), transaction callbacks will run in the order they
+are defined.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">after_commit</span> <span class="p">{</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"this gets called first"</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">after_commit</span> <span class="p">{</span> <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"this gets called second"</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>However, in prior versions of Rails, when defining multiple transactional
+<code class="language-plaintext highlighter-rouge">after_</code> callbacks (<code class="language-plaintext highlighter-rouge">after_commit</code>, <code class="language-plaintext highlighter-rouge">after_rollback</code>, etc), the order in which
+the callbacks were run was reversed.</p>
+
+<p>If for some reason you’d still like them to run in reverse, you can set the
+following configuration to <code class="language-plaintext highlighter-rouge">false</code>. The callbacks will then run in the reverse
+order. See the <a href="configuring.html#config-active-record-run-after-transaction-callbacks-in-order-defined">Active Record configuration
+options</a>
+for more details.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">config</span><span class="p">.</span><span class="nf">active_record</span><span class="p">.</span><span class="nf">run_after_transaction_callbacks_in_order_defined</span> <span class="o">=</span> <span class="kp">false</span>
+</code></pre></div></div>
+
+<p>NOTE: This applies to all <code class="language-plaintext highlighter-rouge">after_*_commit</code> variations too, such as
+<code class="language-plaintext highlighter-rouge">after_destroy_commit</code>.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">after_create_commit</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html#method-i-after_create_commit
+[<code class="language-plaintext highlighter-rouge">after_destroy_commit</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html#method-i-after_destroy_commit
+[<code class="language-plaintext highlighter-rouge">after_save_commit</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html#method-i-after_save_commit
+[<code class="language-plaintext highlighter-rouge">after_update_commit</code>]:
+    https://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html#method-i-after_update_commit</p>
+
+<h3 id="per-transaction-callback">Per transaction callback</h3>
+
+<p>You can also register transactional callbacks such as <code class="language-plaintext highlighter-rouge">before_commit</code>, <code class="language-plaintext highlighter-rouge">after_commit</code> and <code class="language-plaintext highlighter-rouge">after_rollback</code> on a specific transaction.
+This is handy in situations where you need to perform an action that isn’t specific to a model but rather a unit of work.</p>
+
+<p><code class="language-plaintext highlighter-rouge">ActiveRecord::Base.transaction</code> yields an <code class="language-plaintext highlighter-rouge">ActiveRecord::Transaction</code> object, which allows registering the said callbacks on it.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Article</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span> <span class="o">|</span><span class="n">transaction</span><span class="o">|</span>
+  <span class="n">article</span><span class="p">.</span><span class="nf">update</span><span class="p">(</span><span class="ss">published: </span><span class="kp">true</span><span class="p">)</span>
+
+  <span class="n">transaction</span><span class="p">.</span><span class="nf">after_commit</span> <span class="k">do</span>
+    <span class="no">PublishNotificationMailer</span><span class="p">.</span><span class="nf">with</span><span class="p">(</span><span class="ss">article: </span><span class="n">article</span><span class="p">).</span><span class="nf">deliver_later</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="activerecordafter_all_transactions_commit"><code class="language-plaintext highlighter-rouge">ActiveRecord.after_all_transactions_commit</code></h3>
+
+<p><a href="https://api.rubyonrails.org/classes/ActiveRecord.html#method-c-after_all_transactions_commit"><code class="language-plaintext highlighter-rouge">ActiveRecord.after_all_transactions_commit</code></a> is a callback that allows you to run code after all the current transactions have been successfully committed to the database.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">publish_article</span><span class="p">(</span><span class="n">article</span><span class="p">)</span>
+  <span class="no">Article</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+    <span class="no">Post</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+      <span class="no">ActiveRecord</span><span class="p">.</span><span class="nf">after_all_transactions_commit</span> <span class="k">do</span>
+        <span class="no">PublishNotificationMailer</span><span class="p">.</span><span class="nf">with</span><span class="p">(</span><span class="ss">article: </span><span class="n">article</span><span class="p">).</span><span class="nf">deliver_later</span>
+        <span class="c1"># An email will be sent after the outermost transaction is committed.</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>A callback registered to <code class="language-plaintext highlighter-rouge">after_all_transactions_commit</code> will be triggered after the outermost transaction is committed. If any of the currently open transactions is rolled back, the block is never called.
+In the event that there are no open transactions at the time a callback is registered, the block will be yielded immediately.</p>
+
+<h2 id="callback-objects">Callback Objects</h2>
+
+<p>Sometimes the callback methods that you’ll write will be useful enough to be
+reused by other models. Active Record makes it possible to create classes that
+encapsulate the callback methods, so they can be reused.</p>
+
+<p>Here’s an example of an <code class="language-plaintext highlighter-rouge">after_commit</code> callback  class to deal with the cleanup
+of discarded files on the filesystem. This behavior may not be unique to our
+<code class="language-plaintext highlighter-rouge">PictureFile</code> model and we may want to share it, so it’s a good idea to
+encapsulate this into a separate class. This will make testing that behavior and
+changing it much easier.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">FileDestroyerCallback</span>
+  <span class="k">def</span> <span class="nf">after_commit</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">exist?</span><span class="p">(</span><span class="n">file</span><span class="p">.</span><span class="nf">filepath</span><span class="p">)</span>
+      <span class="no">File</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">file</span><span class="p">.</span><span class="nf">filepath</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>When declared inside a class, as above, the callback methods will receive the
+model object as a parameter. This will work on any model that uses the class
+like so:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PictureFile</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_commit</span> <span class="no">FileDestroyerCallback</span><span class="p">.</span><span class="nf">new</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Note that we needed to instantiate a new <code class="language-plaintext highlighter-rouge">FileDestroyerCallback</code> object, since
+we declared our callback as an instance method. This is particularly useful if
+the callbacks make use of the state of the instantiated object. Often, however,
+it will make more sense to declare the callbacks as class methods:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">FileDestroyerCallback</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">after_commit</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">exist?</span><span class="p">(</span><span class="n">file</span><span class="p">.</span><span class="nf">filepath</span><span class="p">)</span>
+      <span class="no">File</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="n">file</span><span class="p">.</span><span class="nf">filepath</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>When the callback method is declared this way, it won’t be necessary to
+instantiate a new <code class="language-plaintext highlighter-rouge">FileDestroyerCallback</code> object in our model.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PictureFile</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">after_commit</span> <span class="no">FileDestroyerCallback</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>You can declare as many callbacks as you want inside your callback objects.</p>
+
+        </div>
+
+        <footer class="guide-footer">
+            <div class="feedback">
+                <h3>Geri Bildirim</h3>
+                <p>Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri bildirimlerinizi bekliyoruz.</p>
+                <p>Lütfen <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub Issues</a> üzerinden katkıda bulunun.</p>
+            </div>
+        </footer>
+    </article>
+</div>
+
+<script>
+// İçindekiler tablosunu otomatik oluştur
+document.addEventListener('DOMContentLoaded', function() {
+    const toc = document.getElementById('toc');
+    const headings = document.querySelectorAll('.guide-content h2, .guide-content h3, .guide-content h4');
+    
+    if (headings.length > 0) {
+        const tocList = document.createElement('ul');
+        
+        headings.forEach(function(heading, index) {
+            const id = 'heading-' + index;
+            heading.id = id;
+            
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.textContent = heading.textContent;
+            a.className = 'toc-' + heading.tagName.toLowerCase();
+            
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+        
+        toc.appendChild(tocList);
+    }
+});
+</script>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Rails Kılavuzları Türkçe Çevirisi. Gönüllüler tarafından hazırlanmıştır.</p>
+            <p>Orijinal dokümantasyon <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine aittir.</p>
+        </div>
+    </footer>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

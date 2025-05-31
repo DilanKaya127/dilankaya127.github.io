@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruby On Rails Guides Guidelines - Rails Dokümantasyonu - Türkçe</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <a href="/">Rails Kılavuzları</a>
+                </h1>
+                <nav class="nav">
+                    <a href="/">Ana Sayfa</a>
+                    <a href="https://dilankaya127.github.io">Portföy</a>
+                    <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="guide-container">
+    <aside class="guide-sidebar">
+        <div class="guide-toc">
+            <h3>İçindekiler</h3>
+            <div id="toc"></div>
+        </div>
+        
+        <div class="guide-nav">
+            <h3>Diğer Kılavuzlar</h3>
+            <ul>
+                <li><a href="/rails/guides/tr/getting_started">Rails ile Başlarken</a></li>
+                <li><a href="/rails/guides/en/active_record_basics">Active Record Temelleri</a></li>
+                <li><a href="/rails/guides//en/action_controller_overview">Action Controller</a></li>
+                <li><a href="/rails/guides/tr/action_cable_overview">Action Cable</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <article class="guide-content">
+        <header class="guide-header">
+            <h1>Ruby On Rails Guides Guidelines</h1>
+            
+        </header>
+
+        <div class="guide-body">
+            <p><strong>DO NOT READ THIS FILE ON GITHUB, GUIDES ARE PUBLISHED ON <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a>.</strong></p>
+
+<h1 id="ruby-on-rails-guides-guidelines">Ruby on Rails Guides Guidelines</h1>
+
+<p>This guide documents guidelines for writing Ruby on Rails Guides. This guide follows itself in a graceful loop, serving itself as an example.</p>
+
+<p>After reading this guide, you will know:</p>
+
+<ul>
+  <li>About the conventions to be used in Rails documentation.</li>
+  <li>How to generate guides locally.</li>
+</ul>
+
+<hr />
+
+<h2 id="markdown">Markdown</h2>
+
+<p>Guides are written in <a href="https://help.github.com/articles/github-flavored-markdown">GitHub Flavored Markdown</a>. There is comprehensive <a href="https://daringfireball.net/projects/markdown/syntax">documentation for Markdown</a>, as well as a <a href="https://daringfireball.net/projects/markdown/basics">cheatsheet</a>.</p>
+
+<h2 id="prologue">Prologue</h2>
+
+<p>Each guide should start with motivational text at the top (that’s the little introduction in the blue area). The prologue should tell the reader what the guide is about, and what they will learn. As an example, see the <a href="routing.html">Routing Guide</a>.</p>
+
+<h2 id="headings">Headings</h2>
+
+<p>The title of every guide uses an <code class="language-plaintext highlighter-rouge">h1</code> heading; guide sections use <code class="language-plaintext highlighter-rouge">h2</code> headings; subsections use <code class="language-plaintext highlighter-rouge">h3</code> headings; etc. Note that the generated HTML output will use heading tags starting with <code class="language-plaintext highlighter-rouge">&lt;h2&gt;</code>.</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gu">Guide Title
+===========
+</span>
+<span class="gh">Section
+-------
+</span>
+<span class="gu">### Sub Section</span>
+</code></pre></div></div>
+
+<p>When writing headings, capitalize all words except for prepositions, conjunctions, internal articles, and forms of the verb “to be”:</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gu">#### Assertions and Testing Jobs inside Components</span>
+<span class="gu">#### Middleware Stack is an Array</span>
+<span class="gu">#### When are Objects Saved?</span>
+</code></pre></div></div>
+
+<p>Use the same inline formatting as regular text:</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gu">##### The `:content_type` Option</span>
+</code></pre></div></div>
+
+<h2 id="notes-tips-and-warnings">Notes, Tips and Warnings</h2>
+
+<p>Sometimes a paragraph deserves a little more attention. For example, to clarify
+a common misunderstanding or warn about something that could break an
+application.</p>
+
+<p>To highlight a paragraph, prefix it with <code class="language-plaintext highlighter-rouge">NOTE:</code>, <code class="language-plaintext highlighter-rouge">TIP:</code> or <code class="language-plaintext highlighter-rouge">WARNING:</code>:</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NOTE: Use <span class="sb">`NOTE`</span>, <span class="sb">`TIP`</span> or <span class="sb">`WARNING`</span> to highlight a paragraph.
+</code></pre></div></div>
+
+<p>This will wrap the paragraph in a special container resulting in the following:</p>
+
+<p>NOTE: Use <code class="language-plaintext highlighter-rouge">NOTE</code>, <code class="language-plaintext highlighter-rouge">TIP</code> or <code class="language-plaintext highlighter-rouge">WARNING</code> to highlight a paragraph.</p>
+
+<h3 id="note">NOTE</h3>
+
+<p>Use <code class="language-plaintext highlighter-rouge">NOTE</code> to highlight something in relation to the subject and the context.
+Reading it will help your understanding of that subject or context, or
+clarify an important item.</p>
+
+<p>For example, a section describing locale files could have the following <code class="language-plaintext highlighter-rouge">NOTE</code>:</p>
+
+<p>NOTE: You need to restart the server when you add new locale files.</p>
+
+<h3 id="tip">TIP</h3>
+
+<p>A <code class="language-plaintext highlighter-rouge">TIP</code> is just an additional bit of information regarding the subject, but not
+necessarily relevant to the understanding. It can point you to another guide or
+website:</p>
+
+<p>TIP: To learn more about routing, see <a href="routing.html">Rails Routing from the Outside In</a>.</p>
+
+<p>Or show a helpful command to see more options to dig deeper:</p>
+
+<p>TIP: For further help with generators, run <code class="language-plaintext highlighter-rouge">bin/rails generate --help</code>.</p>
+
+<h3 id="warning">WARNING</h3>
+
+<p>Use <code class="language-plaintext highlighter-rouge">WARNING</code> for things to avoid that could break the application:</p>
+
+<p>WARNING: Refrain from using methods like <code class="language-plaintext highlighter-rouge">update</code>, <code class="language-plaintext highlighter-rouge">save</code>, or any other methods
+that cause side effects on the object within your callback methods.</p>
+
+<p>Or warn about things that could compromise your application’s security.</p>
+
+<p>WARNING: Keep your master key safe. Do not commit your master key.</p>
+
+<h2 id="links">Links</h2>
+
+<p>Use descriptive links and avoid “here” and “more” links:</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh"># BAD</span>
+See the Rails Internationalization (I18n) API documentation for <span class="p">[</span><span class="nv">more
+details</span><span class="p">](</span><span class="sx">i18n.html</span><span class="p">)</span>.
+
+<span class="gh"># GOOD</span>
+See the <span class="p">[</span><span class="nv">Rails Internationalization (I18n) API documentation</span><span class="p">](</span><span class="sx">i18n.html</span><span class="p">)</span> for
+more details.
+</code></pre></div></div>
+
+<p>Use descriptive links for internal links as well:</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh"># BAD</span>
+We will cover this <span class="p">[</span><span class="nv">below</span><span class="p">](</span><span class="sx">#multiple-callback-conditions</span><span class="p">)</span>.
+
+<span class="gh"># GOOD</span>
+We will cover this in the <span class="p">[</span><span class="nv">multiple callback conditions
+section</span><span class="p">](</span><span class="sx">#multiple-callback-conditions</span><span class="p">)</span> shown below.
+</code></pre></div></div>
+
+<h3 id="linking-to-the-api">Linking to the API</h3>
+
+<p>Links to the API (<code class="language-plaintext highlighter-rouge">api.rubyonrails.org</code>) are processed by the guides generator in the following manner:</p>
+
+<p>Links that include a release tag are left untouched. For example</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://api.rubyonrails.org/v5.0.1/classes/ActiveRecord/Attributes/ClassMethods.html
+</code></pre></div></div>
+
+<p>is not modified.</p>
+
+<p>Please use these in release notes, since they should point to the corresponding version no matter the target being generated.</p>
+
+<p>If the link does not include a release tag and edge guides are being generated, the domain is replaced by <code class="language-plaintext highlighter-rouge">edgeapi.rubyonrails.org</code>. For example,</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://api.rubyonrails.org/classes/ActionDispatch/Response.html
+</code></pre></div></div>
+
+<p>becomes</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://edgeapi.rubyonrails.org/classes/ActionDispatch/Response.html
+</code></pre></div></div>
+
+<p>If the link does not include a release tag and release guides are being generated, the Rails version is injected. For example, if we are generating the guides for v5.1.0 the link</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://api.rubyonrails.org/classes/ActionDispatch/Response.html
+</code></pre></div></div>
+
+<p>becomes</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://api.rubyonrails.org/v5.1.0/classes/ActionDispatch/Response.html
+</code></pre></div></div>
+
+<p>Please don’t link to <code class="language-plaintext highlighter-rouge">edgeapi.rubyonrails.org</code> manually.</p>
+
+<h2 id="column-wrapping">Column Wrapping</h2>
+
+<p>Do not reformat old guides just to wrap columns. But new sections and guides should wrap at 80 columns.</p>
+
+<h2 id="api-documentation-guidelines">API Documentation Guidelines</h2>
+
+<p>The guides and the API should be coherent and consistent where appropriate. In particular, these sections of the <a href="api_documentation_guidelines.html">API Documentation Guidelines</a> also apply to the guides:</p>
+
+<ul>
+  <li><a href="api_documentation_guidelines.html#wording">Wording</a></li>
+  <li><a href="api_documentation_guidelines.html#american-english">English</a></li>
+  <li><a href="api_documentation_guidelines.html#example-code">Example Code</a></li>
+  <li><a href="api_documentation_guidelines.html#file-names">Filenames</a></li>
+  <li><a href="api_documentation_guidelines.html#fonts">Fonts</a></li>
+</ul>
+
+<h2 id="html-guides">HTML Guides</h2>
+
+<p>Before generating the guides, make sure that you have the latest version of
+Bundler installed on your system. To install the latest version of Bundler, run <code class="language-plaintext highlighter-rouge">gem install bundler</code>.</p>
+
+<p>If you already have Bundler installed, you can update with <code class="language-plaintext highlighter-rouge">gem update bundler</code>.</p>
+
+<h3 id="generation">Generation</h3>
+
+<p>To generate all the guides, just <code class="language-plaintext highlighter-rouge">cd</code> into the <code class="language-plaintext highlighter-rouge">guides</code> directory, run <code class="language-plaintext highlighter-rouge">bundle install</code>, and execute:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle <span class="nb">exec </span>rake guides:generate
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle <span class="nb">exec </span>rake guides:generate:html
+</code></pre></div></div>
+
+<p>Resulting HTML files can be found in the <code class="language-plaintext highlighter-rouge">./output</code> directory.</p>
+
+<p>To process <code class="language-plaintext highlighter-rouge">my_guide.md</code> and nothing else use the <code class="language-plaintext highlighter-rouge">ONLY</code> environment variable:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">touch </span>my_guide.md
+<span class="nv">$ </span>bundle <span class="nb">exec </span>rake guides:generate <span class="nv">ONLY</span><span class="o">=</span>my_guide
+</code></pre></div></div>
+
+<p>By default, guides that have not been modified are not processed, so <code class="language-plaintext highlighter-rouge">ONLY</code> is rarely needed in practice.</p>
+
+<p>To force processing all the guides, pass <code class="language-plaintext highlighter-rouge">ALL=1</code>.</p>
+
+<p>If you want to generate guides in a language other than English, you can keep them in a separate directory under <code class="language-plaintext highlighter-rouge">source</code> (e.g. <code class="language-plaintext highlighter-rouge">source/es</code>) and use the <code class="language-plaintext highlighter-rouge">GUIDES_LANGUAGE</code> environment variable:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle <span class="nb">exec </span>rake guides:generate <span class="nv">GUIDES_LANGUAGE</span><span class="o">=</span>es
+</code></pre></div></div>
+
+<p>If you want to see all the environment variables you can use to configure the generation script just run:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rake
+</code></pre></div></div>
+
+<h3 id="validation">Validation</h3>
+
+<p>Please validate the generated HTML with:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle <span class="nb">exec </span>rake guides:validate
+</code></pre></div></div>
+
+<p>Particularly, titles get an ID generated from their content and this often leads to duplicates.</p>
+
+<h2 id="kindle-guides">Kindle Guides</h2>
+
+<h3 id="generation-1">Generation</h3>
+
+<p>To generate guides for the Kindle, use the following rake task:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle <span class="nb">exec </span>rake guides:generate:kindle
+</code></pre></div></div>
+
+        </div>
+
+        <footer class="guide-footer">
+            <div class="feedback">
+                <h3>Geri Bildirim</h3>
+                <p>Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri bildirimlerinizi bekliyoruz.</p>
+                <p>Lütfen <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub Issues</a> üzerinden katkıda bulunun.</p>
+            </div>
+        </footer>
+    </article>
+</div>
+
+<script>
+// İçindekiler tablosunu otomatik oluştur
+document.addEventListener('DOMContentLoaded', function() {
+    const toc = document.getElementById('toc');
+    const headings = document.querySelectorAll('.guide-content h2, .guide-content h3, .guide-content h4');
+    
+    if (headings.length > 0) {
+        const tocList = document.createElement('ul');
+        
+        headings.forEach(function(heading, index) {
+            const id = 'heading-' + index;
+            heading.id = id;
+            
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.textContent = heading.textContent;
+            a.className = 'toc-' + heading.tagName.toLowerCase();
+            
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+        
+        toc.appendChild(tocList);
+    }
+});
+</script>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Rails Kılavuzları Türkçe Çevirisi. Gönüllüler tarafından hazırlanmıştır.</p>
+            <p>Orijinal dokümantasyon <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine aittir.</p>
+        </div>
+    </footer>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

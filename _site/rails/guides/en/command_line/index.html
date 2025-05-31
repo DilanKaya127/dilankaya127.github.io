@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Line - Rails Dokümantasyonu - Türkçe</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <a href="/">Rails Kılavuzları</a>
+                </h1>
+                <nav class="nav">
+                    <a href="/">Ana Sayfa</a>
+                    <a href="https://dilankaya127.github.io">Portföy</a>
+                    <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="guide-container">
+    <aside class="guide-sidebar">
+        <div class="guide-toc">
+            <h3>İçindekiler</h3>
+            <div id="toc"></div>
+        </div>
+        
+        <div class="guide-nav">
+            <h3>Diğer Kılavuzlar</h3>
+            <ul>
+                <li><a href="/rails/guides/tr/getting_started">Rails ile Başlarken</a></li>
+                <li><a href="/rails/guides/en/active_record_basics">Active Record Temelleri</a></li>
+                <li><a href="/rails/guides//en/action_controller_overview">Action Controller</a></li>
+                <li><a href="/rails/guides/tr/action_cable_overview">Action Cable</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <article class="guide-content">
+        <header class="guide-header">
+            <h1>Command Line</h1>
+            
+        </header>
+
+        <div class="guide-body">
+            <p><strong>DO NOT READ THIS FILE ON GITHUB, GUIDES ARE PUBLISHED ON <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a>.</strong></p>
+
+<h1 id="the-rails-command-line">The Rails Command Line</h1>
+
+<p>After reading this guide, you will know:</p>
+
+<ul>
+  <li>How to create a Rails application.</li>
+  <li>How to generate models, controllers, database migrations, and unit tests.</li>
+  <li>How to start a development server.</li>
+  <li>How to experiment with objects through an interactive shell.</li>
+</ul>
+
+<hr />
+
+<p>NOTE: This tutorial assumes you have basic Rails knowledge from reading the <a href="getting_started.html">Getting Started with Rails Guide</a>.</p>
+
+<h2 id="creating-a-rails-app">Creating a Rails App</h2>
+
+<p>First, let’s create a simple Rails application using the <code class="language-plaintext highlighter-rouge">rails new</code> command.</p>
+
+<p>We will use this application to play and discover all the commands described in this guide.</p>
+
+<p>INFO: You can install the rails gem by typing <code class="language-plaintext highlighter-rouge">gem install rails</code>, if you don’t have it already.</p>
+
+<h3 id="rails-new"><code class="language-plaintext highlighter-rouge">rails new</code></h3>
+
+<p>The first argument we’ll pass to the <code class="language-plaintext highlighter-rouge">rails new</code> command is the application name.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails new my_app
+     create
+     create  README.md
+     create  Rakefile
+     create  config.ru
+     create  .gitignore
+     create  Gemfile
+     create  app
+     ...
+     create  tmp/cache
+     ...
+        run  bundle <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>Rails will set up what seems like a huge amount of stuff for such a tiny command! We’ve got the entire Rails directory structure now with all the code we need to run our simple application right out of the box.</p>
+
+<h3 id="preconfigure-a-different-database">Preconfigure a Different Database</h3>
+
+<p>When creating a new Rails application, you have the option to specify what kind
+of database your application is going to use. This will save you a few minutes,
+and certainly many keystrokes.</p>
+
+<p>Let’s see what a <code class="language-plaintext highlighter-rouge">--database=postgresql</code> option will do for us:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails new petstore <span class="nt">--database</span><span class="o">=</span>postgresql
+      create
+      create  app/controllers
+      create  app/helpers
+...
+</code></pre></div></div>
+
+<p>Let’s see what it put in our <code class="language-plaintext highlighter-rouge">config/database.yml</code>:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># PostgreSQL. Versions 9.3 and up are supported.</span>
+<span class="c1">#</span>
+<span class="c1"># Install the pg driver:</span>
+<span class="c1">#   gem install pg</span>
+<span class="c1"># On macOS with Homebrew:</span>
+<span class="c1">#   gem install pg -- --with-pg-config=/opt/homebrew/bin/pg_config</span>
+<span class="c1"># On Windows:</span>
+<span class="c1">#   gem install pg</span>
+<span class="c1">#       Choose the win32 build.</span>
+<span class="c1">#       Install PostgreSQL and put its /bin directory on your path.</span>
+<span class="c1">#</span>
+<span class="c1"># Configure Using Gemfile</span>
+<span class="c1"># gem "pg"</span>
+<span class="c1">#</span>
+<span class="na">default</span><span class="pi">:</span> <span class="nl">&amp;default</span>
+  <span class="na">adapter</span><span class="pi">:</span> <span class="s">postgresql</span>
+  <span class="na">encoding</span><span class="pi">:</span> <span class="s">unicode</span>
+
+  <span class="c1"># For details on connection pooling, see Rails configuration guide</span>
+  <span class="c1"># https://guides.rubyonrails.org/configuring.html#database-pooling</span>
+  <span class="na">pool</span><span class="pi">:</span> <span class="s">&lt;%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %&gt;</span>
+
+<span class="na">development</span><span class="pi">:</span>
+  <span class="na">&lt;&lt;</span><span class="pi">:</span> <span class="nv">*default</span>
+  <span class="na">database</span><span class="pi">:</span> <span class="s">petstore_development</span>
+<span class="nn">...</span>
+</code></pre></div></div>
+
+<p>It generated a database configuration corresponding to our choice of PostgreSQL.</p>
+
+<h3 id="skipping-defaults">Skipping Defaults</h3>
+
+<p>If you wish to skip some files from being generated or skip some libraries
+entirely, you can pass one of the <code class="language-plaintext highlighter-rouge">--skip</code> arguments to the <code class="language-plaintext highlighter-rouge">rails new</code> command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails new sas <span class="nt">--skip-active-storage</span>
+Based on the specified options, the following options will also be activated:
+
+  <span class="nt">--skip-action-mailbox</span> <span class="o">[</span>due to <span class="nt">--skip-active-storage</span><span class="o">]</span>
+  <span class="nt">--skip-action-text</span> <span class="o">[</span>due to <span class="nt">--skip-active-storage</span><span class="o">]</span>
+
+      create
+      create  README.md
+      ...
+</code></pre></div></div>
+
+<p>In the above example, Action Mailbox and Action Text are skipped in addition to
+Active Storage because they depend on Active Storage functionality.</p>
+
+<p>For a full list of options (including what can be skipped), use <code class="language-plaintext highlighter-rouge">--help</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails new <span class="nt">--help</span>
+</code></pre></div></div>
+
+<h2 id="command-line-basics">Command Line Basics</h2>
+
+<p>There are a few commands that are absolutely critical to your everyday usage of Rails. In the order of how much you’ll probably use them are:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails console</code></li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails server</code></li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails test</code></li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails generate</code></li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails db:migrate</code></li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails db:create</code></li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails routes</code></li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails dbconsole</code></li>
+  <li><code class="language-plaintext highlighter-rouge">rails new app_name</code></li>
+</ul>
+
+<p>You can get a list of rails commands available to you, which will often depend on your current directory, by typing <code class="language-plaintext highlighter-rouge">rails --help</code>. Each command has a description, and should help you find the thing you need.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails <span class="nt">--help</span>
+Usage:
+  bin/rails COMMAND <span class="o">[</span>options]
+
+You must specify a command. The most common commands are:
+
+  generate     Generate new code <span class="o">(</span>short-cut <span class="nb">alias</span>: <span class="s2">"g"</span><span class="o">)</span>
+  console      Start the Rails console <span class="o">(</span>short-cut <span class="nb">alias</span>: <span class="s2">"c"</span><span class="o">)</span>
+  server       Start the Rails server <span class="o">(</span>short-cut <span class="nb">alias</span>: <span class="s2">"s"</span><span class="o">)</span>
+  ...
+
+All commands can be run with <span class="nt">-h</span> <span class="o">(</span>or <span class="nt">--help</span><span class="o">)</span> <span class="k">for </span>more information.
+
+In addition to those commands, there are:
+about                               List versions of all Rails ...
+assets:clean[keep]                  Remove old compiled assets
+assets:clobber                      Remove compiled assets
+assets:environment                  Load asset compile environment
+assets:precompile                   Compile all the assets ...
+...
+db:fixtures:load                    Load fixtures into the ...
+db:migrate                          Migrate the database ...
+db:migrate:status                   Display status of migrations
+db:rollback                         Roll the schema back to ...
+db:schema:cache:clear               Clears a db/schema_cache.yml file
+db:schema:cache:dump                Create a db/schema_cache.yml file
+db:schema:dump                      Create a database schema file <span class="o">(</span>either db/schema.rb or db/structure.sql ...
+db:schema:load                      Load a database schema file <span class="o">(</span>either db/schema.rb or db/structure.sql ...
+db:seed                             Load the seed data ...
+db:version                          Retrieve the current schema ...
+...
+restart                             Restart app by touching ...
+tmp:create                          Create tmp directories ...
+</code></pre></div></div>
+
+<h3 id="binrails-server"><code class="language-plaintext highlighter-rouge">bin/rails server</code></h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">bin/rails server</code> command launches a web server named Puma which comes bundled with Rails. You’ll use this any time you want to access your application through a web browser.</p>
+
+<p>With no further work, <code class="language-plaintext highlighter-rouge">bin/rails server</code> will run our new shiny Rails app:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>my_app
+<span class="nv">$ </span>bin/rails server
+<span class="o">=&gt;</span> Booting Puma
+<span class="o">=&gt;</span> Rails 8.1.0 application starting <span class="k">in </span>development
+<span class="o">=&gt;</span> Run <span class="sb">`</span>bin/rails server <span class="nt">--help</span><span class="sb">`</span> <span class="k">for </span>more startup options
+Puma starting <span class="k">in </span>single mode...
+<span class="k">*</span> Puma version: 6.4.0 <span class="o">(</span>ruby 3.1.3-p185<span class="o">)</span> <span class="o">(</span><span class="s2">"The Eagle of Durango"</span><span class="o">)</span>
+<span class="k">*</span>  Min threads: 5
+<span class="k">*</span>  Max threads: 5
+<span class="k">*</span>  Environment: development
+<span class="k">*</span>          PID: 5295
+<span class="k">*</span> Listening on http://127.0.0.1:3000
+<span class="k">*</span> Listening on http://[::1]:3000
+Use Ctrl-C to stop
+</code></pre></div></div>
+
+<p>With just three commands we whipped up a Rails server listening on port 3000. Go to your browser and open <a href="http://localhost:3000">http://localhost:3000</a>, you will see a basic Rails app running.</p>
+
+<p>INFO: You can also use the alias “s” to start the server: <code class="language-plaintext highlighter-rouge">bin/rails s</code>.</p>
+
+<p>The server can be run on a different port using the <code class="language-plaintext highlighter-rouge">-p</code> option. The default development environment can be changed using <code class="language-plaintext highlighter-rouge">-e</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails server <span class="nt">-e</span> production <span class="nt">-p</span> 4000
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">-b</code> option binds Rails to the specified IP, by default it is localhost. You can run a server as a daemon by passing a <code class="language-plaintext highlighter-rouge">-d</code> option.</p>
+
+<h3 id="binrails-generate"><code class="language-plaintext highlighter-rouge">bin/rails generate</code></h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">bin/rails generate</code> command uses templates to create a whole lot of things. Running <code class="language-plaintext highlighter-rouge">bin/rails generate</code> by itself gives a list of available generators:</p>
+
+<p>INFO: You can also use the alias “g” to invoke the generator command: <code class="language-plaintext highlighter-rouge">bin/rails g</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails generate
+Usage:
+  bin/rails generate GENERATOR <span class="o">[</span>args] <span class="o">[</span>options]
+
+...
+...
+
+Please choose a generator below.
+
+Rails:
+  assets
+  channel
+  controller
+  generator
+  ...
+  ...
+</code></pre></div></div>
+
+<p>NOTE: You can install more generators through generator gems, portions of plugins you’ll undoubtedly install, and you can even create your own!</p>
+
+<p>Using generators will save you a large amount of time by writing <strong>boilerplate code</strong>, code that is necessary for the app to work.</p>
+
+<p>Let’s make our own controller with the controller generator. But what command should we use? Let’s ask the generator:</p>
+
+<p>INFO: All Rails console utilities have help text. As with most *nix utilities, you can try adding <code class="language-plaintext highlighter-rouge">--help</code> or <code class="language-plaintext highlighter-rouge">-h</code> to the end, for example <code class="language-plaintext highlighter-rouge">bin/rails server --help</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails generate controller
+Usage:
+  bin/rails generate controller NAME <span class="o">[</span>action action] <span class="o">[</span>options]
+
+...
+...
+
+Description:
+    ...
+
+    To create a controller within a module, specify the controller name as a path like <span class="s1">'parent_module/controller_name'</span><span class="nb">.</span>
+
+    ...
+
+Example:
+    <span class="sb">`</span>bin/rails generate controller CreditCards open debit credit close<span class="sb">`</span>
+
+    Credit card controller with URLs like /credit_cards/debit.
+        Controller: app/controllers/credit_cards_controller.rb
+        Test:       <span class="nb">test</span>/controllers/credit_cards_controller_test.rb
+        Views:      app/views/credit_cards/debit.html.erb <span class="o">[</span>...]
+        Helper:     app/helpers/credit_cards_helper.rb
+</code></pre></div></div>
+
+<p>The controller generator is expecting parameters in the form of <code class="language-plaintext highlighter-rouge">generate controller ControllerName action1 action2</code>. Let’s make a <code class="language-plaintext highlighter-rouge">Greetings</code> controller with an action of <strong>hello</strong>, which will say something nice to us.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails generate controller Greetings hello
+     create  app/controllers/greetings_controller.rb
+      route  get <span class="s1">'greetings/hello'</span>
+     invoke  erb
+     create    app/views/greetings
+     create    app/views/greetings/hello.html.erb
+     invoke  test_unit
+     create    <span class="nb">test</span>/controllers/greetings_controller_test.rb
+     invoke  helper
+     create    app/helpers/greetings_helper.rb
+     invoke    test_unit
+</code></pre></div></div>
+
+<p>What did all this generate? It made sure a bunch of directories were in our application, and created a controller file, a view file, a functional test file, a helper for the view, a JavaScript file, and a stylesheet file.</p>
+
+<p>Check out the controller and modify it a little (in <code class="language-plaintext highlighter-rouge">app/controllers/greetings_controller.rb</code>):</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">GreetingsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">hello</span>
+    <span class="vi">@message</span> <span class="o">=</span> <span class="s2">"Hello, how are you today?"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Then the view, to display our message (in <code class="language-plaintext highlighter-rouge">app/views/greetings/hello.html.erb</code>):</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;h1&gt;</span>A Greeting for You!<span class="nt">&lt;/h1&gt;</span>
+<span class="nt">&lt;p&gt;</span><span class="cp">&lt;%=</span> <span class="vi">@message</span> <span class="cp">%&gt;</span><span class="nt">&lt;/p&gt;</span>
+</code></pre></div></div>
+
+<p>Fire up your server using <code class="language-plaintext highlighter-rouge">bin/rails server</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails server
+<span class="o">=&gt;</span> Booting Puma...
+</code></pre></div></div>
+
+<p>The URL will be <a href="http://localhost:3000/greetings/hello">http://localhost:3000/greetings/hello</a>.</p>
+
+<p>INFO: With a normal, plain-old Rails application, your URLs will generally follow the pattern of http://(host)/(controller)/(action), and a URL like http://(host)/(controller) will hit the <strong>index</strong> action of that controller.</p>
+
+<p>Rails comes with a generator for data models too.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails generate model
+Usage:
+  bin/rails generate model NAME <span class="o">[</span>field[:type][:index] field[:type][:index]] <span class="o">[</span>options]
+
+...
+
+ActiveRecord options:
+      <span class="o">[</span><span class="nt">--migration</span><span class="o">]</span>, <span class="o">[</span><span class="nt">--no-migration</span><span class="o">]</span>        <span class="c"># Indicates when to generate migration</span>
+                                             <span class="c"># Default: true</span>
+
+...
+
+Description:
+    Generates a new model. Pass the model name, either CamelCased or
+    under_scored, and an optional list of attribute pairs as arguments.
+
+...
+</code></pre></div></div>
+
+<p>NOTE: For a list of available field types for the <code class="language-plaintext highlighter-rouge">type</code> parameter, refer to the <a href="https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_column">API documentation</a> for the add_column method for the <code class="language-plaintext highlighter-rouge">SchemaStatements</code> module. The <code class="language-plaintext highlighter-rouge">index</code> parameter generates a corresponding index for the column.</p>
+
+<p>But instead of generating a model directly (which we’ll be doing later), let’s set up a scaffold. A <strong>scaffold</strong> in Rails is a full set of model, database migration for that model, controller to manipulate it, views to view and manipulate the data, and a test suite for each of the above.</p>
+
+<p>We will set up a simple resource called “HighScore” that will keep track of our highest score on video games we play.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails generate scaffold HighScore game:string score:integer
+    invoke  active_record
+    create    db/migrate/20190416145729_create_high_scores.rb
+    create    app/models/high_score.rb
+    invoke    test_unit
+    create      <span class="nb">test</span>/models/high_score_test.rb
+    create      <span class="nb">test</span>/fixtures/high_scores.yml
+    invoke  resource_route
+     route    resources :high_scores
+    invoke  scaffold_controller
+    create    app/controllers/high_scores_controller.rb
+    invoke    erb
+    create      app/views/high_scores
+    create      app/views/high_scores/index.html.erb
+    create      app/views/high_scores/edit.html.erb
+    create      app/views/high_scores/show.html.erb
+    create      app/views/high_scores/new.html.erb
+    create      app/views/high_scores/_form.html.erb
+    invoke    test_unit
+    create      <span class="nb">test</span>/controllers/high_scores_controller_test.rb
+    create      <span class="nb">test</span>/system/high_scores_test.rb
+    invoke    helper
+    create      app/helpers/high_scores_helper.rb
+    invoke      test_unit
+    invoke    jbuilder
+    create      app/views/high_scores/index.json.jbuilder
+    create      app/views/high_scores/show.json.jbuilder
+    create      app/views/high_scores/_high_score.json.jbuilder
+</code></pre></div></div>
+
+<p>The generator creates the model, views, controller, <strong>resource</strong> route, and database migration (which creates the <code class="language-plaintext highlighter-rouge">high_scores</code> table) for HighScore. And it adds tests for those.</p>
+
+<p>The migration requires that we <strong>migrate</strong>, that is, run some Ruby code (the <code class="language-plaintext highlighter-rouge">20190416145729_create_high_scores.rb</code> file from the above output) to modify the schema of our database. Which database? The SQLite3 database that Rails will create for you when we run the <code class="language-plaintext highlighter-rouge">bin/rails db:migrate</code> command. We’ll talk more about that command below.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails db:migrate
+<span class="o">==</span>  CreateHighScores: migrating <span class="o">===============================================</span>
+<span class="nt">--</span> create_table<span class="o">(</span>:high_scores<span class="o">)</span>
+   -&gt; 0.0017s
+<span class="o">==</span>  CreateHighScores: migrated <span class="o">(</span>0.0019s<span class="o">)</span> <span class="o">======================================</span>
+</code></pre></div></div>
+
+<p>INFO: Let’s talk about unit tests. Unit tests are code that tests and makes assertions
+about code. In unit testing, we take a little part of code, say a method of a model,
+and test its inputs and outputs. Unit tests are your friend. The sooner you make
+peace with the fact that your quality of life will drastically increase when you unit
+test your code, the better. Seriously. Please visit
+<a href="testing.html">the testing guide</a> for an in-depth
+look at unit testing.</p>
+
+<p>Let’s see the interface Rails created for us.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails server
+</code></pre></div></div>
+
+<p>Go to your browser and open <a href="http://localhost:3000/high_scores">http://localhost:3000/high_scores</a>, now we can create new high scores (55,160 on Space Invaders!)</p>
+
+<h3 id="binrails-console"><code class="language-plaintext highlighter-rouge">bin/rails console</code></h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">console</code> command lets you interact with your Rails application from the command line. On the underside, <code class="language-plaintext highlighter-rouge">bin/rails console</code> uses IRB, so if you’ve ever used it, you’ll be right at home. This is useful for testing out quick ideas with code and changing data server-side without touching the website.</p>
+
+<p>INFO: You can also use the alias “c” to invoke the console: <code class="language-plaintext highlighter-rouge">bin/rails c</code>.</p>
+
+<p>You can specify the environment in which the <code class="language-plaintext highlighter-rouge">console</code> command should operate.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails console <span class="nt">-e</span> staging
+</code></pre></div></div>
+
+<p>If you wish to test out some code without changing any data, you can do that by invoking <code class="language-plaintext highlighter-rouge">bin/rails console --sandbox</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails console <span class="nt">--sandbox</span>
+Loading development environment <span class="k">in </span>sandbox <span class="o">(</span>Rails 8.1.0<span class="o">)</span>
+Any modifications you make will be rolled back on <span class="nb">exit
+</span>irb<span class="o">(</span>main<span class="o">)</span>:001:0&gt;
+</code></pre></div></div>
+
+<h4 id="the-app-and-helper-objects">The <code class="language-plaintext highlighter-rouge">app</code> and <code class="language-plaintext highlighter-rouge">helper</code> Objects</h4>
+
+<p>Inside the <code class="language-plaintext highlighter-rouge">bin/rails console</code> you have access to the <code class="language-plaintext highlighter-rouge">app</code> and <code class="language-plaintext highlighter-rouge">helper</code> instances.</p>
+
+<p>With the <code class="language-plaintext highlighter-rouge">app</code> method you can access named route helpers, as well as do requests.</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="nf">root_path</span>
+<span class="p">=&gt;</span> <span class="s2">"/"</span>
+
+<span class="gp">irb&gt;</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="nf">get</span> <span class="n">_</span>
+<span class="go">Started GET "/" for 127.0.0.1 at 2014-06-19 10:41:57 -0300
+</span><span class="c">...
+</span></code></pre></div></div>
+
+<p>With the <code class="language-plaintext highlighter-rouge">helper</code> method it is possible to access Rails and your application’s helpers.</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">irb&gt;</span><span class="w"> </span><span class="n">helper</span><span class="p">.</span><span class="nf">time_ago_in_words</span> <span class="mi">30</span><span class="p">.</span><span class="nf">days</span><span class="p">.</span><span class="nf">ago</span>
+<span class="p">=&gt;</span> <span class="s2">"about 1 month"</span>
+
+<span class="gp">irb&gt;</span><span class="w"> </span><span class="n">helper</span><span class="p">.</span><span class="nf">my_custom_helper</span>
+<span class="p">=&gt;</span> <span class="s2">"my custom helper"</span>
+</code></pre></div></div>
+
+<h3 id="binrails-dbconsole"><code class="language-plaintext highlighter-rouge">bin/rails dbconsole</code></h3>
+
+<p><code class="language-plaintext highlighter-rouge">bin/rails dbconsole</code> figures out which database you’re using and drops you into whichever command line interface you would use with it (and figures out the command line parameters to give to it, too!). It supports MySQL (including MariaDB), PostgreSQL, and SQLite3.</p>
+
+<p>INFO: You can also use the alias “db” to invoke the dbconsole: <code class="language-plaintext highlighter-rouge">bin/rails db</code>.</p>
+
+<p>If you are using multiple databases, <code class="language-plaintext highlighter-rouge">bin/rails dbconsole</code> will connect to the primary database by default. You can specify which database to connect to using <code class="language-plaintext highlighter-rouge">--database</code> or <code class="language-plaintext highlighter-rouge">--db</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails dbconsole <span class="nt">--database</span><span class="o">=</span>animals
+</code></pre></div></div>
+
+<h3 id="binrails-runner"><code class="language-plaintext highlighter-rouge">bin/rails runner</code></h3>
+
+<p><code class="language-plaintext highlighter-rouge">runner</code> runs Ruby code in the context of the Rails application non-interactively, without having to open Rails <code class="language-plaintext highlighter-rouge">console</code>. For instance:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails runner <span class="s2">"Model.long_running_method"</span>
+</code></pre></div></div>
+
+<p>INFO: You can also use the alias “r” to invoke the runner: <code class="language-plaintext highlighter-rouge">bin/rails r</code>.</p>
+
+<p>You can specify the environment in which the <code class="language-plaintext highlighter-rouge">runner</code> command should operate using the <code class="language-plaintext highlighter-rouge">-e</code> switch.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails runner <span class="nt">-e</span> staging <span class="s2">"Model.long_running_method"</span>
+</code></pre></div></div>
+
+<p>You can even execute ruby code written in a file with runner.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails runner lib/code_to_be_run.rb
+</code></pre></div></div>
+
+<p>By default, <code class="language-plaintext highlighter-rouge">bin/rails runner</code> scripts are automatically wrapped with the Rails Executor, which helps report uncaught exceptions for tasks like cron jobs.</p>
+
+<p>Therefore, executing <code class="language-plaintext highlighter-rouge">bin/rails runner lib/long_running_scripts.rb</code> is functionally equivalent to the following:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">executor</span><span class="p">.</span><span class="nf">wrap</span> <span class="k">do</span>
+  <span class="c1"># executes code inside lib/long_running_scripts.rb</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>You can opt out of this behaviour by using the <code class="language-plaintext highlighter-rouge">--skip-executor</code> option.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails runner <span class="nt">--skip-executor</span> lib/long_running_script.rb
+</code></pre></div></div>
+
+<h3 id="binrails-destroy"><code class="language-plaintext highlighter-rouge">bin/rails destroy</code></h3>
+
+<p>Think of <code class="language-plaintext highlighter-rouge">destroy</code> as the opposite of <code class="language-plaintext highlighter-rouge">generate</code>. It’ll figure out what generate did, and undo it.</p>
+
+<p>INFO: You can also use the alias “d” to invoke the destroy command: <code class="language-plaintext highlighter-rouge">bin/rails d</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails generate model Oops
+      invoke  active_record
+      create    db/migrate/20120528062523_create_oops.rb
+      create    app/models/oops.rb
+      invoke    test_unit
+      create      <span class="nb">test</span>/models/oops_test.rb
+      create      <span class="nb">test</span>/fixtures/oops.yml
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails destroy model Oops
+      invoke  active_record
+      remove    db/migrate/20120528062523_create_oops.rb
+      remove    app/models/oops.rb
+      invoke    test_unit
+      remove      <span class="nb">test</span>/models/oops_test.rb
+      remove      <span class="nb">test</span>/fixtures/oops.yml
+</code></pre></div></div>
+
+<h3 id="binrails-about"><code class="language-plaintext highlighter-rouge">bin/rails about</code></h3>
+
+<p><code class="language-plaintext highlighter-rouge">bin/rails about</code> gives information about version numbers for Ruby, RubyGems, Rails, the Rails subcomponents, your application’s folder, the current Rails environment name, your app’s database adapter, and schema version. It is useful when you need to ask for help, check if a security patch might affect you, or when you need some stats for an existing Rails installation.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails about
+About your application<span class="s1">'s environment
+Rails version             8.1.0
+Ruby version              3.2.0 (x86_64-linux)
+RubyGems version          3.3.7
+Rack version              3.0.8
+JavaScript Runtime        Node.js (V8)
+Middleware:               ActionDispatch::HostAuthorization, Rack::Sendfile, ActionDispatch::Static, ActionDispatch::Executor, ActionDispatch::ServerTiming, ActiveSupport::Cache::Strategy::LocalCache::Middleware, Rack::Runtime, Rack::MethodOverride, ActionDispatch::RequestId, ActionDispatch::RemoteIp, Sprockets::Rails::QuietAssets, Rails::Rack::Logger, ActionDispatch::ShowExceptions, WebConsole::Middleware, ActionDispatch::DebugExceptions, ActionDispatch::ActionableExceptions, ActionDispatch::Reloader, ActionDispatch::Callbacks, ActiveRecord::Migration::CheckPending, ActionDispatch::Cookies, ActionDispatch::Session::CookieStore, ActionDispatch::Flash, ActionDispatch::ContentSecurityPolicy::Middleware, ActionDispatch::PermissionsPolicy::Middleware, Rack::Head, Rack::ConditionalGet, Rack::ETag, Rack::TempfileReaper
+Application root          /home/foobar/my_app
+Environment               development
+Database adapter          sqlite3
+Database schema version   20180205173523
+</span></code></pre></div></div>
+
+<h3 id="binrails-assets"><code class="language-plaintext highlighter-rouge">bin/rails assets:</code></h3>
+
+<p>You can precompile the assets in <code class="language-plaintext highlighter-rouge">app/assets</code> using <code class="language-plaintext highlighter-rouge">bin/rails assets:precompile</code>, and remove older compiled assets using <code class="language-plaintext highlighter-rouge">bin/rails assets:clean</code>. The <code class="language-plaintext highlighter-rouge">assets:clean</code> command allows for rolling deploys that may still be linking to an old asset while the new assets are being built.</p>
+
+<p>If you want to clear <code class="language-plaintext highlighter-rouge">public/assets</code> completely, you can use <code class="language-plaintext highlighter-rouge">bin/rails assets:clobber</code>.</p>
+
+<h3 id="binrails-db"><code class="language-plaintext highlighter-rouge">bin/rails db:</code></h3>
+
+<p>The most common commands of the <code class="language-plaintext highlighter-rouge">db:</code> rails namespace are <code class="language-plaintext highlighter-rouge">migrate</code> and <code class="language-plaintext highlighter-rouge">create</code>, and it will pay off to try out all of the migration rails commands (<code class="language-plaintext highlighter-rouge">up</code>, <code class="language-plaintext highlighter-rouge">down</code>, <code class="language-plaintext highlighter-rouge">redo</code>, <code class="language-plaintext highlighter-rouge">reset</code>). <code class="language-plaintext highlighter-rouge">bin/rails db:version</code> is useful when troubleshooting, telling you the current version of the database.</p>
+
+<p>More information about migrations can be found in the <a href="active_record_migrations.html">Migrations</a> guide.</p>
+
+<h4 id="switching-to-a-different-database-later">Switching to a Different Database Later</h4>
+
+<p>After creating a new Rails application, you have the option to switch to any
+other supported database. For example, you might work with SQLite for a while and
+then decide to switch to PostgreSQL. In this case, you only need to run:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails db:system:change <span class="nt">--to</span><span class="o">=</span>postgresql
+    conflict  config/database.yml
+Overwrite config/database.yml? <span class="o">(</span>enter <span class="s2">"h"</span> <span class="k">for </span><span class="nb">help</span><span class="o">)</span> <span class="o">[</span>Ynaqdhm] Y
+       force  config/database.yml
+        gsub  Gemfile
+        gsub  Gemfile
+...
+</code></pre></div></div>
+
+<p>And then install the missing gems:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bundle <span class="nb">install</span>
+...
+
+</code></pre></div></div>
+
+<h3 id="binrails-notes"><code class="language-plaintext highlighter-rouge">bin/rails notes</code></h3>
+
+<p><code class="language-plaintext highlighter-rouge">bin/rails notes</code> searches through your code for comments beginning with a specific keyword. You can refer to <code class="language-plaintext highlighter-rouge">bin/rails notes --help</code> for information about usage.</p>
+
+<p>By default, it will search in <code class="language-plaintext highlighter-rouge">app</code>, <code class="language-plaintext highlighter-rouge">config</code>, <code class="language-plaintext highlighter-rouge">db</code>, <code class="language-plaintext highlighter-rouge">lib</code>, and <code class="language-plaintext highlighter-rouge">test</code> directories for FIXME, OPTIMIZE, and TODO annotations in files with extension <code class="language-plaintext highlighter-rouge">.builder</code>, <code class="language-plaintext highlighter-rouge">.rb</code>, <code class="language-plaintext highlighter-rouge">.rake</code>, <code class="language-plaintext highlighter-rouge">.yml</code>, <code class="language-plaintext highlighter-rouge">.yaml</code>, <code class="language-plaintext highlighter-rouge">.ruby</code>, <code class="language-plaintext highlighter-rouge">.css</code>, <code class="language-plaintext highlighter-rouge">.js</code>, and <code class="language-plaintext highlighter-rouge">.erb</code>.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails notes
+app/controllers/admin/users_controller.rb:
+  <span class="k">*</span> <span class="o">[</span> 20] <span class="o">[</span>TODO] any other way to <span class="k">do </span>this?
+  <span class="k">*</span> <span class="o">[</span>132] <span class="o">[</span>FIXME] high priority <span class="k">for </span>next deploy
+
+lib/school.rb:
+  <span class="k">*</span> <span class="o">[</span> 13] <span class="o">[</span>OPTIMIZE] refactor this code to make it faster
+  <span class="k">*</span> <span class="o">[</span> 17] <span class="o">[</span>FIXME]
+</code></pre></div></div>
+
+<h4 id="annotations">Annotations</h4>
+
+<p>You can pass specific annotations by using the <code class="language-plaintext highlighter-rouge">--annotations</code> argument. By default, it will search for FIXME, OPTIMIZE, and TODO.
+Note that annotations are case sensitive.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails notes <span class="nt">--annotations</span> FIXME RELEASE
+app/controllers/admin/users_controller.rb:
+  <span class="k">*</span> <span class="o">[</span>101] <span class="o">[</span>RELEASE] We need to look at this before next release
+  <span class="k">*</span> <span class="o">[</span>132] <span class="o">[</span>FIXME] high priority <span class="k">for </span>next deploy
+
+lib/school.rb:
+  <span class="k">*</span> <span class="o">[</span> 17] <span class="o">[</span>FIXME]
+</code></pre></div></div>
+
+<h4 id="tags">Tags</h4>
+
+<p>You can add more default tags to search for by using <code class="language-plaintext highlighter-rouge">config.annotations.register_tags</code>. It receives a list of tags.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">config</span><span class="p">.</span><span class="nf">annotations</span><span class="p">.</span><span class="nf">register_tags</span><span class="p">(</span><span class="s2">"DEPRECATEME"</span><span class="p">,</span> <span class="s2">"TESTME"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails notes
+app/controllers/admin/users_controller.rb:
+  <span class="k">*</span> <span class="o">[</span> 20] <span class="o">[</span>TODO] <span class="k">do </span>A/B testing on this
+  <span class="k">*</span> <span class="o">[</span> 42] <span class="o">[</span>TESTME] this needs more functional tests
+  <span class="k">*</span> <span class="o">[</span>132] <span class="o">[</span>DEPRECATEME] ensure this method is deprecated <span class="k">in </span>next release
+</code></pre></div></div>
+
+<h4 id="directories">Directories</h4>
+
+<p>You can add more default directories to search from by using <code class="language-plaintext highlighter-rouge">config.annotations.register_directories</code>. It receives a list of directory names.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">config</span><span class="p">.</span><span class="nf">annotations</span><span class="p">.</span><span class="nf">register_directories</span><span class="p">(</span><span class="s2">"spec"</span><span class="p">,</span> <span class="s2">"vendor"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails notes
+app/controllers/admin/users_controller.rb:
+  <span class="k">*</span> <span class="o">[</span> 20] <span class="o">[</span>TODO] any other way to <span class="k">do </span>this?
+  <span class="k">*</span> <span class="o">[</span>132] <span class="o">[</span>FIXME] high priority <span class="k">for </span>next deploy
+
+lib/school.rb:
+  <span class="k">*</span> <span class="o">[</span> 13] <span class="o">[</span>OPTIMIZE] Refactor this code to make it faster
+  <span class="k">*</span> <span class="o">[</span> 17] <span class="o">[</span>FIXME]
+
+spec/models/user_spec.rb:
+  <span class="k">*</span> <span class="o">[</span>122] <span class="o">[</span>TODO] Verify the user that has a subscription works
+
+vendor/tools.rb:
+  <span class="k">*</span> <span class="o">[</span> 56] <span class="o">[</span>TODO] Get rid of this dependency
+</code></pre></div></div>
+
+<h4 id="extensions">Extensions</h4>
+
+<p>You can add more default file extensions to search from by using <code class="language-plaintext highlighter-rouge">config.annotations.register_extensions</code>. It receives a list of extensions with its corresponding regex to match it up.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">config</span><span class="p">.</span><span class="nf">annotations</span><span class="p">.</span><span class="nf">register_extensions</span><span class="p">(</span><span class="s2">"scss"</span><span class="p">,</span> <span class="s2">"sass"</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">annotation</span><span class="o">|</span> <span class="sr">/\/\/\s*(</span><span class="si">#{</span><span class="n">annotation</span><span class="si">}</span><span class="sr">):?\s*(.*)$/</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails notes
+app/controllers/admin/users_controller.rb:
+  <span class="k">*</span> <span class="o">[</span> 20] <span class="o">[</span>TODO] any other way to <span class="k">do </span>this?
+  <span class="k">*</span> <span class="o">[</span>132] <span class="o">[</span>FIXME] high priority <span class="k">for </span>next deploy
+
+app/assets/stylesheets/application.css.sass:
+  <span class="k">*</span> <span class="o">[</span> 34] <span class="o">[</span>TODO] Use pseudo element <span class="k">for </span>this class
+
+app/assets/stylesheets/application.css.scss:
+  <span class="k">*</span> <span class="o">[</span>  1] <span class="o">[</span>TODO] Split into multiple components
+
+lib/school.rb:
+  <span class="k">*</span> <span class="o">[</span> 13] <span class="o">[</span>OPTIMIZE] Refactor this code to make it faster
+  <span class="k">*</span> <span class="o">[</span> 17] <span class="o">[</span>FIXME]
+
+spec/models/user_spec.rb:
+  <span class="k">*</span> <span class="o">[</span>122] <span class="o">[</span>TODO] Verify the user that has a subscription works
+
+vendor/tools.rb:
+  <span class="k">*</span> <span class="o">[</span> 56] <span class="o">[</span>TODO] Get rid of this dependency
+</code></pre></div></div>
+
+<h3 id="binrails-routes"><code class="language-plaintext highlighter-rouge">bin/rails routes</code></h3>
+
+<p><code class="language-plaintext highlighter-rouge">bin/rails routes</code> will list all of your defined routes, which is useful for tracking down routing problems in your app, or giving you a good overview of the URLs in an app you’re trying to get familiar with.</p>
+
+<h3 id="binrails-test"><code class="language-plaintext highlighter-rouge">bin/rails test</code></h3>
+
+<p>INFO: A good description of unit testing in Rails is given in <a href="testing.html">A Guide to Testing Rails Applications</a></p>
+
+<p>Rails comes with a test framework called minitest. Rails owes its stability to the use of tests. The commands available in the <code class="language-plaintext highlighter-rouge">test:</code> namespace help in running the different tests you will hopefully write.</p>
+
+<h3 id="binrails-tmp"><code class="language-plaintext highlighter-rouge">bin/rails tmp:</code></h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">Rails.root/tmp</code> directory is, like the *nix /tmp directory, the holding place for temporary files like process id files and cached actions.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">tmp:</code> namespaced commands will help you clear and create the <code class="language-plaintext highlighter-rouge">Rails.root/tmp</code> directory:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails tmp:cache:clear</code> clears <code class="language-plaintext highlighter-rouge">tmp/cache</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails tmp:sockets:clear</code> clears <code class="language-plaintext highlighter-rouge">tmp/sockets</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails tmp:screenshots:clear</code> clears <code class="language-plaintext highlighter-rouge">tmp/screenshots</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails tmp:clear</code> clears all cache, sockets, and screenshot files.</li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails tmp:create</code> creates tmp directories for cache, sockets, and pids.</li>
+</ul>
+
+<h3 id="miscellaneous">Miscellaneous</h3>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails initializers</code> prints out all defined initializers in the order they are invoked by Rails.</li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails middleware</code> lists Rack middleware stack enabled for your app.</li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails stats</code> is great for looking at statistics on your code, displaying things like KLOCs (thousands of lines of code) and your code to test ratio.</li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails secret</code> will give you a pseudo-random key to use for your session secret.</li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails time:zones:all</code> lists all the timezones Rails knows about.</li>
+  <li><code class="language-plaintext highlighter-rouge">bin/rails boot</code> boots the application and exits.</li>
+</ul>
+
+<h3 id="custom-rake-tasks">Custom Rake Tasks</h3>
+
+<p>Custom rake tasks have a <code class="language-plaintext highlighter-rouge">.rake</code> extension and are placed in
+<code class="language-plaintext highlighter-rouge">Rails.root/lib/tasks</code>. You can create these custom rake tasks with the
+<code class="language-plaintext highlighter-rouge">bin/rails generate task</code> command.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">desc</span> <span class="s2">"I am short, but comprehensive description for my cool task"</span>
+<span class="n">task</span> <span class="ss">task_name: </span><span class="p">[</span><span class="ss">:prerequisite_task</span><span class="p">,</span> <span class="ss">:another_task_we_depend_on</span><span class="p">]</span> <span class="k">do</span>
+  <span class="c1"># All your magic here</span>
+  <span class="c1"># Any valid Ruby code is allowed</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>To pass arguments to your custom rake task:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span> <span class="ss">:task_name</span><span class="p">,</span> <span class="p">[</span><span class="ss">:arg_1</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="ss">:prerequisite_1</span><span class="p">,</span> <span class="ss">:prerequisite_2</span><span class="p">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">task</span><span class="p">,</span> <span class="n">args</span><span class="o">|</span>
+  <span class="n">argument_1</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="nf">arg_1</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>You can group tasks by placing them in namespaces:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">namespace</span> <span class="ss">:db</span> <span class="k">do</span>
+  <span class="n">desc</span> <span class="s2">"This task does nothing"</span>
+  <span class="n">task</span> <span class="ss">:nothing</span> <span class="k">do</span>
+    <span class="c1"># Seriously, nothing</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Invocation of the tasks will look like:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails task_name
+<span class="nv">$ </span>bin/rails <span class="s2">"task_name[value 1]"</span> <span class="c"># entire argument string should be quoted</span>
+<span class="nv">$ </span>bin/rails <span class="s2">"task_name[value 1,value2,value3]"</span> <span class="c"># separate multiple args with a comma</span>
+<span class="nv">$ </span>bin/rails db:nothing
+</code></pre></div></div>
+
+<p>If you need to interact with your application models, perform database queries, and so on, your task should depend on the <code class="language-plaintext highlighter-rouge">environment</code> task, which will load your application code.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span> <span class="ss">task_that_requires_app_code: </span><span class="p">[</span><span class="ss">:environment</span><span class="p">]</span> <span class="k">do</span>
+  <span class="no">User</span><span class="p">.</span><span class="nf">create!</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+        </div>
+
+        <footer class="guide-footer">
+            <div class="feedback">
+                <h3>Geri Bildirim</h3>
+                <p>Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri bildirimlerinizi bekliyoruz.</p>
+                <p>Lütfen <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub Issues</a> üzerinden katkıda bulunun.</p>
+            </div>
+        </footer>
+    </article>
+</div>
+
+<script>
+// İçindekiler tablosunu otomatik oluştur
+document.addEventListener('DOMContentLoaded', function() {
+    const toc = document.getElementById('toc');
+    const headings = document.querySelectorAll('.guide-content h2, .guide-content h3, .guide-content h4');
+    
+    if (headings.length > 0) {
+        const tocList = document.createElement('ul');
+        
+        headings.forEach(function(heading, index) {
+            const id = 'heading-' + index;
+            heading.id = id;
+            
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.textContent = heading.textContent;
+            a.className = 'toc-' + heading.tagName.toLowerCase();
+            
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+        
+        toc.appendChild(tocList);
+    }
+});
+</script>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Rails Kılavuzları Türkçe Çevirisi. Gönüllüler tarafından hazırlanmıştır.</p>
+            <p>Orijinal dokümantasyon <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine aittir.</p>
+        </div>
+    </footer>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>
