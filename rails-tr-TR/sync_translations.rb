@@ -8,7 +8,7 @@ class TranslationSyncer
   # Yolları ayarlayın
   RAILS_REPO_PATH = "https://github.com/DilanKaya127/rails-tr-TR"  # Rails fork'unuzun yolu
   RAILS_TR_PATH = "#{RAILS_REPO_PATH}/guides/source/tr-TR"
-  JEKYLL_GUIDES_PATH = "./guides"
+  JEKYLL_GUIDES_PATH = "./guides/tr"
   
   def initialize
     validate_paths
