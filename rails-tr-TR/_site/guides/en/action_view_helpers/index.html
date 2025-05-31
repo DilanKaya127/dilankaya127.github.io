@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action View Helpers - Rails Dokümantasyonu - Türkçe</title>
+    <link rel="stylesheet" href="/rails-tr-TR/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <a href="/rails-tr-TR/">Rails Kılavuzları</a>
+                </h1>
+                <nav class="nav">
+                    <a href="/rails-tr-TR/">Ana Sayfa</a>
+                    <a href="https://dilankaya127.github.io">Portföy</a>
+                    <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="guide-container">
+    <aside class="guide-sidebar">
+        <div class="guide-toc">
+            <h3>İçindekiler</h3>
+            <div id="toc"></div>
+        </div>
+        
+        <div class="guide-nav">
+            <h3>Diğer Kılavuzlar</h3>
+            <ul>
+                <li><a href="/rails-tr-TR/guides/getting_started">Rails ile Başlarken</a></li>
+                <li><a href="/rails-tr-TR/guides/active_record_basics">Active Record Temelleri</a></li>
+                <li><a href="/rails-tr-TR/guides/action_controller_overview">Action Controller</a></li>
+                <li><a href="/rails-tr-TR/guides/action_view_overview">Action View</a></li>
+                <li><a href="/rails-tr-TR/guides/routing">Yönlendirme</a></li>
+                <li><a href="/rails-tr-TR/guides/action_cable_overview">Action Cable</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <article class="guide-content">
+        <header class="guide-header">
+            <h1>Action View Helpers</h1>
+            
+        </header>
+
+        <div class="guide-body">
+            <p><strong>DO NOT READ THIS FILE ON GITHUB, GUIDES ARE PUBLISHED ON <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a>.</strong></p>
+
+<h1 id="action-view-helpers">Action View Helpers</h1>
+
+<p>After reading this guide, you will know:</p>
+
+<ul>
+  <li>How to format dates, strings, and numbers.</li>
+  <li>How to work with text and tags.</li>
+  <li>How to link to images, videos, stylesheets, etc.</li>
+  <li>How to work with Atom feeds and JavaScript in the views.</li>
+  <li>How to cache, capture, debug and sanitize content.</li>
+</ul>
+
+<hr />
+
+<p>The following outlines <strong>some of the most commonly used helpers</strong> available in
+Action View. It serves as a good starting point, but reviewing the full <a href="https://api.rubyonrails.org/classes/ActionView/Helpers.html">API
+Documentation</a> is
+also recommended, as it covers all of the helpers in more detail.</p>
+
+<h2 id="formatting">Formatting</h2>
+
+<h3 id="dates">Dates</h3>
+
+<p>These helpers facilitate the display of date and/or time elements as contextual
+human readable forms.</p>
+
+<h4 id="distance_of_time_in_words">distance_of_time_in_words</h4>
+
+<p>Reports the approximate distance in time between two <code class="language-plaintext highlighter-rouge">Time</code> or <code class="language-plaintext highlighter-rouge">Date</code> objects or
+integers as seconds. Set <code class="language-plaintext highlighter-rouge">include_seconds</code> to true if you want more detailed
+approximations.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">distance_of_time_in_words</span><span class="p">(</span><span class="no">Time</span><span class="p">.</span><span class="nf">current</span><span class="p">,</span> <span class="mi">15</span><span class="p">.</span><span class="nf">seconds</span><span class="p">.</span><span class="nf">from_now</span><span class="p">)</span>
+<span class="c1"># =&gt; less than a minute</span>
+<span class="n">distance_of_time_in_words</span><span class="p">(</span><span class="no">Time</span><span class="p">.</span><span class="nf">current</span><span class="p">,</span> <span class="mi">15</span><span class="p">.</span><span class="nf">seconds</span><span class="p">.</span><span class="nf">from_now</span><span class="p">,</span> <span class="ss">include_seconds: </span><span class="kp">true</span><span class="p">)</span>
+<span class="c1"># =&gt; less than 20 seconds</span>
+</code></pre></div></div>
+
+<p>NOTE: We use <code class="language-plaintext highlighter-rouge">Time.current</code> instead of <code class="language-plaintext highlighter-rouge">Time.now</code> because it returns the current
+time based on the timezone set in Rails, whereas <code class="language-plaintext highlighter-rouge">Time.now</code> returns a Time
+object based on the server’s timezone.</p>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/DateHelper.html#method-i-distance_of_time_in_words"><code class="language-plaintext highlighter-rouge">distance_of_time_in_words</code> API
+Documentation</a>
+for more information.</p>
+
+<h4 id="time_ago_in_words">time_ago_in_words</h4>
+
+<p>Reports the approximate distance in time between a <code class="language-plaintext highlighter-rouge">Time</code> or <code class="language-plaintext highlighter-rouge">Date</code> object, or
+integer as seconds,  and <code class="language-plaintext highlighter-rouge">Time.current</code>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">time_ago_in_words</span><span class="p">(</span><span class="mi">3</span><span class="p">.</span><span class="nf">minutes</span><span class="p">.</span><span class="nf">from_now</span><span class="p">)</span> <span class="c1"># =&gt; 3 minutes</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/DateHelper.html#method-i-time_ago_in_words"><code class="language-plaintext highlighter-rouge">time_ago_in_words</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="numbers">Numbers</h3>
+
+<p>A set of methods for converting numbers into formatted strings. Methods are
+provided for phone numbers, currency, percentage, precision, positional
+notation, and file size.</p>
+
+<h4 id="number_to_currency">number_to_currency</h4>
+
+<p>Formats a number into a currency string (e.g., $13.65).</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">number_to_currency</span><span class="p">(</span><span class="mf">1234567890.50</span><span class="p">)</span> <span class="c1"># =&gt; $1,234,567,890.50</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/NumberHelper.html#method-i-number_to_currency"><code class="language-plaintext highlighter-rouge">number_to_currency</code> API
+Documentation</a>
+for more information.</p>
+
+<h4 id="number_to_human">number_to_human</h4>
+
+<p>Pretty prints (formats and approximates) a number so it is more readable by
+users; useful for numbers that can get very large.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">number_to_human</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>    <span class="c1"># =&gt; 1.23 Thousand</span>
+<span class="n">number_to_human</span><span class="p">(</span><span class="mi">1234567</span><span class="p">)</span> <span class="c1"># =&gt; 1.23 Million</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/NumberHelper.html#method-i-number_to_human"><code class="language-plaintext highlighter-rouge">number_to_human</code> API
+Documentation</a>
+for more information.</p>
+
+<h4 id="number_to_human_size">number_to_human_size</h4>
+
+<p>Formats the bytes in size into a more understandable representation; useful for
+reporting file sizes to users.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">number_to_human_size</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>    <span class="c1"># =&gt; 1.21 KB</span>
+<span class="n">number_to_human_size</span><span class="p">(</span><span class="mi">1234567</span><span class="p">)</span> <span class="c1"># =&gt; 1.18 MB</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/NumberHelper.html#method-i-number_to_human_size"><code class="language-plaintext highlighter-rouge">number_to_human_size</code> API
+Documentation</a>
+for more information.</p>
+
+<h4 id="number_to_percentage">number_to_percentage</h4>
+
+<p>Formats a number as a percentage string.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">number_to_percentage</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="ss">precision: </span><span class="mi">0</span><span class="p">)</span> <span class="c1"># =&gt; 100%</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/NumberHelper.html#method-i-number_to_percentage"><code class="language-plaintext highlighter-rouge">number_to_percentage</code> API
+Documentation</a>
+for more information.</p>
+
+<h4 id="number_to_phone">number_to_phone</h4>
+
+<p>Formats a number into a phone number (US by default).</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">number_to_phone</span><span class="p">(</span><span class="mi">1235551234</span><span class="p">)</span> <span class="c1"># =&gt; 123-555-1234</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/NumberHelper.html#method-i-number_to_phone"><code class="language-plaintext highlighter-rouge">number_to_phone</code> API
+Documentation</a>
+for more information.</p>
+
+<h4 id="number_with_delimiter">number_with_delimiter</h4>
+
+<p>Formats a number with grouped thousands using a delimiter.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">number_with_delimiter</span><span class="p">(</span><span class="mi">12345678</span><span class="p">)</span> <span class="c1"># =&gt; 12,345,678</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/NumberHelper.html#method-i-number_with_delimiter"><code class="language-plaintext highlighter-rouge">number_with_delimiter</code> API
+Documentation</a>
+for more information.</p>
+
+<h4 id="number_with_precision">number_with_precision</h4>
+
+<p>Formats a number with the specified level of <code class="language-plaintext highlighter-rouge">precision</code>, which defaults to 3.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">number_with_precision</span><span class="p">(</span><span class="mf">111.2345</span><span class="p">)</span>               <span class="c1"># =&gt; 111.235</span>
+<span class="n">number_with_precision</span><span class="p">(</span><span class="mf">111.2345</span><span class="p">,</span> <span class="ss">precision: </span><span class="mi">2</span><span class="p">)</span> <span class="c1"># =&gt; 111.23</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/NumberHelper.html#method-i-number_with_precision"><code class="language-plaintext highlighter-rouge">number_with_precision</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="text">Text</h3>
+
+<p>A set of methods for filtering, formatting and transforming strings.</p>
+
+<h4 id="excerpt">excerpt</h4>
+
+<p>Given a <code class="language-plaintext highlighter-rouge">text</code> and a <code class="language-plaintext highlighter-rouge">phrase</code>, <code class="language-plaintext highlighter-rouge">excerpt</code> searches for and extracts the first
+occurrence of the <code class="language-plaintext highlighter-rouge">phrase</code>, plus the requested surrounding text determined by a
+<code class="language-plaintext highlighter-rouge">radius</code>. An omission marker is prepended/appended if the start/end of the
+result does not coincide with the start/end of the text.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">excerpt</span><span class="p">(</span><span class="s2">"This is a very beautiful morning"</span><span class="p">,</span> <span class="s2">"very"</span><span class="p">,</span> <span class="ss">separator: </span><span class="s2">" "</span><span class="p">,</span> <span class="ss">radius: </span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># =&gt; ...a very beautiful...</span>
+
+<span class="n">excerpt</span><span class="p">(</span><span class="s2">"This is also an example"</span><span class="p">,</span> <span class="s2">"an"</span><span class="p">,</span> <span class="ss">radius: </span><span class="mi">8</span><span class="p">,</span> <span class="ss">omission: </span><span class="s2">"&lt;chop&gt; "</span><span class="p">)</span>
+<span class="c1">#=&gt; &lt;chop&gt; is also an example</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/TextHelper.html#method-i-excerpt"><code class="language-plaintext highlighter-rouge">excerpt</code> API
+Documentation</a>
+for more information.</p>
+
+<h4 id="pluralize">pluralize</h4>
+
+<p>Returns the singular or plural form of a word based on the value of a number.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pluralize</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">)</span> <span class="c1"># =&gt; 1 person</span>
+<span class="n">pluralize</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">)</span> <span class="c1"># =&gt; 2 people</span>
+<span class="n">pluralize</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">"person"</span><span class="p">,</span> <span class="ss">plural: </span><span class="s2">"users"</span><span class="p">)</span> <span class="c1"># =&gt; 3 users</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/TextHelper.html#method-i-pluralize"><code class="language-plaintext highlighter-rouge">pluralize</code> API
+Documentation</a>
+for more information.</p>
+
+<h4 id="truncate">truncate</h4>
+
+<p>Truncates a given <code class="language-plaintext highlighter-rouge">text</code> to a given <code class="language-plaintext highlighter-rouge">length</code>. If the text is truncated, an
+omission marker will be appended to the result for a total length not exceeding
+<code class="language-plaintext highlighter-rouge">length</code>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">truncate</span><span class="p">(</span><span class="s2">"Once upon a time in a world far far away"</span><span class="p">)</span>
+<span class="c1"># =&gt; "Once upon a time in a world..."</span>
+
+<span class="n">truncate</span><span class="p">(</span><span class="s2">"Once upon a time in a world far far away"</span><span class="p">,</span> <span class="ss">length: </span><span class="mi">17</span><span class="p">)</span>
+<span class="c1"># =&gt; "Once upon a ti..."</span>
+
+<span class="n">truncate</span><span class="p">(</span><span class="s2">"one-two-three-four-five"</span><span class="p">,</span> <span class="ss">length: </span><span class="mi">20</span><span class="p">,</span> <span class="ss">separator: </span><span class="s2">"-"</span><span class="p">)</span>
+<span class="c1"># =&gt; "one-two-three..."</span>
+
+<span class="n">truncate</span><span class="p">(</span><span class="s2">"And they found that many people were sleeping better."</span><span class="p">,</span> <span class="ss">length: </span><span class="mi">25</span><span class="p">,</span> <span class="ss">omission: </span><span class="s2">"... (continued)"</span><span class="p">)</span>
+<span class="c1"># =&gt; "And they f... (continued)"</span>
+
+<span class="n">truncate</span><span class="p">(</span><span class="s2">"&lt;p&gt;Once upon a time in a world far far away&lt;/p&gt;"</span><span class="p">,</span> <span class="ss">escape: </span><span class="kp">false</span><span class="p">)</span>
+<span class="c1"># =&gt; "&lt;p&gt;Once upon a time in a wo..."</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/TextHelper.html#method-i-truncate"><code class="language-plaintext highlighter-rouge">truncate</code> API
+Documentation</a>
+for more information.</p>
+
+<h4 id="word_wrap">word_wrap</h4>
+
+<p>Wraps the text into lines no longer than <code class="language-plaintext highlighter-rouge">line_width</code> width.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">word_wrap</span><span class="p">(</span><span class="s2">"Once upon a time"</span><span class="p">,</span> <span class="ss">line_width: </span><span class="mi">8</span><span class="p">)</span>
+<span class="c1"># =&gt; "Once\nupon a\ntime"</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/TextHelper.html#method-i-word_wrap"><code class="language-plaintext highlighter-rouge">word_wrap</code> API
+Documentation</a>
+for more information.</p>
+
+<h2 id="forms">Forms</h2>
+
+<p>Form helpers simplify working with models compared to using standard HTML
+elements alone. They offer a range of methods tailored to generating forms based
+on your models. Some methods correspond to a specific type of input, such as
+text fields, password fields, select dropdowns, and more. When a form is
+submitted, the inputs within the form are grouped into the params object and
+sent back to the controller.</p>
+
+<p>You can learn more about form helpers in the <a href="form_helpers.html">Action View Form Helpers
+Guide</a>.</p>
+
+<h2 id="navigation">Navigation</h2>
+
+<p>A set of methods to build links and URLs that depend on the routing subsystem.</p>
+
+<h3 id="button_to">button_to</h3>
+
+<p>Generates a form that submits to the passed URL. The form has a submit button
+with the value of the <code class="language-plaintext highlighter-rouge">name</code>.</p>
+
+<pre><code class="language-html+erb">&lt;%= button_to "Sign in", sign_in_path %&gt;
+</code></pre>
+
+<p>would output the following HTML:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;form</span> <span class="na">method=</span><span class="s">"post"</span> <span class="na">action=</span><span class="s">"/sessions"</span> <span class="na">class=</span><span class="s">"button_to"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"Sign in"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-button_to"><code class="language-plaintext highlighter-rouge">button_to</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="current_page">current_page?</h3>
+
+<p>Returns true if the current request URL matches the given <code class="language-plaintext highlighter-rouge">options</code>.</p>
+
+<pre><code class="language-html+erb">&lt;% if current_page?(controller: 'profiles', action: 'show') %&gt;
+  &lt;strong&gt;Currently on the profile page&lt;/strong&gt;
+&lt;% end %&gt;
+</code></pre>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-current_page-3F"><code class="language-plaintext highlighter-rouge">current_page?</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="link_to">link_to</h3>
+
+<p>Links to a URL derived from <code class="language-plaintext highlighter-rouge">url_for</code> under the hood. It’s commonly used to
+create links for RESTful resources, especially when passing models as arguments
+to <code class="language-plaintext highlighter-rouge">link_to</code>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">link_to</span> <span class="s2">"Profile"</span><span class="p">,</span> <span class="vi">@profile</span>
+<span class="c1"># =&gt; &lt;a href="/profiles/1"&gt;Profile&lt;/a&gt;</span>
+
+<span class="n">link_to</span> <span class="s2">"Book"</span><span class="p">,</span> <span class="vi">@book</span> <span class="c1"># given a composite primary key [:author_id, :id]</span>
+<span class="c1"># =&gt; &lt;a href="/books/2_1"&gt;Book&lt;/a&gt;</span>
+
+<span class="n">link_to</span> <span class="s2">"Profiles"</span><span class="p">,</span> <span class="n">profiles_path</span>
+<span class="c1"># =&gt; &lt;a href="/profiles"&gt;Profiles&lt;/a&gt;</span>
+
+<span class="n">link_to</span> <span class="kp">nil</span><span class="p">,</span> <span class="s2">"https://example.com"</span>
+<span class="c1"># =&gt; &lt;a href="https://example.com"&gt;https://example.com&lt;/a&gt;</span>
+
+<span class="n">link_to</span> <span class="s2">"Articles"</span><span class="p">,</span> <span class="n">articles_path</span><span class="p">,</span> <span class="ss">id: </span><span class="s2">"articles"</span><span class="p">,</span> <span class="ss">class: </span><span class="s2">"article__container"</span>
+<span class="c1"># =&gt; &lt;a href="/articles" class="article__container" id="articles"&gt;Articles&lt;/a&gt;</span>
+</code></pre></div></div>
+
+<p>You can use a block if your link target can’t fit in the name parameter.</p>
+
+<pre><code class="language-html+erb">&lt;%= link_to @profile do %&gt;
+  &lt;strong&gt;&lt;%= @profile.name %&gt;&lt;/strong&gt; -- &lt;span&gt;Check it out!&lt;/span&gt;
+&lt;% end %&gt;
+</code></pre>
+
+<p>It would output the following HTML:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"/profiles/1"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;strong&gt;</span>David<span class="nt">&lt;/strong&gt;</span> -- <span class="nt">&lt;span&gt;</span>Check it out!<span class="nt">&lt;/span&gt;</span>
+<span class="nt">&lt;/a&gt;</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-link_to"><code class="language-plaintext highlighter-rouge">link_to</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="mail_to">mail_to</h3>
+
+<p>Generates a <code class="language-plaintext highlighter-rouge">mailto</code> link tag to the specified email address. You can also
+specify the link text, additional HTML options, and whether to encode the email
+address.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mail_to</span> <span class="s2">"john_doe@gmail.com"</span>
+<span class="c1"># =&gt; &lt;a href="mailto:john_doe@gmail.com"&gt;john_doe@gmail.com&lt;/a&gt;</span>
+
+<span class="n">mail_to</span> <span class="s2">"me@john_doe.com"</span><span class="p">,</span> <span class="ss">cc: </span><span class="s2">"me@jane_doe.com"</span><span class="p">,</span>
+        <span class="ss">subject: </span><span class="s2">"This is an example email"</span>
+<span class="c1"># =&gt; &lt;a href="mailto:"me@john_doe.com?cc=me@jane_doe.com&amp;subject=This%20is%20an%20example%20email"&gt;"me@john_doe.com&lt;/a&gt;</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/UrlHelper.html#method-i-mail_to"><code class="language-plaintext highlighter-rouge">mail_to</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="url_for">url_for</h3>
+
+<p>Returns the URL for the set of <code class="language-plaintext highlighter-rouge">options</code> provided.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">url_for</span> <span class="vi">@profile</span>
+<span class="c1"># =&gt; /profiles/1</span>
+
+<span class="n">url_for</span> <span class="p">[</span> <span class="vi">@hotel</span><span class="p">,</span> <span class="vi">@booking</span><span class="p">,</span> <span class="ss">page: </span><span class="mi">2</span><span class="p">,</span> <span class="ss">line: </span><span class="mi">3</span> <span class="p">]</span>
+<span class="c1"># =&gt; /hotels/1/bookings/1?line=3&amp;page=2</span>
+
+<span class="n">url_for</span> <span class="vi">@post</span> <span class="c1"># given a composite primary key [:blog_id, :id]</span>
+<span class="c1"># =&gt; /posts/1_2</span>
+</code></pre></div></div>
+
+<h2 id="sanitization">Sanitization</h2>
+
+<p>A set of methods for scrubbing text of undesired HTML elements. The helpers are
+particularly useful for helping to ensure that only safe and valid HTML/CSS is
+rendered. It can also be useful to prevent XSS attacks by escaping or removing
+potentially malicious content from user input before rendering it in your views.</p>
+
+<p>This functionality is powered internally by the
+<a href="https://github.com/rails/rails-html-sanitizer">rails-html-sanitizer</a> gem.</p>
+
+<h3 id="sanitize">sanitize</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">sanitize</code> method will HTML encode all tags and strip all attributes that
+aren’t specifically allowed.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sanitize</span> <span class="vi">@article</span><span class="p">.</span><span class="nf">body</span>
+</code></pre></div></div>
+
+<p>If either the <code class="language-plaintext highlighter-rouge">:attributes</code> or <code class="language-plaintext highlighter-rouge">:tags</code> options are passed, only the mentioned
+attributes and tags are allowed and nothing else.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sanitize</span> <span class="vi">@article</span><span class="p">.</span><span class="nf">body</span><span class="p">,</span> <span class="ss">tags: </span><span class="sx">%w(table tr td)</span><span class="p">,</span> <span class="ss">attributes: </span><span class="sx">%w(id class style)</span>
+</code></pre></div></div>
+
+<p>To change defaults for multiple uses, for example, adding table tags to the
+default:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># config/application.rb</span>
+<span class="k">class</span> <span class="nc">Application</span> <span class="o">&lt;</span> <span class="no">Rails</span><span class="o">::</span><span class="no">Application</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">action_view</span><span class="p">.</span><span class="nf">sanitized_allowed_tags</span> <span class="o">=</span> <span class="sx">%w(table tr td)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/SanitizeHelper.html#method-i-sanitize"><code class="language-plaintext highlighter-rouge">sanitize</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="sanitize_css">sanitize_css</h3>
+
+<p>Sanitizes a block of CSS code, particularly when it comes across a style
+attribute in HTML content. <code class="language-plaintext highlighter-rouge">sanitize_css</code> is particularly useful when dealing
+with user-generated content or dynamic content that includes style attributes.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">sanitize_css</code> method below will remove the styles that are not allowed.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sanitize_css</span><span class="p">(</span><span class="s2">"background-color: red; color: white; font-size: 16px;"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/SanitizeHelper.html#method-i-sanitize_css"><code class="language-plaintext highlighter-rouge">sanitize_css</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="strip_links">strip_links</h3>
+
+<p>Strips all link tags from text leaving just the link text.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">strip_links</span><span class="p">(</span><span class="s2">"&lt;a href='https://rubyonrails.org'&gt;Ruby on Rails&lt;/a&gt;"</span><span class="p">)</span>
+<span class="c1"># =&gt; Ruby on Rails</span>
+
+<span class="n">strip_links</span><span class="p">(</span><span class="s2">"emails to &lt;a href='mailto:me@email.com'&gt;me@email.com&lt;/a&gt;."</span><span class="p">)</span>
+<span class="c1"># =&gt; emails to me@email.com.</span>
+
+<span class="n">strip_links</span><span class="p">(</span><span class="s2">"Blog: &lt;a href='http://myblog.com/'&gt;Visit&lt;/a&gt;."</span><span class="p">)</span>
+<span class="c1"># =&gt; Blog: Visit.</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/SanitizeHelper.html#method-i-strip_links"><code class="language-plaintext highlighter-rouge">strip_links</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="strip_tags">strip_tags</h3>
+
+<p>Strips all HTML tags from the HTML, including comments and special characters.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">strip_tags</span><span class="p">(</span><span class="s2">"Strip &lt;i&gt;these&lt;/i&gt; tags!"</span><span class="p">)</span>
+<span class="c1"># =&gt; Strip these tags!</span>
+
+<span class="n">strip_tags</span><span class="p">(</span><span class="s2">"&lt;b&gt;Bold&lt;/b&gt; no more! &lt;a href='more.html'&gt;See more&lt;/a&gt;"</span><span class="p">)</span>
+<span class="c1"># =&gt; Bold no more! See more</span>
+
+<span class="n">strip_links</span><span class="p">(</span><span class="s1">'&lt;&lt;a href="https://example.org"&gt;malformed &amp; link&lt;/a&gt;'</span><span class="p">)</span>
+<span class="c1"># =&gt; &amp;lt;malformed &amp;amp; link</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/SanitizeHelper.html#method-i-strip_tags"><code class="language-plaintext highlighter-rouge">strip_tags</code> API
+Documentation</a>
+for more information.</p>
+
+<h2 id="assets">Assets</h2>
+
+<p>A set of methods for generating HTML that links views to assets such as images,
+JavaScript files, stylesheets, and feeds.</p>
+
+<p>By default, Rails links to these assets on the current host in the public
+folder, but you can direct Rails to link to assets from a dedicated assets
+server by setting <a href="configuring.html#config-asset-host"><code class="language-plaintext highlighter-rouge">config.asset_host</code></a> in the application configuration,
+typically in <code class="language-plaintext highlighter-rouge">config/environments/production.rb</code>.</p>
+
+<p>For example, let’s say your asset host is <code class="language-plaintext highlighter-rouge">assets.example.com</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">config</span><span class="p">.</span><span class="nf">asset_host</span> <span class="o">=</span> <span class="s2">"assets.example.com"</span>
+</code></pre></div></div>
+
+<p>then the corresponding URL for an <code class="language-plaintext highlighter-rouge">image_tag</code> would be:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">image_tag</span><span class="p">(</span><span class="s2">"rails.png"</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;img src="//assets.example.com/images/rails.png" /&gt;</span>
+</code></pre></div></div>
+
+<h3 id="audio_tag">audio_tag</h3>
+
+<p>Generates an HTML audio tag with source(s), either as a single tag for a string
+source or nested source tags within an array for multiple sources. The <code class="language-plaintext highlighter-rouge">sources</code>
+can be full paths, files in your public audios directory, or <a href="active_storage_overview.html">Active Storage
+attachments</a>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">audio_tag</span><span class="p">(</span><span class="s2">"sound"</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;audio src="/audios/sound"&gt;&lt;/audio&gt;</span>
+
+<span class="n">audio_tag</span><span class="p">(</span><span class="s2">"sound.wav"</span><span class="p">,</span> <span class="s2">"sound.mid"</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;audio&gt;&lt;source src="/audios/sound.wav" /&gt;&lt;source src="/audios/sound.mid" /&gt;&lt;/audio&gt;</span>
+
+<span class="n">audio_tag</span><span class="p">(</span><span class="s2">"sound"</span><span class="p">,</span> <span class="ss">controls: </span><span class="kp">true</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;audio controls="controls" src="/audios/sound"&gt;&lt;/audio&gt;</span>
+</code></pre></div></div>
+
+<p>INFO: Internally, <code class="language-plaintext highlighter-rouge">audio_tag</code> uses <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetUrlHelper.html#method-i-audio_path"><code class="language-plaintext highlighter-rouge">audio_path</code> from the
+AssetUrlHelpers</a>
+to build the audio path.</p>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-audio_tag"><code class="language-plaintext highlighter-rouge">audio_tag</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="auto_discovery_link_tag">auto_discovery_link_tag</h3>
+
+<p>Returns a link tag that browsers and feed readers can use to auto-detect an RSS,
+Atom, or JSON feed.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">auto_discovery_link_tag</span><span class="p">(</span><span class="ss">:rss</span><span class="p">,</span> <span class="s2">"http://www.example.com/feed.rss"</span><span class="p">,</span> <span class="p">{</span> <span class="ss">title: </span><span class="s2">"RSS Feed"</span> <span class="p">})</span>
+<span class="c1"># =&gt; &lt;link rel="alternate" type="application/rss+xml" title="RSS Feed" href="http://www.example.com/feed.rss" /&gt;</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-auto_discovery_link_tag"><code class="language-plaintext highlighter-rouge">auto_discovery_link_tag</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="favicon_link_tag">favicon_link_tag</h3>
+
+<p>Returns a link tag for a favicon managed by the asset pipeline. The <code class="language-plaintext highlighter-rouge">source</code> can
+be a full path or a file that exists in your assets directory.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">favicon_link_tag</span>
+<span class="c1"># =&gt; &lt;link href="/assets/favicon.ico" rel="icon" type="image/x-icon" /&gt;</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-favicon_link_tag"><code class="language-plaintext highlighter-rouge">favicon_link_tag</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="image_tag">image_tag</h3>
+
+<p>Returns an HTML image tag for the source. The <code class="language-plaintext highlighter-rouge">source</code> can be a full path or a
+file that exists in your <code class="language-plaintext highlighter-rouge">app/assets/images</code> directory.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">image_tag</span><span class="p">(</span><span class="s2">"icon.png"</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;img src="/assets/icon.png" /&gt;</span>
+
+<span class="n">image_tag</span><span class="p">(</span><span class="s2">"icon.png"</span><span class="p">,</span> <span class="ss">size: </span><span class="s2">"16x10"</span><span class="p">,</span> <span class="ss">alt: </span><span class="s2">"Edit Article"</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;img src="/assets/icon.png" width="16" height="10" alt="Edit Article" /&gt;</span>
+</code></pre></div></div>
+
+<p>INFO: Internally, <code class="language-plaintext highlighter-rouge">image_tag</code> uses <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetUrlHelper.html#method-i-image_path"><code class="language-plaintext highlighter-rouge">image_path</code> from the
+AssetUrlHelpers</a>
+to build the image path.</p>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-image_tag"><code class="language-plaintext highlighter-rouge">image_tag</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="javascript_include_tag">javascript_include_tag</h3>
+
+<p>Returns an HTML script tag for each of the sources provided. You can pass in the
+filename (<code class="language-plaintext highlighter-rouge">.js</code> extension is optional) of JavaScript files that exist in your
+<code class="language-plaintext highlighter-rouge">app/assets/javascripts</code> directory for inclusion into the current page, or you
+can pass the full path relative to your document root.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">javascript_include_tag</span><span class="p">(</span><span class="s2">"common"</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;script src="/assets/common.js"&gt;&lt;/script&gt;</span>
+
+<span class="n">javascript_include_tag</span><span class="p">(</span><span class="s2">"common"</span><span class="p">,</span> <span class="ss">async: </span><span class="kp">true</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;script src="/assets/common.js" async="async"&gt;&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<p>Some of the most common attributes are <code class="language-plaintext highlighter-rouge">async</code> and <code class="language-plaintext highlighter-rouge">defer</code>, where <code class="language-plaintext highlighter-rouge">async</code> will
+allow the script to be loaded in parallel to be parsed and evaluated as soon as
+possible, and <code class="language-plaintext highlighter-rouge">defer</code> will indicate that the script is meant to be executed
+after the document has been parsed.</p>
+
+<p>INFO: Internally, <code class="language-plaintext highlighter-rouge">javascript_include_tag</code> uses <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetUrlHelper.html#method-i-javascript_path"><code class="language-plaintext highlighter-rouge">javascript_path</code> from the
+AssetUrlHelpers</a>
+to build the script path.</p>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-javascript_include_tag"><code class="language-plaintext highlighter-rouge">javascript_include_tag</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="picture_tag">picture_tag</h3>
+
+<p>Returns an HTML picture tag for the source. It supports passing a String, an
+Array, or a Block.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">picture_tag</span><span class="p">(</span><span class="s2">"icon.webp"</span><span class="p">,</span> <span class="s2">"icon.png"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>This generates the following HTML:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;picture&gt;</span>
+  <span class="nt">&lt;source</span> <span class="na">srcset=</span><span class="s">"/assets/icon.webp"</span> <span class="na">type=</span><span class="s">"image/webp"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;source</span> <span class="na">srcset=</span><span class="s">"/assets/icon.png"</span> <span class="na">type=</span><span class="s">"image/png"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"/assets/icon.png"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/picture&gt;</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-picture_tag"><code class="language-plaintext highlighter-rouge">picture_tag</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="preload_link_tag">preload_link_tag</h3>
+
+<p>Returns a link tag that browsers can use to preload the source. The source can
+be the path of a resource managed by the asset pipeline, a full path, or a URI.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">preload_link_tag</span><span class="p">(</span><span class="s2">"application.css"</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;link rel="preload" href="/assets/application.css" as="style" type="text/css" /&gt;</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-preload_link_tag"><code class="language-plaintext highlighter-rouge">preload_link_tag</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="stylesheet_link_tag">stylesheet_link_tag</h3>
+
+<p>Returns a stylesheet link tag for the sources specified as arguments. If you
+don’t specify an extension, <code class="language-plaintext highlighter-rouge">.css</code> will be appended automatically.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">stylesheet_link_tag</span><span class="p">(</span><span class="s2">"application"</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;link href="/assets/application.css" rel="stylesheet" /&gt;</span>
+
+<span class="n">stylesheet_link_tag</span><span class="p">(</span><span class="s2">"application"</span><span class="p">,</span> <span class="ss">media: </span><span class="s2">"all"</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;link href="/assets/application.css" media="all" rel="stylesheet" /&gt;</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">media</code> is used to specify the media type for the link. The most common media
+types are <code class="language-plaintext highlighter-rouge">all</code>, <code class="language-plaintext highlighter-rouge">screen</code>, <code class="language-plaintext highlighter-rouge">print</code>, and <code class="language-plaintext highlighter-rouge">speech</code>.</p>
+
+<p>INFO: Internally, <code class="language-plaintext highlighter-rouge">stylesheet_link_tag</code> uses <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetUrlHelper.html#method-i-stylesheet_path"><code class="language-plaintext highlighter-rouge">stylesheet_path</code> from the
+AssetUrlHelpers</a>
+to build the stylesheet path.</p>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-stylesheet_link_tag"><code class="language-plaintext highlighter-rouge">stylesheet_link_tag</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="video_tag">video_tag</h3>
+
+<p>Generate an HTML video tag with source(s), either as a single tag for a string
+source or nested source tags within an array for multiple sources. The <code class="language-plaintext highlighter-rouge">sources</code>
+can be full paths, files in your public videos directory, or Active Storage
+attachments.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">video_tag</span><span class="p">(</span><span class="s2">"trailer"</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;video src="/videos/trailer"&gt;&lt;/video&gt;</span>
+
+<span class="n">video_tag</span><span class="p">([</span><span class="s2">"trailer.ogg"</span><span class="p">,</span> <span class="s2">"trailer.flv"</span><span class="p">])</span>
+<span class="c1"># =&gt; &lt;video&gt;&lt;source src="/videos/trailer.ogg" /&gt;&lt;source src="/videos/trailer.flv" /&gt;&lt;/video&gt;</span>
+
+<span class="n">video_tag</span><span class="p">(</span><span class="s2">"trailer"</span><span class="p">,</span> <span class="ss">controls: </span><span class="kp">true</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;video controls="controls" src="/videos/trailer"&gt;&lt;/video&gt;</span>
+</code></pre></div></div>
+
+<p>INFO: Internally, <code class="language-plaintext highlighter-rouge">video_tag</code> uses <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetUrlHelper.html#method-i-video_path"><code class="language-plaintext highlighter-rouge">video_path</code> from the
+AssetUrlHelpers</a>
+to build the video path.</p>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AssetTagHelper.html#method-i-video_tag"><code class="language-plaintext highlighter-rouge">video_tag</code> API
+Documentation</a>
+for more information.</p>
+
+<h2 id="javascript">JavaScript</h2>
+
+<p>A set of methods for working with JavaScript in your views.</p>
+
+<h3 id="escape_javascript">escape_javascript</h3>
+
+<p>Escapes carriage returns and single and double quotes for JavaScript segments.
+You would use this method to take a string of text and make sure that it doesn’t
+contain any invalid characters when the browser tries to parse it.</p>
+
+<p>For example, if you have a partial with a greeting that contains double quotes,
+you can escape the greeting to use in a JavaScript alert.</p>
+
+<pre><code class="language-html+erb">&lt;%# app/views/users/greeting.html.erb %&gt;
+My name is &lt;%= current_user.name %&gt;, and I'm here to say "Welcome to our website!"
+</code></pre>
+
+<pre><code class="language-html+erb">&lt;script&gt;
+  var greeting = "&lt;%= escape_javascript render('users/greeting') %&gt;";
+  alert(`Hello, ${greeting}`);
+&lt;/script&gt;
+</code></pre>
+
+<p>This will escape the quotes correctly and display the greeting in an alert box.</p>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/JavaScriptHelper.html#method-i-escape_javascript"><code class="language-plaintext highlighter-rouge">escape_javascript</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="javascript_tag">javascript_tag</h3>
+
+<p>Returns a JavaScript tag wrapping the provided code. You can pass a hash of
+options to control the behavior of the <code class="language-plaintext highlighter-rouge">&lt;script&gt;</code> tag.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">javascript_tag</span><span class="p">(</span><span class="s2">"alert('All is good')"</span><span class="p">,</span> <span class="ss">type: </span><span class="s2">"application/javascript"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"application/javascript"</span><span class="nt">&gt;</span>
+<span class="c1">//</span><span class="o">&lt;!</span><span class="p">[</span><span class="nx">CDATA</span><span class="p">[</span>
+<span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">All is good</span><span class="dl">'</span><span class="p">)</span>
+<span class="c1">//]]&gt;</span>
+<span class="nt">&lt;/script&gt;</span>
+</code></pre></div></div>
+
+<p>Instead of passing the content as an argument, you can also use a block.</p>
+
+<pre><code class="language-html+erb">&lt;%= javascript_tag type: "application/javascript" do %&gt;
+  alert("Welcome to my app!")
+&lt;% end %&gt;
+</code></pre>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/JavaScriptHelper.html#method-i-javascript_tag"><code class="language-plaintext highlighter-rouge">javascript_tag</code> API
+Documentation</a>
+for more information.</p>
+
+<h2 id="alternative-tags">Alternative Tags</h2>
+
+<p>A set of methods to generate HTML tags programmatically.</p>
+
+<h3 id="tag">tag</h3>
+
+<p>Generates a standalone HTML tag with the given <code class="language-plaintext highlighter-rouge">name</code> and <code class="language-plaintext highlighter-rouge">options</code>.</p>
+
+<p>Every tag can be built with:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tag</span><span class="p">.</span><span class="nf">some_tag_name</span><span class="p">(</span><span class="n">optional</span> <span class="n">content</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>where tag name can be e.g. <code class="language-plaintext highlighter-rouge">br</code>, <code class="language-plaintext highlighter-rouge">div</code>, <code class="language-plaintext highlighter-rouge">section</code>, <code class="language-plaintext highlighter-rouge">article</code>, or any tag really.</p>
+
+<p>For example, here are some common uses:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tag</span><span class="p">.</span><span class="nf">h1</span> <span class="s2">"All titles fit to print"</span>
+<span class="c1"># =&gt; &lt;h1&gt;All titles fit to print&lt;/h1&gt;</span>
+
+<span class="n">tag</span><span class="p">.</span><span class="nf">div</span> <span class="s2">"Hello, world!"</span>
+<span class="c1"># =&gt; &lt;div&gt;Hello, world!&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<p>Additionally, you can pass options to add attributes to the generated tag.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tag</span><span class="p">.</span><span class="nf">section</span> <span class="ss">class: </span><span class="sx">%w( kitties puppies )</span>
+<span class="c1"># =&gt; &lt;section class="kitties puppies"&gt;&lt;/section&gt;</span>
+</code></pre></div></div>
+
+<p>In addition, HTML <code class="language-plaintext highlighter-rouge">data-*</code> attributes can be passed to the <code class="language-plaintext highlighter-rouge">tag</code> helper using
+the <code class="language-plaintext highlighter-rouge">data</code> option, with a hash containing key-value pairs of sub-attributes. The
+sub-attributes are then converted to <code class="language-plaintext highlighter-rouge">data-*</code> attributes that are dasherized in
+order to work well with JavaScript.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">tag</span><span class="p">.</span><span class="nf">div</span> <span class="ss">data: </span><span class="p">{</span> <span class="ss">user_id: </span><span class="mi">123</span> <span class="p">}</span>
+<span class="c1"># =&gt; &lt;div data-user-id="123"&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/TagHelper.html#method-i-tag"><code class="language-plaintext highlighter-rouge">tag</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="token_list">token_list</h3>
+
+<p>Returns a string of tokens built from the arguments provided. This method is
+also aliased as <code class="language-plaintext highlighter-rouge">class_names</code>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">token_list</span><span class="p">(</span><span class="s2">"cats"</span><span class="p">,</span> <span class="s2">"dogs"</span><span class="p">)</span>
+<span class="c1"># =&gt; "cats dogs"</span>
+
+<span class="n">token_list</span><span class="p">(</span><span class="kp">nil</span><span class="p">,</span> <span class="kp">false</span><span class="p">,</span> <span class="mi">123</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="s2">"foo"</span><span class="p">,</span> <span class="p">{</span> <span class="ss">bar: </span><span class="kp">true</span> <span class="p">})</span>
+<span class="c1"># =&gt; "123 foo bar"</span>
+
+<span class="n">mobile</span><span class="p">,</span> <span class="n">alignment</span> <span class="o">=</span> <span class="kp">true</span><span class="p">,</span> <span class="s2">"center"</span>
+<span class="n">token_list</span><span class="p">(</span><span class="s2">"flex items-</span><span class="si">#{</span><span class="n">alignment</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"flex-col"</span><span class="p">:</span> <span class="n">mobile</span><span class="p">)</span>
+<span class="c1"># =&gt; "flex items-center flex-col"</span>
+<span class="n">class_names</span><span class="p">(</span><span class="s2">"flex items-</span><span class="si">#{</span><span class="n">alignment</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"flex-col"</span><span class="p">:</span> <span class="n">mobile</span><span class="p">)</span> <span class="c1"># using the alias</span>
+<span class="c1"># =&gt; "flex items-center flex-col"</span>
+</code></pre></div></div>
+
+<h2 id="capture-blocks">Capture Blocks</h2>
+
+<p>A set of methods to let you extract generated markup which can be used in other
+parts of a template or layout file.</p>
+
+<p>It provides a method to capture blocks into variables through <code class="language-plaintext highlighter-rouge">capture</code>, and a
+way to capture a block of markup for use in a layout through <code class="language-plaintext highlighter-rouge">content_for</code>.</p>
+
+<h3 id="capture">capture</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">capture</code> method allows you to extract part of a template into a variable.</p>
+
+<pre><code class="language-html+erb">&lt;% @greeting = capture do %&gt;
+  &lt;p&gt;Welcome! The date and time is &lt;%= Time.current %&gt;&lt;/p&gt;
+&lt;% end %&gt;
+</code></pre>
+
+<p>You can then use this variable anywhere in your templates, layouts, or helpers.</p>
+
+<pre><code class="language-html+erb">&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Welcome!&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;%= @greeting %&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>The return of capture is the string generated by the block.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="vi">@greeting</span>
+<span class="c1"># =&gt; "Welcome to my shiny new web page! The date and time is 2018-09-06 11:09:16 -0500"</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/CaptureHelper.html#method-i-capture"><code class="language-plaintext highlighter-rouge">capture</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="content_for">content_for</h3>
+
+<p>Calling <code class="language-plaintext highlighter-rouge">content_for</code> stores a block of markup in an identifier for later use.
+You can make subsequent calls to the stored content in other templates, helper
+modules or the layout by passing the identifier as an argument to <code class="language-plaintext highlighter-rouge">yield</code>.</p>
+
+<p>A common use case is to set the title of a page in a <code class="language-plaintext highlighter-rouge">content_for</code> block.</p>
+
+<p>You define a <code class="language-plaintext highlighter-rouge">content_for</code> block in the special page’s view, and then you
+<code class="language-plaintext highlighter-rouge">yield</code> it within the layout. For other pages, where the <code class="language-plaintext highlighter-rouge">content_for</code> block
+isn’t utilized, it remains empty, resulting in nothing being yielded.</p>
+
+<pre><code class="language-html+erb">&lt;%# app/views/users/special_page.html.erb %&gt;
+&lt;% content_for(:html_title) { "Special Page Title" } %&gt;
+</code></pre>
+
+<pre><code class="language-html+erb">&lt;%# app/views/layouts/application.html.erb %&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;&lt;%= content_for?(:html_title) ? yield(:html_title) : "Default Title" %&gt;&lt;/title&gt;
+  &lt;/head&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>You’ll notice that in the above example, we use the <code class="language-plaintext highlighter-rouge">content_for?</code> predicate
+method to conditionally render a title. This method checks whether any content
+has been captured yet using <code class="language-plaintext highlighter-rouge">content_for</code>, enabling you to adjust parts of your
+layout based on the content within your views.</p>
+
+<p>Additionally, you can employ <code class="language-plaintext highlighter-rouge">content_for</code> within a helper module.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/helpers/title_helper.rb</span>
+<span class="k">module</span> <span class="nn">TitleHelper</span>
+  <span class="k">def</span> <span class="nf">html_title</span>
+    <span class="n">content_for</span><span class="p">(</span><span class="ss">:html_title</span><span class="p">)</span> <span class="o">||</span> <span class="s2">"Default Title"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now, you can call <code class="language-plaintext highlighter-rouge">html_title</code> in your layout to retrieve the content stored in
+the <code class="language-plaintext highlighter-rouge">content_for</code> block. If a <code class="language-plaintext highlighter-rouge">content_for</code> block is set on the page being
+rendered, such as in the case of the <code class="language-plaintext highlighter-rouge">special_page</code>, it will display the title.
+Otherwise, it will display the default text “Default Title”.</p>
+
+<p>WARNING: <code class="language-plaintext highlighter-rouge">content_for</code> is ignored in caches. So you shouldn’t use it for
+elements that will be fragment cached.</p>
+
+<p>NOTE: You may be thinking what’s the difference between <code class="language-plaintext highlighter-rouge">capture</code> and
+<code class="language-plaintext highlighter-rouge">content_for</code>? <br /><br />
+<code class="language-plaintext highlighter-rouge">capture</code> is used to capture a block of markup in a variable, while
+<code class="language-plaintext highlighter-rouge">content_for</code> is used to store a block of markup in an identifier for later use.
+Internally <code class="language-plaintext highlighter-rouge">content_for</code> actually calls <code class="language-plaintext highlighter-rouge">capture</code>. However, the key difference
+lies in their behavior when invoked multiple times.<br /><br />
+<code class="language-plaintext highlighter-rouge">content_for</code> can be called repeatedly, concatenating the blocks it receives for
+a specific identifier in the order they are provided. Each subsequent call
+simply adds to what’s already stored. In contrast, <code class="language-plaintext highlighter-rouge">capture</code> only returns the
+content of the block, without keeping track of any previous invocations.</p>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/CaptureHelper.html#method-i-content_for"><code class="language-plaintext highlighter-rouge">content_for</code> API
+Documentation</a>
+for more information.</p>
+
+<h2 id="performance">Performance</h2>
+
+<h3 id="benchmark">benchmark</h3>
+
+<p>Wrap a <code class="language-plaintext highlighter-rouge">benchmark</code> block around expensive operations or possible bottlenecks to
+get a time reading for the operation.</p>
+
+<pre><code class="language-html+erb">&lt;% benchmark "Process data files" do %&gt;
+  &lt;%= expensive_files_operation %&gt;
+&lt;% end %&gt;
+</code></pre>
+
+<p>This would add something like <code class="language-plaintext highlighter-rouge">Process data files (0.34523)</code> to the log, which
+you can then use to compare timings when optimizing your code.</p>
+
+<p>NOTE: This helper is a part of Active Support, and it is also available on
+controllers, helpers, models, etc.</p>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActiveSupport/Benchmarkable.html#method-i-benchmark"><code class="language-plaintext highlighter-rouge">benchmark</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="cache">cache</h3>
+
+<p>You can cache fragments of a view rather than an entire action or page. This
+technique is useful for caching pieces like menus, lists of news topics, static
+HTML fragments, and so on. It allows a fragment of view logic to be wrapped in a
+cache block and served out of the cache store when the next request comes in.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">cache</code> method takes a block that contains the content you wish to cache.</p>
+
+<p>For example, you could cache the footer of your application layout by wrapping
+it in a <code class="language-plaintext highlighter-rouge">cache</code> block.</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">cache</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="s2">"application/footer"</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>You could also cache based on model instances, for example, you can cache each
+article on a page by passing the <code class="language-plaintext highlighter-rouge">article</code> object to the <code class="language-plaintext highlighter-rouge">cache</code> method. This
+would cache each article separately.</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="vi">@articles</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">article</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%</span> <span class="n">cache</span> <span class="n">article</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">render</span> <span class="n">article</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>When your application receives its first request to this page, Rails will write
+a new cache entry with a unique key. A key looks something like this:</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">views/articles/index:bea67108094918eeba32cd4a6f786301/articles/1
+</span></code></pre></div></div>
+
+<p>See <a href="caching_with_rails.html#fragment-caching"><code class="language-plaintext highlighter-rouge">Fragment Caching</code></a> and the
+<a href="https://api.rubyonrails.org/classes/ActionView/Helpers/CacheHelper.html#method-i-cache"><code class="language-plaintext highlighter-rouge">cache</code> API
+Documentation</a>
+for more information.</p>
+
+<h2 id="miscellaneous">Miscellaneous</h2>
+
+<h3 id="atom_feed">atom_feed</h3>
+
+<p>Atom Feeds are XML-based file formats used to syndicate content and can be used
+by users in feed readers to browse content or by search engines to help discover
+additional information about your site.</p>
+
+<p>This helper makes building an Atom feed easy, and is mostly used in Builder
+templates for creating XML. Here’s a full usage example:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># config/routes.rb</span>
+<span class="n">resources</span> <span class="ss">:articles</span>
+</code></pre></div></div>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/controllers/articles_controller.rb</span>
+<span class="k">def</span> <span class="nf">index</span>
+  <span class="vi">@articles</span> <span class="o">=</span> <span class="no">Article</span><span class="p">.</span><span class="nf">all</span>
+
+  <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+    <span class="nb">format</span><span class="p">.</span><span class="nf">html</span>
+    <span class="nb">format</span><span class="p">.</span><span class="nf">atom</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/views/articles/index.atom.builder</span>
+<span class="n">atom_feed</span> <span class="k">do</span> <span class="o">|</span><span class="n">feed</span><span class="o">|</span>
+  <span class="n">feed</span><span class="p">.</span><span class="nf">title</span><span class="p">(</span><span class="s2">"Articles Index"</span><span class="p">)</span>
+  <span class="n">feed</span><span class="p">.</span><span class="nf">updated</span><span class="p">(</span><span class="vi">@articles</span><span class="p">.</span><span class="nf">first</span><span class="p">.</span><span class="nf">created_at</span><span class="p">)</span>
+
+  <span class="vi">@articles</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">article</span><span class="o">|</span>
+    <span class="n">feed</span><span class="p">.</span><span class="nf">entry</span><span class="p">(</span><span class="n">article</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">entry</span><span class="o">|</span>
+      <span class="n">entry</span><span class="p">.</span><span class="nf">title</span><span class="p">(</span><span class="n">article</span><span class="p">.</span><span class="nf">title</span><span class="p">)</span>
+      <span class="n">entry</span><span class="p">.</span><span class="nf">content</span><span class="p">(</span><span class="n">article</span><span class="p">.</span><span class="nf">body</span><span class="p">,</span> <span class="ss">type: </span><span class="s2">"html"</span><span class="p">)</span>
+
+      <span class="n">entry</span><span class="p">.</span><span class="nf">author</span> <span class="k">do</span> <span class="o">|</span><span class="n">author</span><span class="o">|</span>
+        <span class="n">author</span><span class="p">.</span><span class="nf">name</span><span class="p">(</span><span class="n">article</span><span class="p">.</span><span class="nf">author_name</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/AtomFeedHelper.html#method-i-atom_feed"><code class="language-plaintext highlighter-rouge">atom_feed</code> API
+Documentation</a>
+for more information.</p>
+
+<h3 id="debug">debug</h3>
+
+<p>Returns a YAML representation of an object wrapped with a <code class="language-plaintext highlighter-rouge">pre</code> tag. This
+creates a very readable way to inspect an object.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">my_hash</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">"first"</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"second"</span> <span class="o">=&gt;</span> <span class="s2">"two"</span><span class="p">,</span> <span class="s2">"third"</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="p">}</span>
+<span class="n">debug</span><span class="p">(</span><span class="n">my_hash</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;pre</span> <span class="na">class=</span><span class="s">"debug_dump"</span><span class="nt">&gt;</span>---
+first: 1
+second: two
+third:
+- 1
+- 2
+- 3
+<span class="nt">&lt;/pre&gt;</span>
+</code></pre></div></div>
+
+<p>See the <a href="https://api.rubyonrails.org/classes/ActionView/Helpers/DebugHelper.html#method-i-debug"><code class="language-plaintext highlighter-rouge">debug</code> API
+Documentation</a>
+for more information.</p>
+
+        </div>
+
+        <footer class="guide-footer">
+            <div class="feedback">
+                <h3>Geri Bildirim</h3>
+                <p>Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri bildirimlerinizi bekliyoruz.</p>
+                <p>Lütfen <a href="https://github.com/dilankaya127/rails-tr-TR/issues">GitHub Issues</a> üzerinden katkıda bulunun.</p>
+            </div>
+        </footer>
+    </article>
+</div>
+
+<script>
+// İçindekiler tablosunu otomatik oluştur
+document.addEventListener('DOMContentLoaded', function() {
+    const toc = document.getElementById('toc');
+    const headings = document.querySelectorAll('.guide-content h2, .guide-content h3, .guide-content h4');
+    
+    if (headings.length > 0) {
+        const tocList = document.createElement('ul');
+        
+        headings.forEach(function(heading, index) {
+            const id = 'heading-' + index;
+            heading.id = id;
+            
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.textContent = heading.textContent;
+            a.className = 'toc-' + heading.tagName.toLowerCase();
+            
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+        
+        toc.appendChild(tocList);
+    }
+});
+</script>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Rails Kılavuzları Türkçe Çevirisi. Gönüllüler tarafından hazırlanmıştır.</p>
+            <p>Orijinal dokümantasyon <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine aittir.</p>
+        </div>
+    </footer>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

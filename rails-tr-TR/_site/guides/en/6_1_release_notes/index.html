@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6 1 Release Notes - Rails Dokümantasyonu - Türkçe</title>
+    <link rel="stylesheet" href="/rails-tr-TR/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <a href="/rails-tr-TR/">Rails Kılavuzları</a>
+                </h1>
+                <nav class="nav">
+                    <a href="/rails-tr-TR/">Ana Sayfa</a>
+                    <a href="https://dilankaya127.github.io">Portföy</a>
+                    <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="guide-container">
+    <aside class="guide-sidebar">
+        <div class="guide-toc">
+            <h3>İçindekiler</h3>
+            <div id="toc"></div>
+        </div>
+        
+        <div class="guide-nav">
+            <h3>Diğer Kılavuzlar</h3>
+            <ul>
+                <li><a href="/rails-tr-TR/guides/getting_started">Rails ile Başlarken</a></li>
+                <li><a href="/rails-tr-TR/guides/active_record_basics">Active Record Temelleri</a></li>
+                <li><a href="/rails-tr-TR/guides/action_controller_overview">Action Controller</a></li>
+                <li><a href="/rails-tr-TR/guides/action_view_overview">Action View</a></li>
+                <li><a href="/rails-tr-TR/guides/routing">Yönlendirme</a></li>
+                <li><a href="/rails-tr-TR/guides/action_cable_overview">Action Cable</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <article class="guide-content">
+        <header class="guide-header">
+            <h1>6 1 Release Notes</h1>
+            
+        </header>
+
+        <div class="guide-body">
+            <p><strong>DO NOT READ THIS FILE ON GITHUB, GUIDES ARE PUBLISHED ON <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a>.</strong></p>
+
+<h1 id="ruby-on-rails-61-release-notes">Ruby on Rails 6.1 Release Notes</h1>
+
+<p>Highlights in Rails 6.1:</p>
+
+<ul>
+  <li>Per-database Connection Switching</li>
+  <li>Horizontal Sharding</li>
+  <li>Strict Loading Associations</li>
+  <li>Delegated Types</li>
+  <li>Destroy Associations Async</li>
+</ul>
+
+<p>These release notes cover only the major changes. To learn about various bug
+fixes and changes, please refer to the changelogs or check out the <a href="https://github.com/rails/rails/commits/6-1-stable">list of
+commits</a> in the main Rails
+repository on GitHub.</p>
+
+<hr />
+
+<h2 id="upgrading-to-rails-61">Upgrading to Rails 6.1</h2>
+
+<p>If you’re upgrading an existing application, it’s a great idea to have good test
+coverage before going in. You should also first upgrade to Rails 6.0 in case you
+haven’t and make sure your application still runs as expected before attempting
+an update to Rails 6.1. A list of things to watch out for when upgrading is
+available in the
+<a href="upgrading_ruby_on_rails.html#upgrading-from-rails-6-0-to-rails-6-1">Upgrading Ruby on Rails</a>
+guide.</p>
+
+<h2 id="major-features">Major Features</h2>
+
+<h3 id="per-database-connection-switching">Per-database Connection Switching</h3>
+
+<p>Rails 6.1 provides you with the ability to <a href="https://github.com/rails/rails/pull/40370">switch connections per-database</a>. In 6.0 if you switched to the <code class="language-plaintext highlighter-rouge">reading</code> role then all database connections also switched to the reading role. Now in 6.1 if you set <code class="language-plaintext highlighter-rouge">legacy_connection_handling</code> to <code class="language-plaintext highlighter-rouge">false</code> in your configuration, Rails will allow you to switch connections for a single database by calling <code class="language-plaintext highlighter-rouge">connected_to</code> on the corresponding abstract class.</p>
+
+<h3 id="horizontal-sharding">Horizontal Sharding</h3>
+
+<p>Rails 6.0 provided the ability to functionally partition (multiple partitions, different schemas) your database but wasn’t able to support horizontal sharding (same schema, multiple partitions). Rails wasn’t able to support horizontal sharding because models in Active Record could only have one connection per-role per-class. This is now fixed and <a href="https://github.com/rails/rails/pull/38531">horizontal sharding</a> with Rails is available.</p>
+
+<h3 id="strict-loading-associations">Strict Loading Associations</h3>
+
+<p><a href="https://github.com/rails/rails/pull/37400">Strict loading associations</a> allows you to ensure that all
+your associations are loaded eagerly and stop N+1’s before they happen.</p>
+
+<h3 id="delegated-types">Delegated Types</h3>
+
+<p><a href="https://github.com/rails/rails/pull/39341">Delegated Types</a> is an alternative to single-table inheritance. This helps represent class hierarchies allowing the superclass to be a concrete class that is represented by its own table. Each subclass has its own table for additional attributes.</p>
+
+<h3 id="destroy-associations-async">Destroy Associations Async</h3>
+
+<p><a href="https://github.com/rails/rails/pull/40157">Destroy associations async</a> adds the ability for applications to <code class="language-plaintext highlighter-rouge">destroy</code> associations in a background job. This can help you avoid timeouts and other performance issues in your application when destroying data.</p>
+
+<h2 id="railties">Railties</h2>
+
+<p>Please refer to the <a href="https://github.com/rails/rails/blob/6-1-stable/railties/CHANGELOG.md">Changelog</a> for detailed changes.</p>
+
+<h3 id="removals">Removals</h3>
+
+<ul>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">rake notes</code> tasks.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">connection</code> option in the <code class="language-plaintext highlighter-rouge">rails dbconsole</code> command.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">SOURCE_ANNOTATION_DIRECTORIES</code> environment variable support from <code class="language-plaintext highlighter-rouge">rails notes</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">server</code> argument from the rails server command.</p>
+  </li>
+  <li>
+    <p>Remove deprecated support for using the <code class="language-plaintext highlighter-rouge">HOST</code> environment variable to specify the server IP.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">rake dev:cache</code> tasks.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">rake routes</code> tasks.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">rake initializers</code> tasks.</p>
+  </li>
+</ul>
+
+<h3 id="deprecations">Deprecations</h3>
+
+<h3 id="notable-changes">Notable changes</h3>
+
+<h2 id="action-cable">Action Cable</h2>
+
+<p>Please refer to the <a href="https://github.com/rails/rails/blob/6-1-stable/actioncable/CHANGELOG.md">Changelog</a> for detailed changes.</p>
+
+<h3 id="removals-1">Removals</h3>
+
+<h3 id="deprecations-1">Deprecations</h3>
+
+<h3 id="notable-changes-1">Notable changes</h3>
+
+<h2 id="action-pack">Action Pack</h2>
+
+<p>Please refer to the <a href="https://github.com/rails/rails/blob/6-1-stable/actionpack/CHANGELOG.md">Changelog</a> for detailed changes.</p>
+
+<h3 id="removals-2">Removals</h3>
+
+<ul>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActionDispatch::Http::ParameterFilter</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">force_ssl</code> at the controller level.</p>
+  </li>
+</ul>
+
+<h3 id="deprecations-2">Deprecations</h3>
+
+<ul>
+  <li>Deprecate <code class="language-plaintext highlighter-rouge">config.action_dispatch.return_only_media_type_on_content_type</code>.</li>
+</ul>
+
+<h3 id="notable-changes-2">Notable changes</h3>
+
+<ul>
+  <li>Change <code class="language-plaintext highlighter-rouge">ActionDispatch::Response#content_type</code> to return the full Content-Type header.</li>
+</ul>
+
+<h2 id="action-view">Action View</h2>
+
+<p>Please refer to the <a href="https://github.com/rails/rails/blob/6-1-stable/actionview/CHANGELOG.md">Changelog</a> for detailed changes.</p>
+
+<h3 id="removals-3">Removals</h3>
+
+<ul>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">escape_whitelist</code> from <code class="language-plaintext highlighter-rouge">ActionView::Template::Handlers::ERB</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">find_all_anywhere</code> from <code class="language-plaintext highlighter-rouge">ActionView::Resolver</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">formats</code> from <code class="language-plaintext highlighter-rouge">ActionView::Template::HTML</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">formats</code> from <code class="language-plaintext highlighter-rouge">ActionView::Template::RawFile</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">formats</code> from <code class="language-plaintext highlighter-rouge">ActionView::Template::Text</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">find_file</code> from <code class="language-plaintext highlighter-rouge">ActionView::PathSet</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">rendered_format</code> from <code class="language-plaintext highlighter-rouge">ActionView::LookupContext</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">find_file</code> from <code class="language-plaintext highlighter-rouge">ActionView::ViewPaths</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated support to pass an object that is not a <code class="language-plaintext highlighter-rouge">ActionView::LookupContext</code> as the first argument
+in <code class="language-plaintext highlighter-rouge">ActionView::Base#initialize</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">format</code> argument <code class="language-plaintext highlighter-rouge">ActionView::Base#initialize</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActionView::Template#refresh</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActionView::Template#original_encoding</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActionView::Template#variants</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActionView::Template#formats</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActionView::Template#virtual_path=</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActionView::Template#updated_at</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">updated_at</code> argument required on <code class="language-plaintext highlighter-rouge">ActionView::Template#initialize</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActionView::Template.finalize_compiled_template_methods</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">config.action_view.finalize_compiled_template_methods</code></p>
+  </li>
+  <li>
+    <p>Remove deprecated support to calling <code class="language-plaintext highlighter-rouge">ActionView::ViewPaths#with_fallback</code> with a block.</p>
+  </li>
+  <li>
+    <p>Remove deprecated support to passing absolute paths to <code class="language-plaintext highlighter-rouge">render template:</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated support to passing relative paths to <code class="language-plaintext highlighter-rouge">render file:</code>.</p>
+  </li>
+  <li>
+    <p>Remove support to template handlers that don’t accept two arguments.</p>
+  </li>
+  <li>
+    <p>Remove deprecated pattern argument in <code class="language-plaintext highlighter-rouge">ActionView::Template::PathResolver</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated support to call private methods from object in some view helpers.</p>
+  </li>
+</ul>
+
+<h3 id="deprecations-3">Deprecations</h3>
+
+<h3 id="notable-changes-3">Notable changes</h3>
+
+<ul>
+  <li>
+    <p>Require that <code class="language-plaintext highlighter-rouge">ActionView::Base</code> subclasses implement <code class="language-plaintext highlighter-rouge">#compiled_method_container</code>.</p>
+  </li>
+  <li>
+    <p>Make <code class="language-plaintext highlighter-rouge">locals</code> argument required on <code class="language-plaintext highlighter-rouge">ActionView::Template#initialize</code>.</p>
+  </li>
+  <li>
+    <p>The <code class="language-plaintext highlighter-rouge">javascript_include_tag</code> and <code class="language-plaintext highlighter-rouge">stylesheet_link_tag</code> asset helpers generate a <code class="language-plaintext highlighter-rouge">link</code> header that gives hints to modern browsers about preloading assets. This can be disabled by setting <code class="language-plaintext highlighter-rouge">config.action_view.preload_links_header</code> to <code class="language-plaintext highlighter-rouge">false</code>.</p>
+  </li>
+</ul>
+
+<h2 id="action-mailer">Action Mailer</h2>
+
+<p>Please refer to the <a href="https://github.com/rails/rails/blob/6-1-stable/actionmailer/CHANGELOG.md">Changelog</a> for detailed changes.</p>
+
+<h3 id="removals-4">Removals</h3>
+
+<ul>
+  <li>Remove deprecated <code class="language-plaintext highlighter-rouge">ActionMailer::Base.receive</code> in favor of <a href="https://github.com/rails/rails/tree/6-1-stable/actionmailbox">Action Mailbox</a>.</li>
+</ul>
+
+<h3 id="deprecations-4">Deprecations</h3>
+
+<h3 id="notable-changes-4">Notable changes</h3>
+
+<h2 id="active-record">Active Record</h2>
+
+<p>Please refer to the <a href="https://github.com/rails/rails/blob/6-1-stable/activerecord/CHANGELOG.md">Changelog</a> for detailed changes.</p>
+
+<h3 id="removals-5">Removals</h3>
+
+<ul>
+  <li>
+    <p>Remove deprecated methods from <code class="language-plaintext highlighter-rouge">ActiveRecord::ConnectionAdapters::DatabaseLimits</code>.</p>
+
+    <p><code class="language-plaintext highlighter-rouge">column_name_length</code>
+<code class="language-plaintext highlighter-rouge">table_name_length</code>
+<code class="language-plaintext highlighter-rouge">columns_per_table</code>
+<code class="language-plaintext highlighter-rouge">indexes_per_table</code>
+<code class="language-plaintext highlighter-rouge">columns_per_multicolumn_index</code>
+<code class="language-plaintext highlighter-rouge">sql_query_length</code>
+<code class="language-plaintext highlighter-rouge">joins_per_query</code></p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActiveRecord::ConnectionAdapters::AbstractAdapter#supports_multi_insert?</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActiveRecord::ConnectionAdapters::AbstractAdapter#supports_foreign_keys_in_create?</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActiveRecord::ConnectionAdapters::PostgreSQLAdapter#supports_ranges?</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActiveRecord::Base#update_attributes</code> and <code class="language-plaintext highlighter-rouge">ActiveRecord::Base#update_attributes!</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">migrations_path</code> argument in
+<code class="language-plaintext highlighter-rouge">ActiveRecord::ConnectionAdapter::SchemaStatements#assume_migrated_upto_version</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">config.active_record.sqlite3.represent_boolean_as_integer</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated methods from <code class="language-plaintext highlighter-rouge">ActiveRecord::DatabaseConfigurations</code>.</p>
+
+    <p><code class="language-plaintext highlighter-rouge">fetch</code>
+<code class="language-plaintext highlighter-rouge">each</code>
+<code class="language-plaintext highlighter-rouge">first</code>
+<code class="language-plaintext highlighter-rouge">values</code>
+<code class="language-plaintext highlighter-rouge">[]=</code></p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActiveRecord::Result#to_hash</code> method.</p>
+  </li>
+  <li>
+    <p>Remove deprecated support for using unsafe raw SQL in <code class="language-plaintext highlighter-rouge">ActiveRecord::Relation</code> methods.</p>
+  </li>
+</ul>
+
+<h3 id="deprecations-5">Deprecations</h3>
+
+<ul>
+  <li>
+    <p>Deprecate <code class="language-plaintext highlighter-rouge">ActiveRecord::Base.allow_unsafe_raw_sql</code>.</p>
+  </li>
+  <li>
+    <p>Deprecate <code class="language-plaintext highlighter-rouge">database</code> kwarg on <code class="language-plaintext highlighter-rouge">connected_to</code>.</p>
+  </li>
+  <li>
+    <p>Deprecate <code class="language-plaintext highlighter-rouge">connection_handlers</code> when <code class="language-plaintext highlighter-rouge">legacy_connection_handling</code> is set to false.</p>
+  </li>
+</ul>
+
+<h3 id="notable-changes-5">Notable changes</h3>
+
+<ul>
+  <li>
+    <p>MySQL: Uniqueness validator now respects default database collation,
+no longer enforce case-sensitive comparison by default.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">relation.create</code> does no longer leak scope to class-level querying methods
+in initialization block and callbacks.</p>
+
+    <p>Before:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"John"</span><span class="p">).</span><span class="nf">create</span> <span class="k">do</span> <span class="o">|</span><span class="n">john</span><span class="o">|</span>
+  <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"David"</span><span class="p">)</span> <span class="c1"># =&gt; nil</span>
+<span class="k">end</span>
+</code></pre></div>    </div>
+
+    <p>After:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"John"</span><span class="p">).</span><span class="nf">create</span> <span class="k">do</span> <span class="o">|</span><span class="n">john</span><span class="o">|</span>
+  <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"David"</span><span class="p">)</span> <span class="c1"># =&gt; #&lt;User name: "David", ...&gt;</span>
+<span class="k">end</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Named scope chain does no longer leak scope to class-level querying methods.</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">scope</span> <span class="ss">:david</span><span class="p">,</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"David"</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div>    </div>
+
+    <p>Before:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"John"</span><span class="p">).</span><span class="nf">david</span>
+<span class="c1"># SELECT * FROM users WHERE name = 'John' AND name = 'David'</span>
+</code></pre></div>    </div>
+
+    <p>After:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"John"</span><span class="p">).</span><span class="nf">david</span>
+<span class="c1"># SELECT * FROM users WHERE name = 'David'</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">where.not</code> now generates NAND predicates instead of NOR.</p>
+
+    <p>Before:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">.</span><span class="nf">not</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Jon"</span><span class="p">,</span> <span class="ss">role: </span><span class="s2">"admin"</span><span class="p">)</span>
+<span class="c1"># SELECT * FROM users WHERE name != 'Jon' AND role != 'admin'</span>
+</code></pre></div>    </div>
+
+    <p>After:</p>
+
+    <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">.</span><span class="nf">not</span><span class="p">(</span><span class="ss">name: </span><span class="s2">"Jon"</span><span class="p">,</span> <span class="ss">role: </span><span class="s2">"admin"</span><span class="p">)</span>
+<span class="c1"># SELECT * FROM users WHERE NOT (name = 'Jon' AND role = 'admin')</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>To use the new per-database connection handling applications must change
+<code class="language-plaintext highlighter-rouge">legacy_connection_handling</code> to false and remove deprecated accessors on
+<code class="language-plaintext highlighter-rouge">connection_handlers</code>. Public methods for <code class="language-plaintext highlighter-rouge">connects_to</code> and <code class="language-plaintext highlighter-rouge">connected_to</code>
+require no changes.</p>
+  </li>
+</ul>
+
+<h2 id="active-storage">Active Storage</h2>
+
+<p>Please refer to the <a href="https://github.com/rails/rails/blob/6-1-stable/activestorage/CHANGELOG.md">Changelog</a> for detailed changes.</p>
+
+<h3 id="removals-6">Removals</h3>
+
+<ul>
+  <li>
+    <p>Remove deprecated support to pass <code class="language-plaintext highlighter-rouge">:combine_options</code> operations to <code class="language-plaintext highlighter-rouge">ActiveStorage::Transformers::ImageProcessing</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActiveStorage::Transformers::MiniMagickTransformer</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">config.active_storage.queue</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActiveStorage::Downloading</code>.</p>
+  </li>
+</ul>
+
+<h3 id="deprecations-6">Deprecations</h3>
+
+<ul>
+  <li>Deprecate <code class="language-plaintext highlighter-rouge">Blob.create_after_upload</code> in favor of <code class="language-plaintext highlighter-rouge">Blob.create_and_upload</code>.
+(<a href="https://github.com/rails/rails/pull/34827">Pull Request</a>)</li>
+</ul>
+
+<h3 id="notable-changes-6">Notable changes</h3>
+
+<ul>
+  <li>Add <code class="language-plaintext highlighter-rouge">Blob.create_and_upload</code> to create a new blob and upload the given <code class="language-plaintext highlighter-rouge">io</code>
+to the service.
+(<a href="https://github.com/rails/rails/pull/34827">Pull Request</a>)</li>
+  <li><code class="language-plaintext highlighter-rouge">ActiveStorage::Blob#service_name</code> column was added. It is required that a migration is run after the upgrade. Run <code class="language-plaintext highlighter-rouge">bin/rails app:update</code> to generate that migration.</li>
+</ul>
+
+<h2 id="active-model">Active Model</h2>
+
+<p>Please refer to the <a href="https://github.com/rails/rails/blob/6-1-stable/activemodel/CHANGELOG.md">Changelog</a> for detailed changes.</p>
+
+<h3 id="removals-7">Removals</h3>
+
+<h3 id="deprecations-7">Deprecations</h3>
+
+<h3 id="notable-changes-7">Notable changes</h3>
+
+<ul>
+  <li>Active Model’s errors are now objects with an interface that allows your application to more
+easily handle and interact with errors thrown by models.
+<a href="https://github.com/rails/rails/pull/32313">The feature</a> includes a query interface, enables
+more precise testing, and access to error details.</li>
+</ul>
+
+<h2 id="active-support">Active Support</h2>
+
+<p>Please refer to the <a href="https://github.com/rails/rails/blob/6-1-stable/activesupport/CHANGELOG.md">Changelog</a> for detailed changes.</p>
+
+<h3 id="removals-8">Removals</h3>
+
+<ul>
+  <li>
+    <p>Remove deprecated fallback to <code class="language-plaintext highlighter-rouge">I18n.default_locale</code> when <code class="language-plaintext highlighter-rouge">config.i18n.fallbacks</code> is empty.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">LoggerSilence</code> constant.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActiveSupport::LoggerThreadSafeLevel#after_initialize</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">Module#parent_name</code>, <code class="language-plaintext highlighter-rouge">Module#parent</code> and <code class="language-plaintext highlighter-rouge">Module#parents</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated file <code class="language-plaintext highlighter-rouge">active_support/core_ext/module/reachable</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated file <code class="language-plaintext highlighter-rouge">active_support/core_ext/numeric/inquiry</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated file <code class="language-plaintext highlighter-rouge">active_support/core_ext/array/prepend_and_append</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated file <code class="language-plaintext highlighter-rouge">active_support/core_ext/hash/compact</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated file <code class="language-plaintext highlighter-rouge">active_support/core_ext/hash/transform_values</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated file <code class="language-plaintext highlighter-rouge">active_support/core_ext/range/include_range</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActiveSupport::Multibyte::Chars#consumes?</code> and <code class="language-plaintext highlighter-rouge">ActiveSupport::Multibyte::Chars#normalize</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActiveSupport::Multibyte::Unicode.pack_graphemes</code>,
+<code class="language-plaintext highlighter-rouge">ActiveSupport::Multibyte::Unicode.unpack_graphemes</code>,
+<code class="language-plaintext highlighter-rouge">ActiveSupport::Multibyte::Unicode.normalize</code>,
+<code class="language-plaintext highlighter-rouge">ActiveSupport::Multibyte::Unicode.downcase</code>,
+<code class="language-plaintext highlighter-rouge">ActiveSupport::Multibyte::Unicode.upcase</code> and <code class="language-plaintext highlighter-rouge">ActiveSupport::Multibyte::Unicode.swapcase</code>.</p>
+  </li>
+  <li>
+    <p>Remove deprecated <code class="language-plaintext highlighter-rouge">ActiveSupport::Notifications::Instrumenter#end=</code>.</p>
+  </li>
+</ul>
+
+<h3 id="deprecations-8">Deprecations</h3>
+
+<ul>
+  <li>Deprecate <code class="language-plaintext highlighter-rouge">ActiveSupport::Multibyte::Unicode.default_normalization_form</code>.</li>
+</ul>
+
+<h3 id="notable-changes-8">Notable changes</h3>
+
+<h2 id="active-job">Active Job</h2>
+
+<p>Please refer to the <a href="https://github.com/rails/rails/blob/6-1-stable/activejob/CHANGELOG.md">Changelog</a> for detailed changes.</p>
+
+<h3 id="removals-9">Removals</h3>
+
+<h3 id="deprecations-9">Deprecations</h3>
+
+<ul>
+  <li>Deprecate <code class="language-plaintext highlighter-rouge">config.active_job.return_false_on_aborted_enqueue</code>.</li>
+</ul>
+
+<h3 id="notable-changes-9">Notable changes</h3>
+
+<ul>
+  <li>Return <code class="language-plaintext highlighter-rouge">false</code> when enqueuing a job is aborted.</li>
+</ul>
+
+<h2 id="action-text">Action Text</h2>
+
+<p>Please refer to the <a href="https://github.com/rails/rails/blob/6-1-stable/actiontext/CHANGELOG.md">Changelog</a> for detailed changes.</p>
+
+<h3 id="removals-10">Removals</h3>
+
+<h3 id="deprecations-10">Deprecations</h3>
+
+<h3 id="notable-changes-10">Notable changes</h3>
+
+<ul>
+  <li>
+    <p>Add method to confirm rich text content existence by adding <code class="language-plaintext highlighter-rouge">?</code> after
+name of the rich text attribute.
+(<a href="https://github.com/rails/rails/pull/37951">Pull Request</a>)</p>
+  </li>
+  <li>
+    <p>Add <code class="language-plaintext highlighter-rouge">fill_in_rich_text_area</code> system test case helper to find a trix
+editor and fill it with given HTML content.
+(<a href="https://github.com/rails/rails/pull/35885">Pull Request</a>)</p>
+  </li>
+  <li>
+    <p>Add <code class="language-plaintext highlighter-rouge">ActionText::FixtureSet.attachment</code> to generate
+<code class="language-plaintext highlighter-rouge">&lt;action-text-attachment&gt;</code> elements in database fixtures.
+(<a href="https://github.com/rails/rails/pull/40289">Pull Request</a>)</p>
+  </li>
+</ul>
+
+<h2 id="action-mailbox">Action Mailbox</h2>
+
+<p>Please refer to the <a href="https://github.com/rails/rails/blob/6-1-stable/actionmailbox/CHANGELOG.md">Changelog</a> for detailed changes.</p>
+
+<h3 id="removals-11">Removals</h3>
+
+<h3 id="deprecations-11">Deprecations</h3>
+
+<ul>
+  <li>Deprecate <code class="language-plaintext highlighter-rouge">Rails.application.credentials.action_mailbox.api_key</code> and <code class="language-plaintext highlighter-rouge">MAILGUN_INGRESS_API_KEY</code> in favor of <code class="language-plaintext highlighter-rouge">Rails.application.credentials.action_mailbox.signing_key</code> and <code class="language-plaintext highlighter-rouge">MAILGUN_INGRESS_SIGNING_KEY</code>.</li>
+</ul>
+
+<h3 id="notable-changes-11">Notable changes</h3>
+
+<h2 id="ruby-on-rails-guides">Ruby on Rails Guides</h2>
+
+<p>Please refer to the <a href="https://github.com/rails/rails/blob/6-1-stable/guides/CHANGELOG.md">Changelog</a> for detailed changes.</p>
+
+<h3 id="notable-changes-12">Notable changes</h3>
+
+<h2 id="credits">Credits</h2>
+
+<p>See the
+<a href="https://contributors.rubyonrails.org/">full list of contributors to Rails</a>
+for the many people who spent many hours making Rails, the stable and robust
+framework it is. Kudos to all of them.</p>
+
+
+        </div>
+
+        <footer class="guide-footer">
+            <div class="feedback">
+                <h3>Geri Bildirim</h3>
+                <p>Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri bildirimlerinizi bekliyoruz.</p>
+                <p>Lütfen <a href="https://github.com/dilankaya127/rails-tr-TR/issues">GitHub Issues</a> üzerinden katkıda bulunun.</p>
+            </div>
+        </footer>
+    </article>
+</div>
+
+<script>
+// İçindekiler tablosunu otomatik oluştur
+document.addEventListener('DOMContentLoaded', function() {
+    const toc = document.getElementById('toc');
+    const headings = document.querySelectorAll('.guide-content h2, .guide-content h3, .guide-content h4');
+    
+    if (headings.length > 0) {
+        const tocList = document.createElement('ul');
+        
+        headings.forEach(function(heading, index) {
+            const id = 'heading-' + index;
+            heading.id = id;
+            
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.textContent = heading.textContent;
+            a.className = 'toc-' + heading.tagName.toLowerCase();
+            
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+        
+        toc.appendChild(tocList);
+    }
+});
+</script>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Rails Kılavuzları Türkçe Çevirisi. Gönüllüler tarafından hazırlanmıştır.</p>
+            <p>Orijinal dokümantasyon <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine aittir.</p>
+        </div>
+    </footer>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started With Devcontainer - Rails Dokümantasyonu - Türkçe</title>
+    <link rel="stylesheet" href="/rails-tr-TR/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <a href="/rails-tr-TR/">Rails Kılavuzları</a>
+                </h1>
+                <nav class="nav">
+                    <a href="/rails-tr-TR/">Ana Sayfa</a>
+                    <a href="https://dilankaya127.github.io">Portföy</a>
+                    <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="guide-container">
+    <aside class="guide-sidebar">
+        <div class="guide-toc">
+            <h3>İçindekiler</h3>
+            <div id="toc"></div>
+        </div>
+        
+        <div class="guide-nav">
+            <h3>Diğer Kılavuzlar</h3>
+            <ul>
+                <li><a href="/rails-tr-TR/guides/getting_started">Rails ile Başlarken</a></li>
+                <li><a href="/rails-tr-TR/guides/active_record_basics">Active Record Temelleri</a></li>
+                <li><a href="/rails-tr-TR/guides/action_controller_overview">Action Controller</a></li>
+                <li><a href="/rails-tr-TR/guides/action_view_overview">Action View</a></li>
+                <li><a href="/rails-tr-TR/guides/routing">Yönlendirme</a></li>
+                <li><a href="/rails-tr-TR/guides/action_cable_overview">Action Cable</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <article class="guide-content">
+        <header class="guide-header">
+            <h1>Getting Started With Devcontainer</h1>
+            
+        </header>
+
+        <div class="guide-body">
+            <p><strong>DO NOT READ THIS FILE ON GITHUB, GUIDES ARE PUBLISHED ON <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a>.</strong></p>
+
+<h1 id="getting-started-with-dev-containers">Getting Started with Dev Containers</h1>
+
+<p>After reading this guide, you will know:</p>
+
+<ul>
+  <li>How to create a new Rails application with the <code class="language-plaintext highlighter-rouge">rails-new</code> tool.</li>
+  <li>How to begin working with your application in a development container.</li>
+</ul>
+
+<hr />
+
+<p>The best way to read this guide is to follow it step by step. All steps are
+essential to run this example application and no additional code or steps are
+needed.</p>
+
+<p>This guide helps you get set up with <a href="https://containers.dev/">development containers (or dev containers for short)</a>
+for a full-featured development environment. Dev containers are used to run your
+Rails application in a container, without needing to install Ruby or Rails or its dependencies
+directly on your machine. This is the fastest way to get your Rails application up and running.</p>
+
+<p>This is an alternative to installing Ruby and Rails directly on your machine, which is
+covered in the <a href="getting_started.html#creating-a-new-rails-project">Getting Started guides</a>.
+Once you have completed this guide, you can continue building your application by following
+the Getting Started guide.</p>
+
+<h2 id="setup-and-installation">Setup and Installation</h2>
+
+<p>To get set up, you will need to install the relevant tools; Docker, VS Code and
+<code class="language-plaintext highlighter-rouge">rails-new</code>. We’ll go into details about each one below.</p>
+
+<h3 id="installing-docker">Installing Docker</h3>
+
+<p>Dev containers are run using Docker, an open platform for developing, shipping, and
+running applications. You can install Docker by following the installation instructions
+for your operating system in the <a href="https://docs.docker.com/desktop/">Docker docs</a>.</p>
+
+<p>Once Docker has been installed, launch the Docker application to begin running
+the Docker engine on your machine.</p>
+
+<h3 id="installing-vs-code">Installing VS Code</h3>
+
+<p>Visual Studio Code (VS Code) is an open source code editor developed by Microsoft. VS Code’s Dev Containers
+extension allows you to open any folder inside (or mounted into) a container and take advantage of
+Visual Studio Code’s full feature set. A <a href="https://code.visualstudio.com/docs/devcontainers/containers#_create-a-devcontainerjson-file">devcontainer.json</a>
+file in your project tells VS Code how to access (or create) a development container with a
+well-defined tool and runtime stack. It allows you to quickly spin up containers, access terminal
+commands, debug code, and utilize extensions.</p>
+
+<p>You can install VS Code by downloading it from <a href="https://code.visualstudio.com/">the website</a>.</p>
+
+<p>You can install the Dev Containers extension by downloading it from <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers">the marketplace</a>.</p>
+
+<h3 id="installing-rails-new">Installing rails-new</h3>
+
+<p><code class="language-plaintext highlighter-rouge">rails-new</code> generates a new Rails application for you without having to install Ruby on
+your machine. It uses Docker to generate the Rails application, thus allowing Docker to
+take care of installing the correct Ruby and Rails versions for you.</p>
+
+<p>To install <code class="language-plaintext highlighter-rouge">rails-new</code>, follow the installation instructions <a href="https://github.com/rails/rails-new?tab=readme-ov-file#installation">in the README</a>.</p>
+
+<h2 id="creating-the-store-application">Creating the Store Application</h2>
+
+<p>Rails comes with a number of scripts called generators that are designed to make
+your development life easier by creating everything that’s necessary to start
+working on a particular task. One of these is the new application generator,
+which will provide you with the foundation of a fresh Rails application so that
+you don’t have to write it yourself. The <code class="language-plaintext highlighter-rouge">rails-new</code> tool uses this generator to
+create a new Rails application for you.</p>
+
+<p>NOTE: The examples below use <code class="language-plaintext highlighter-rouge">$</code> to represent your terminal prompt in a UNIX-like OS,
+though it may have been customized to appear differently.</p>
+
+<p>To use <code class="language-plaintext highlighter-rouge">rails-new</code> to generate your app, open a terminal, navigate to a directory where you have
+rights to create files, and run:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails-new store <span class="nt">--devcontainer</span>
+</code></pre></div></div>
+
+<p>This will create a Rails application called Store in a <code class="language-plaintext highlighter-rouge">store</code> directory.</p>
+
+<p>TIP: You can see all of the command line options that the Rails application
+generator accepts by running <code class="language-plaintext highlighter-rouge">rails-new --help</code>.</p>
+
+<p>After you create the store application, switch to its folder:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>store
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">store</code> directory will have a number of generated files and folders that make
+up the structure of a Rails application. Most of the work in this tutorial will
+happen in the <code class="language-plaintext highlighter-rouge">app</code> folder. For a full rundown of everything in your application
+see the full <a href="getting_started.html">Getting Started guide</a>.</p>
+
+<h2 id="opening-the-store-application-in-a-dev-container">Opening the Store Application in a Dev Container</h2>
+
+<p>Our new Rails application comes with a dev container already configured and ready to use.
+We will use VS Code to spin up and work with our dev container. Start by launching VS Code
+and opening your application.</p>
+
+<p>Once the application opens, VS Code should prompt you that it has found a dev container
+configuration file, and you can reopen the folder in a dev container. Click the green “Reopen
+in Container” button to create the dev container.</p>
+
+<p>Once the dev container setup is complete, your development environment is ready to use,
+with Ruby, Rails, and all your dependencies installed.</p>
+
+<p>You can open the terminal within VS Code to verify that Rails is installed:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails <span class="nt">--version</span>
+Rails 8.1.0
+</code></pre></div></div>
+
+<p>You can now continue with the <a href="getting_started.html">Getting Started guide</a> and
+begin building your Store application. You will be working within VS Code, which serves as
+your entry point to your application’s dev container, where you can run code, run tests, and
+run your application.</p>
+
+        </div>
+
+        <footer class="guide-footer">
+            <div class="feedback">
+                <h3>Geri Bildirim</h3>
+                <p>Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri bildirimlerinizi bekliyoruz.</p>
+                <p>Lütfen <a href="https://github.com/dilankaya127/rails-tr-TR/issues">GitHub Issues</a> üzerinden katkıda bulunun.</p>
+            </div>
+        </footer>
+    </article>
+</div>
+
+<script>
+// İçindekiler tablosunu otomatik oluştur
+document.addEventListener('DOMContentLoaded', function() {
+    const toc = document.getElementById('toc');
+    const headings = document.querySelectorAll('.guide-content h2, .guide-content h3, .guide-content h4');
+    
+    if (headings.length > 0) {
+        const tocList = document.createElement('ul');
+        
+        headings.forEach(function(heading, index) {
+            const id = 'heading-' + index;
+            heading.id = id;
+            
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.textContent = heading.textContent;
+            a.className = 'toc-' + heading.tagName.toLowerCase();
+            
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+        
+        toc.appendChild(tocList);
+    }
+});
+</script>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Rails Kılavuzları Türkçe Çevirisi. Gönüllüler tarafından hazırlanmıştır.</p>
+            <p>Orijinal dokümantasyon <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine aittir.</p>
+        </div>
+    </footer>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

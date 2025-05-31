@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Controller Overview - Rails Dokümantasyonu - Türkçe</title>
+    <link rel="stylesheet" href="/rails-tr-TR/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <a href="/rails-tr-TR/">Rails Kılavuzları</a>
+                </h1>
+                <nav class="nav">
+                    <a href="/rails-tr-TR/">Ana Sayfa</a>
+                    <a href="https://dilankaya127.github.io">Portföy</a>
+                    <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="guide-container">
+    <aside class="guide-sidebar">
+        <div class="guide-toc">
+            <h3>İçindekiler</h3>
+            <div id="toc"></div>
+        </div>
+        
+        <div class="guide-nav">
+            <h3>Diğer Kılavuzlar</h3>
+            <ul>
+                <li><a href="/rails-tr-TR/guides/getting_started">Rails ile Başlarken</a></li>
+                <li><a href="/rails-tr-TR/guides/active_record_basics">Active Record Temelleri</a></li>
+                <li><a href="/rails-tr-TR/guides/action_controller_overview">Action Controller</a></li>
+                <li><a href="/rails-tr-TR/guides/action_view_overview">Action View</a></li>
+                <li><a href="/rails-tr-TR/guides/routing">Yönlendirme</a></li>
+                <li><a href="/rails-tr-TR/guides/action_cable_overview">Action Cable</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <article class="guide-content">
+        <header class="guide-header">
+            <h1>Action Controller Overview</h1>
+            
+        </header>
+
+        <div class="guide-body">
+            <p><strong>DO NOT READ THIS FILE ON GITHUB, GUIDES ARE PUBLISHED ON <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a>.</strong></p>
+
+<h1 id="action-controller-overview">Action Controller Overview</h1>
+
+<p>In this guide, you will learn how controllers work and how they fit into the request cycle in your application.</p>
+
+<p>After reading this guide, you will know how to:</p>
+
+<ul>
+  <li>Follow the flow of a request through a controller.</li>
+  <li>Access parameters passed to your controller.</li>
+  <li>Use Strong Parameters and permit values.</li>
+  <li>Store data in the cookie, the session, and the flash.</li>
+  <li>Work with action callbacks to execute code during request processing.</li>
+  <li>Use the Request and Response Objects.</li>
+</ul>
+
+<hr />
+
+<h2 id="introduction">Introduction</h2>
+
+<p>Action Controller is the C in the Model View Controller
+(<a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">MVC</a>)
+pattern. After the <a href="routing.html">router</a> has matched a controller to an
+incoming request, the controller is responsible for processing the request and
+generating the appropriate output.</p>
+
+<p>For most conventional
+<a href="https://en.wikipedia.org/wiki/Representational_state_transfer">RESTful</a>
+applications, the controller will receive the request, fetch or save data from a
+model, and use a view to create HTML output.</p>
+
+<p>You can imagine that a controller sits between models and views. The controller
+makes model data available to the view, so that the view can display that data
+to the user. The controller also receives user input from the view and saves or
+updates model data accordingly.</p>
+
+<h2 id="creating-a-controller">Creating a Controller</h2>
+
+<p>A controller is a Ruby class which inherits from <code class="language-plaintext highlighter-rouge">ApplicationController</code> and has
+methods just like any other class. Once an incoming request is matched to a
+controller by the router, Rails creates an instance of that controller class and
+calls the method with the same name as the action.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ClientsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">new</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Given the above <code class="language-plaintext highlighter-rouge">ClientsController</code>, if a user goes to <code class="language-plaintext highlighter-rouge">/clients/new</code> in your
+application to add a new client, Rails will create an instance of
+<code class="language-plaintext highlighter-rouge">ClientsController</code> and call its <code class="language-plaintext highlighter-rouge">new</code> method. If the <code class="language-plaintext highlighter-rouge">new</code> method is empty, Rails
+will automatically render the <code class="language-plaintext highlighter-rouge">new.html.erb</code> view by default.</p>
+
+<p>NOTE: The <code class="language-plaintext highlighter-rouge">new</code> method is an instance method here, called on an instance of <code class="language-plaintext highlighter-rouge">ClientsController</code>. This should not be confused with the <code class="language-plaintext highlighter-rouge">new</code> class method (i.e., <code class="language-plaintext highlighter-rouge">ClientsController.new</code>).</p>
+
+<p>In the <code class="language-plaintext highlighter-rouge">new</code> method, the controller would typically create an instance of the
+<code class="language-plaintext highlighter-rouge">Client</code> model, and make it available as an instance variable called <code class="language-plaintext highlighter-rouge">@client</code>
+in the view:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">new</span>
+  <span class="vi">@client</span> <span class="o">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">new</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>NOTE: All controllers inherit from <code class="language-plaintext highlighter-rouge">ApplicationController</code>, which in turn
+inherits from
+<a href="https://api.rubyonrails.org/classes/ActionController/Base.html"><code class="language-plaintext highlighter-rouge">ActionController::Base</code></a>.
+For <a href="https://guides.rubyonrails.org/api_app.html">API only</a> applications <code class="language-plaintext highlighter-rouge">ApplicationController</code> inherits from
+<a href="https://edgeapi.rubyonrails.org/classes/ActionController/API.html"><code class="language-plaintext highlighter-rouge">ActionController::API</code></a>.</p>
+
+<h3 id="controller-naming-convention">Controller Naming Convention</h3>
+
+<p>Rails favors making the resource in the controller’s name plural. For example,
+<code class="language-plaintext highlighter-rouge">ClientsController</code> is preferred over <code class="language-plaintext highlighter-rouge">ClientController</code> and
+<code class="language-plaintext highlighter-rouge">SiteAdminsController</code> over <code class="language-plaintext highlighter-rouge">SiteAdminController</code> or <code class="language-plaintext highlighter-rouge">SitesAdminsController</code>.
+However, the plural names are not strictly required (e.g.
+<code class="language-plaintext highlighter-rouge">ApplicationController</code>).</p>
+
+<p>Following this naming convention will allow you to use the <a href="routing.html#crud-verbs-and-actions">default route
+generators</a> (e.g. <code class="language-plaintext highlighter-rouge">resources</code>) without
+needing to qualify each with options such as
+<a href="routing.html#specifying-a-controller-to-use"><code class="language-plaintext highlighter-rouge">:controller</code></a>. The convention
+also makes named route helpers consistent throughout your application.</p>
+
+<p>The controller naming convention is different from models. While plural names
+are preferred for controller names, the singular form is preferred for <a href="active_record_basics.html#naming-conventions">model
+names</a> (e.g. <code class="language-plaintext highlighter-rouge">Account</code> vs.
+<code class="language-plaintext highlighter-rouge">Accounts</code>).</p>
+
+<p>Controller actions should be <code class="language-plaintext highlighter-rouge">public</code>, as only <code class="language-plaintext highlighter-rouge">public</code> methods are callable as
+actions. It is also best practice to lower the visibility of helper methods
+(with <code class="language-plaintext highlighter-rouge">private</code> or <code class="language-plaintext highlighter-rouge">protected</code>) which are <em>not</em> intended to be actions.</p>
+
+<p>WARNING: Some method names are reserved by Action Controller. Accidentally
+redefining them could result in <code class="language-plaintext highlighter-rouge">SystemStackError</code>. If you limit your
+controllers to only RESTful <a href="routing.html#resource-routing-the-rails-default">Resource Routing</a> actions you should not need to
+worry about this.</p>
+
+<p>NOTE: If you must use a reserved method as an action name, one workaround is to
+use a custom route to map the reserved method name to your non-reserved action
+method.</p>
+
+<h2 id="parameters">Parameters</h2>
+
+<p>Data sent by the incoming request is available in your controller in the
+[<code class="language-plaintext highlighter-rouge">params</code>][] hash. There are two types of parameter data:</p>
+
+<ul>
+  <li>Query string parameters which are sent as part of the URL (for example, after
+the <code class="language-plaintext highlighter-rouge">?</code> in <code class="language-plaintext highlighter-rouge">http://example.com/accounts?filter=free</code>).</li>
+  <li>POST parameters which are submitted from an HTML form.</li>
+</ul>
+
+<p>Rails does not make a distinction between query string parameters and POST
+parameters; both are available in the <code class="language-plaintext highlighter-rouge">params</code> hash in your controller. For
+example:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ClientsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># This action receives query string parameters from an HTTP GET request</span>
+  <span class="c1"># at the URL "/clients?status=activated"</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="ss">:status</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"activated"</span>
+      <span class="vi">@clients</span> <span class="o">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">activated</span>
+    <span class="k">else</span>
+      <span class="vi">@clients</span> <span class="o">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">inactivated</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="c1"># This action receives parameters from a POST request to "/clients" URL with  form data in the request body.</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@client</span> <span class="o">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:client</span><span class="p">])</span>
+    <span class="k">if</span> <span class="vi">@client</span><span class="p">.</span><span class="nf">save</span>
+      <span class="n">redirect_to</span> <span class="vi">@client</span>
+    <span class="k">else</span>
+      <span class="n">render</span> <span class="s2">"new"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>NOTE: The <code class="language-plaintext highlighter-rouge">params</code> hash is not a plain old Ruby Hash; instead, it is an
+[<code class="language-plaintext highlighter-rouge">ActionController::Parameters</code>][] object. It does not inherit from Hash, but it behaves mostly like Hash.
+It provides methods for filtering <code class="language-plaintext highlighter-rouge">params</code> and, unlike a Hash, keys <code class="language-plaintext highlighter-rouge">:foo</code> and <code class="language-plaintext highlighter-rouge">"foo"</code> are considered to be the same.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">params</code>]:
+    https://api.rubyonrails.org/classes/ActionController/StrongParameters.html#method-i-params
+[<code class="language-plaintext highlighter-rouge">ActionController::Parameters</code>]:
+    https://api.rubyonrails.org/classes/ActionController/Parameters.html</p>
+
+<h3 id="hash-and-array-parameters">Hash and Array Parameters</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">params</code> hash is not limited to one-dimensional keys and values. It can
+contain nested arrays and hashes. To send an array of values, append an empty
+pair of square brackets <code class="language-plaintext highlighter-rouge">[]</code> to the key name:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /users?ids[]=1&amp;ids[]=2&amp;ids[]=3
+</code></pre></div></div>
+
+<p>NOTE: The actual URL in this example will be encoded as
+<code class="language-plaintext highlighter-rouge">/users?ids%5b%5d=1&amp;ids%5b%5d=2&amp;ids%5b%5d=3</code> as the <code class="language-plaintext highlighter-rouge">[</code> and <code class="language-plaintext highlighter-rouge">]</code> characters are
+not allowed in URLs. Most of the time you don’t have to worry about this because
+the browser will encode it for you, and Rails will decode it automatically, but
+if you ever find yourself having to send those requests to the server manually
+you should keep this in mind.</p>
+
+<p>The value of <code class="language-plaintext highlighter-rouge">params[:ids]</code> will be the array <code class="language-plaintext highlighter-rouge">["1", "2", "3"]</code>. Note that
+parameter values are always strings; Rails does not attempt to guess or cast the
+type.</p>
+
+<p>NOTE: Values such as <code class="language-plaintext highlighter-rouge">[nil]</code> or <code class="language-plaintext highlighter-rouge">[nil, nil, ...]</code> in <code class="language-plaintext highlighter-rouge">params</code> are replaced with
+<code class="language-plaintext highlighter-rouge">[]</code> for security reasons by default. See <a href="security.html#unsafe-query-generation">Security
+Guide</a> for more information.</p>
+
+<p>To send a hash, you include the key name inside the brackets:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;form</span> <span class="na">accept-charset=</span><span class="s">"UTF-8"</span> <span class="na">action=</span><span class="s">"/users"</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"user[name]"</span> <span class="na">value=</span><span class="s">"Acme"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"user[phone]"</span> <span class="na">value=</span><span class="s">"12345"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"user[address][postcode]"</span> <span class="na">value=</span><span class="s">"12345"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"user[address][city]"</span> <span class="na">value=</span><span class="s">"Carrot City"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</code></pre></div></div>
+
+<p>When this form is submitted, the value of <code class="language-plaintext highlighter-rouge">params[:user]</code> will be <code class="language-plaintext highlighter-rouge">{ "name" =&gt;
+"Acme", "phone" =&gt; "12345", "address" =&gt; { "postcode" =&gt; "12345", "city" =&gt;
+"Carrot City" } }</code>. Note the nested hash in <code class="language-plaintext highlighter-rouge">params[:user][:address]</code>.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">params</code> object acts like a Hash, but lets you use symbols and strings
+interchangeably as keys.</p>
+
+<h3 id="composite-key-parameters">Composite Key Parameters</h3>
+
+<p><a href="active_record_composite_primary_keys.html">Composite key parameters</a> contain
+multiple values in one parameter separated by a delimiter (e.g., an underscore).
+Therefore, you will need to extract each value so that you can pass them to
+Active Record. You can use the <code class="language-plaintext highlighter-rouge">extract_value</code>  method to do that.</p>
+
+<p>For example, given the following controller:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="c1"># Extract the composite ID value from URL parameters.</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">params</span><span class="p">.</span><span class="nf">extract_value</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>
+    <span class="vi">@book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>And this route:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">get</span> <span class="s2">"/books/:id"</span><span class="p">,</span> <span class="ss">to: </span><span class="s2">"books#show"</span>
+</code></pre></div></div>
+
+<p>When a user requests the URL <code class="language-plaintext highlighter-rouge">/books/4_2</code>, the controller will extract the
+composite key value <code class="language-plaintext highlighter-rouge">["4", "2"]</code> and pass it to <code class="language-plaintext highlighter-rouge">Book.find</code>. The <code class="language-plaintext highlighter-rouge">extract_value</code>
+method may be used to extract arrays out of any delimited parameters.</p>
+
+<h3 id="json-parameters">JSON Parameters</h3>
+
+<p>If your application exposes an API, you will likely accept parameters in JSON
+format. If the <code class="language-plaintext highlighter-rouge">content-type</code> header of your request is set to
+<code class="language-plaintext highlighter-rouge">application/json</code>, Rails will automatically load your parameters into the
+<code class="language-plaintext highlighter-rouge">params</code> hash, which you can access as you would normally.</p>
+
+<p>So for example, if you are sending this JSON content:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nl">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"acme"</span><span class="p">,</span><span class="w"> </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123 Carrot Street"</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Your controller will receive:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span> <span class="s2">"user"</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="s2">"name"</span> <span class="o">=&gt;</span> <span class="s2">"acme"</span><span class="p">,</span> <span class="s2">"address"</span> <span class="o">=&gt;</span> <span class="s2">"123 Carrot Street"</span> <span class="p">}</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="configuring-wrap-parameters">Configuring Wrap Parameters</h4>
+
+<p>You can use [Wrap Parameters][], which automatically add the controller name to
+JSON parameters. For example, you can send the below JSON without a root <code class="language-plaintext highlighter-rouge">:user</code>
+key prefix:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"acme"</span><span class="p">,</span><span class="w"> </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123 Carrot Street"</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Assuming that you’re sending the above data to the <code class="language-plaintext highlighter-rouge">UsersController</code>, the JSON
+will be wrapped within the <code class="language-plaintext highlighter-rouge">:user</code> key like this:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span> <span class="ss">name: </span><span class="s2">"acme"</span><span class="p">,</span> <span class="ss">address: </span><span class="s2">"123 Carrot Street"</span><span class="p">,</span> <span class="ss">user: </span><span class="p">{</span> <span class="ss">name: </span><span class="s2">"acme"</span><span class="p">,</span> <span class="ss">address: </span><span class="s2">"123 Carrot Street"</span> <span class="p">}</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>NOTE: Wrap Parameters adds a clone of the parameters to the hash within a key
+that is the same as the controller name. As a result, both the original version
+of the parameters and the “wrapped” version of the parameters will exist in the
+params hash.</p>
+
+<p>This feature clones and wraps parameters with a key chosen based on your
+controller’s name. It is configured to <code class="language-plaintext highlighter-rouge">true</code> by default. If you do not want to
+wrap parameters you can
+<a href="configuring.html#config-action-controller-wrap-parameters-by-default">configure</a>
+it to <code class="language-plaintext highlighter-rouge">false</code>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">config</span><span class="p">.</span><span class="nf">action_controller</span><span class="p">.</span><span class="nf">wrap_parameters_by_default</span> <span class="o">=</span> <span class="kp">false</span>
+</code></pre></div></div>
+
+<p>You can also customize the name of the key or specific parameters you want to
+wrap, see the <a href="https://api.rubyonrails.org/classes/ActionController/ParamsWrapper.html">API
+documentation</a>
+for more.</p>
+
+<p>[Wrap Parameters]:
+    https://api.rubyonrails.org/classes/ActionController/ParamsWrapper/Options/ClassMethods.html#method-i-wrap_parameters</p>
+
+<h3 id="routing-parameters">Routing Parameters</h3>
+
+<p>Parameters specified as part of a route declaration in the <code class="language-plaintext highlighter-rouge">routes.rb</code> file are
+also made available in the <code class="language-plaintext highlighter-rouge">params</code> hash. For example, we can add a route that
+captures the <code class="language-plaintext highlighter-rouge">:status</code> parameter for a client:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">get</span> <span class="s2">"/clients/:status"</span><span class="p">,</span> <span class="ss">to: </span><span class="s2">"clients#index"</span><span class="p">,</span> <span class="ss">foo: </span><span class="s2">"bar"</span>
+</code></pre></div></div>
+
+<p>When a user navigates to <code class="language-plaintext highlighter-rouge">/clients/active</code> URL, <code class="language-plaintext highlighter-rouge">params[:status]</code> will be set to
+“active”. When this route is used, <code class="language-plaintext highlighter-rouge">params[:foo]</code> will also be set to “bar”, as
+if it were passed in the query string.</p>
+
+<p>Any other parameters defined by the route declaration, such as <code class="language-plaintext highlighter-rouge">:id</code>, will also
+be available.</p>
+
+<p>NOTE: In the above example, your controller will also receive <code class="language-plaintext highlighter-rouge">params[:action]</code>
+as “index” and <code class="language-plaintext highlighter-rouge">params[:controller]</code> as “clients”. The <code class="language-plaintext highlighter-rouge">params</code> hash will always
+contain the <code class="language-plaintext highlighter-rouge">:controller</code> and <code class="language-plaintext highlighter-rouge">:action</code> keys, but it’s recommended to use the
+methods [<code class="language-plaintext highlighter-rouge">controller_name</code>][] and [<code class="language-plaintext highlighter-rouge">action_name</code>][] instead to access these
+values.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">controller_name</code>]:
+    https://api.rubyonrails.org/classes/ActionController/Metal.html#method-i-controller_name
+[<code class="language-plaintext highlighter-rouge">action_name</code>]:
+    https://api.rubyonrails.org/classes/AbstractController/Base.html#method-i-action_name</p>
+
+<h3 id="the-default_url_options-method">The <code class="language-plaintext highlighter-rouge">default_url_options</code> Method</h3>
+
+<p>You can set global default parameters for <a href="https://api.rubyonrails.org/classes/ActionView/RoutingUrlFor.html#method-i-url_for"><code class="language-plaintext highlighter-rouge">url_for</code></a>
+by defining a method called <code class="language-plaintext highlighter-rouge">default_url_options</code> in your controller. For
+example:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="k">def</span> <span class="nf">default_url_options</span>
+    <span class="p">{</span> <span class="ss">locale: </span><span class="no">I18n</span><span class="p">.</span><span class="nf">locale</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The specified defaults will be used as a starting point when generating URLs.
+They can be overridden by the options passed to <code class="language-plaintext highlighter-rouge">url_for</code> or any path helper
+such as <code class="language-plaintext highlighter-rouge">posts_path</code>. For example, by setting <code class="language-plaintext highlighter-rouge">locale: I18n.locale</code>, Rails will
+automatically add the locale to every URL:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">posts_path</span> <span class="c1"># =&gt; "/posts?locale=en"</span>
+</code></pre></div></div>
+
+<p>You can still override this default if needed:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">posts_path</span><span class="p">(</span><span class="ss">locale: :fr</span><span class="p">)</span> <span class="c1"># =&gt; "/posts?locale=fr"</span>
+</code></pre></div></div>
+
+<p>NOTE: Under the hood, <code class="language-plaintext highlighter-rouge">posts_path</code> is a shorthand for calling <code class="language-plaintext highlighter-rouge">url_for</code> with the
+appropriate parameters.</p>
+
+<p>If you define <code class="language-plaintext highlighter-rouge">default_url_options</code> in <code class="language-plaintext highlighter-rouge">ApplicationController</code>, as in the
+example above, these defaults will be used for all URL generation. The method
+can also be defined in a specific controller, in which case it only applies to
+URLs generated for that controller.</p>
+
+<p>In a given request, the method is not actually called for every single generated
+URL. For performance reasons the returned hash is cached per request.</p>
+
+<h2 id="strong-parameters">Strong Parameters</h2>
+
+<p>With Action Controller <a href="https://api.rubyonrails.org/classes/ActionController/StrongParameters.html">Strong
+Parameters</a>,
+parameters cannot be used in Active Model mass assignments until they have been
+explicitly permitted. This means you will need to decide which attributes to
+permit for mass update and declare them in the controller. This is a security
+practice to prevent users from accidentally updating sensitive model attributes.</p>
+
+<p>In addition, parameters can be marked as required and the request will result in
+a 400 Bad Request being returned if not all required parameters are passed in.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PeopleController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="c1"># This will raise an ActiveModel::ForbiddenAttributesError</span>
+  <span class="c1"># because it's using mass assignment without an explicit permit.</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="no">Person</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:person</span><span class="p">])</span>
+  <span class="k">end</span>
+
+  <span class="c1"># This will work as we are using `person_params` helper method, which has the</span>
+  <span class="c1"># call to `expect` to allow mass assignment.</span>
+  <span class="k">def</span> <span class="nf">update</span>
+    <span class="n">person</span> <span class="o">=</span> <span class="no">Person</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+    <span class="n">person</span><span class="p">.</span><span class="nf">update!</span><span class="p">(</span><span class="n">person_params</span><span class="p">)</span>
+    <span class="n">redirect_to</span> <span class="n">person</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+    <span class="c1"># Using a private method to encapsulate the permitted parameters is a good</span>
+    <span class="c1"># pattern. You can use the same list for both create and update.</span>
+    <span class="k">def</span> <span class="nf">person_params</span>
+      <span class="n">params</span><span class="p">.</span><span class="nf">expect</span><span class="p">(</span><span class="ss">person: </span><span class="p">[</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:age</span><span class="p">])</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h3 id="permitting-values">Permitting Values</h3>
+
+<h4 id="expect"><code class="language-plaintext highlighter-rouge">expect</code></h4>
+
+<p>The [<code class="language-plaintext highlighter-rouge">expect</code>][] method provides a concise and safe way to require and permit
+parameters.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">id</span> <span class="o">=</span> <span class="n">params</span><span class="p">.</span><span class="nf">expect</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The above <code class="language-plaintext highlighter-rouge">expect</code> will always return a scalar value and not an array or hash.
+Another example is form params, you can use <code class="language-plaintext highlighter-rouge">expect</code> to ensure that the root key
+is present and the attributes are permitted.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">user_params</span> <span class="o">=</span> <span class="n">params</span><span class="p">.</span><span class="nf">expect</span><span class="p">(</span><span class="ss">user: </span><span class="p">[</span><span class="ss">:username</span><span class="p">,</span> <span class="ss">:password</span><span class="p">])</span>
+<span class="n">user_params</span><span class="p">.</span><span class="nf">has_key?</span><span class="p">(</span><span class="ss">:username</span><span class="p">)</span> <span class="c1"># =&gt; true</span>
+</code></pre></div></div>
+
+<p>In the above example, if the <code class="language-plaintext highlighter-rouge">:user</code> key is not a nested hash with the specified
+keys, <code class="language-plaintext highlighter-rouge">expect</code> will raise an error and return a 400 Bad Request response.</p>
+
+<p>To require and permit an entire hash of parameters, [<code class="language-plaintext highlighter-rouge">expect</code>][] can be used in
+this way.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">params</span><span class="p">.</span><span class="nf">expect</span><span class="p">(</span><span class="ss">log_entry: </span><span class="p">{})</span>
+</code></pre></div></div>
+
+<p>This marks the <code class="language-plaintext highlighter-rouge">:log_entry</code> parameters hash and any sub-hash of it as permitted
+and does not check for permitted scalars, anything is accepted.</p>
+
+<p>WARNING: Extreme care should be taken when calling <code class="language-plaintext highlighter-rouge">expect</code> with an empty
+hash, as it will allow all current and future model attributes to be
+mass-assigned.</p>
+
+<h4 id="permit"><code class="language-plaintext highlighter-rouge">permit</code></h4>
+
+<p>Calling [<code class="language-plaintext highlighter-rouge">permit</code>][] allows the specified key in <code class="language-plaintext highlighter-rouge">params</code> (<code class="language-plaintext highlighter-rouge">:id</code> or <code class="language-plaintext highlighter-rouge">:admin</code>
+below) for inclusion in mass assignment (e.g. via <code class="language-plaintext highlighter-rouge">create</code> or <code class="language-plaintext highlighter-rouge">update</code>):</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">params = ActionController::Parameters.new(id: 1, admin: "true")
+</span><span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">ActionController</span><span class="o">::</span><span class="no">Parameters</span> <span class="p">{</span><span class="s2">"id"</span><span class="o">=</span><span class="kt">&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"admin"</span><span class="o">=&gt;</span><span class="s2">"true"</span><span class="p">}</span> <span class="ss">permitted: </span><span class="kp">false</span><span class="o">&gt;</span>
+<span class="n">params</span><span class="p">.</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="kt">#&lt;</span><span class="no">ActionController</span><span class="o">::</span><span class="no">Parameters</span> <span class="p">{</span><span class="s2">"id"</span><span class="o">=</span><span class="kt">&gt;</span><span class="mi">1</span><span class="p">}</span> <span class="ss">permitted: </span><span class="kp">true</span><span class="o">&gt;</span>
+<span class="n">params</span><span class="p">.</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:id</span><span class="p">,</span> <span class="ss">:admin</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="kt">#&lt;</span><span class="no">ActionController</span><span class="o">::</span><span class="no">Parameters</span> <span class="p">{</span><span class="s2">"id"</span><span class="o">=</span><span class="kt">&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"admin"</span><span class="o">=&gt;</span><span class="s2">"true"</span><span class="p">}</span> <span class="ss">permitted: </span><span class="kp">true</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p>For the permitted key <code class="language-plaintext highlighter-rouge">:id</code>, its value also needs to be one of these permitted
+scalar values: <code class="language-plaintext highlighter-rouge">String</code>, <code class="language-plaintext highlighter-rouge">Symbol</code>, <code class="language-plaintext highlighter-rouge">NilClass</code>, <code class="language-plaintext highlighter-rouge">Numeric</code>, <code class="language-plaintext highlighter-rouge">TrueClass</code>,
+<code class="language-plaintext highlighter-rouge">FalseClass</code>, <code class="language-plaintext highlighter-rouge">Date</code>, <code class="language-plaintext highlighter-rouge">Time</code>, <code class="language-plaintext highlighter-rouge">DateTime</code>, <code class="language-plaintext highlighter-rouge">StringIO</code>, <code class="language-plaintext highlighter-rouge">IO</code>,
+<code class="language-plaintext highlighter-rouge">ActionDispatch::Http::UploadedFile</code>, and <code class="language-plaintext highlighter-rouge">Rack::Test::UploadedFile</code>.</p>
+
+<p>If you have not called <code class="language-plaintext highlighter-rouge">permit</code> on the key, it will be filtered out. Arrays,
+hashes, or any other objects are not injected by default.</p>
+
+<p>To include a value in <code class="language-plaintext highlighter-rouge">params</code> that’s an array of one of the permitted scalar
+values, you can map the key to an empty array like this:</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">params = ActionController::Parameters.new(tags: ["rails", "parameters"])
+</span><span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">ActionController</span><span class="o">::</span><span class="no">Parameters</span> <span class="p">{</span><span class="s2">"tags"</span><span class="o">=</span><span class="kt">&gt;</span><span class="p">[</span><span class="s2">"rails"</span><span class="p">,</span> <span class="s2">"parameters"</span><span class="p">]}</span> <span class="ss">permitted: </span><span class="kp">false</span><span class="o">&gt;</span>
+<span class="n">params</span><span class="p">.</span><span class="nf">permit</span><span class="p">(</span><span class="ss">tags: </span><span class="p">[])</span>
+<span class="o">=&gt;</span> <span class="kt">#&lt;</span><span class="no">ActionController</span><span class="o">::</span><span class="no">Parameters</span> <span class="p">{</span><span class="s2">"tags"</span><span class="o">=</span><span class="kt">&gt;</span><span class="p">[</span><span class="s2">"rails"</span><span class="p">,</span> <span class="s2">"parameters"</span><span class="p">]}</span> <span class="ss">permitted: </span><span class="kp">true</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p>To include hash values, you can map to an empty hash:</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">params = ActionController::Parameters.new(options: { darkmode: true })
+</span><span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">ActionController</span><span class="o">::</span><span class="no">Parameters</span> <span class="p">{</span><span class="s2">"options"</span><span class="o">=</span><span class="kt">&gt;</span><span class="p">{</span><span class="s2">"darkmode"</span><span class="o">=&gt;</span><span class="kp">true</span><span class="p">}}</span> <span class="ss">permitted: </span><span class="kp">false</span><span class="o">&gt;</span>
+<span class="n">params</span><span class="p">.</span><span class="nf">permit</span><span class="p">(</span><span class="ss">options: </span><span class="p">{})</span>
+<span class="o">=&gt;</span> <span class="kt">#&lt;</span><span class="no">ActionController</span><span class="o">::</span><span class="no">Parameters</span> <span class="p">{</span><span class="s2">"options"</span><span class="o">=</span><span class="kt">&gt;#&lt;</span><span class="no">ActionController</span><span class="o">::</span><span class="no">Parameters</span> <span class="p">{</span><span class="s2">"darkmode"</span><span class="o">=</span><span class="kt">&gt;</span><span class="kp">true</span><span class="p">}</span> <span class="ss">permitted: </span><span class="kp">true</span><span class="o">&gt;</span><span class="p">}</span> <span class="ss">permitted: </span><span class="kp">true</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p>The above <code class="language-plaintext highlighter-rouge">permit</code> call ensures that values in <code class="language-plaintext highlighter-rouge">options</code> are permitted scalars
+and filters out anything else.</p>
+
+<p>WARNING: The <code class="language-plaintext highlighter-rouge">permit</code> with an empty hash is convenient since sometimes it is not
+possible or convenient to declare each valid key of a hash parameter or its
+internal structure. But note that the above <code class="language-plaintext highlighter-rouge">permit</code> with an empty hash opens
+the door to arbitrary input.</p>
+
+<h4 id="permit-1"><code class="language-plaintext highlighter-rouge">permit!</code></h4>
+
+<p>There is also [<code class="language-plaintext highlighter-rouge">permit!</code>][] (with an <code class="language-plaintext highlighter-rouge">!</code>) which permits an entire hash of
+parameters without checking the values.</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">params = ActionController::Parameters.new(id: 1, admin: "true")
+</span><span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">ActionController</span><span class="o">::</span><span class="no">Parameters</span> <span class="p">{</span><span class="s2">"id"</span><span class="o">=</span><span class="kt">&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"admin"</span><span class="o">=&gt;</span><span class="s2">"true"</span><span class="p">}</span> <span class="ss">permitted: </span><span class="kp">false</span><span class="o">&gt;</span>
+<span class="n">params</span><span class="p">.</span><span class="nf">permit!</span>
+<span class="o">=&gt;</span> <span class="kt">#&lt;</span><span class="no">ActionController</span><span class="o">::</span><span class="no">Parameters</span> <span class="p">{</span><span class="s2">"id"</span><span class="o">=</span><span class="kt">&gt;</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"admin"</span><span class="o">=&gt;</span><span class="s2">"true"</span><span class="p">}</span> <span class="ss">permitted: </span><span class="kp">true</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p>WARNING: Extreme care should be taken when using <code class="language-plaintext highlighter-rouge">permit!</code>, as it will allow all
+current and <em>future</em> model attributes to be mass-assigned.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">permit</code>]:
+    https://api.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit
+[<code class="language-plaintext highlighter-rouge">permit!</code>]:
+    https://api.rubyonrails.org/classes/ActionController/Parameters.html#method-i-permit-21
+[<code class="language-plaintext highlighter-rouge">expect</code>]:
+    https://api.rubyonrails.org/classes/ActionController/Parameters.html#method-i-expect</p>
+
+<h3 id="nested-parameters">Nested Parameters</h3>
+
+<p>You can also use <code class="language-plaintext highlighter-rouge">expect</code> (or <code class="language-plaintext highlighter-rouge">permit</code>) on nested parameters, like:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Given the example expected params:</span>
+<span class="n">params</span> <span class="o">=</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Parameters</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
+  <span class="ss">name: </span><span class="s2">"Martin"</span><span class="p">,</span>
+  <span class="ss">emails: </span><span class="p">[</span><span class="s2">"me@example.com"</span><span class="p">],</span>
+  <span class="ss">friends: </span><span class="p">[</span>
+    <span class="p">{</span> <span class="ss">name: </span><span class="s2">"André"</span><span class="p">,</span> <span class="ss">family: </span><span class="p">{</span> <span class="ss">name: </span><span class="s2">"RubyGems"</span> <span class="p">},</span> <span class="ss">hobbies: </span><span class="p">[</span><span class="s2">"keyboards"</span><span class="p">,</span> <span class="s2">"card games"</span><span class="p">]</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="ss">name: </span><span class="s2">"Kewe"</span><span class="p">,</span> <span class="ss">family: </span><span class="p">{</span> <span class="ss">name: </span><span class="s2">"Baroness"</span> <span class="p">},</span> <span class="ss">hobbies: </span><span class="p">[</span><span class="s2">"video games"</span><span class="p">]</span> <span class="p">},</span>
+  <span class="p">]</span>
+<span class="p">)</span>
+<span class="c1"># the following expect will ensure the params are permitted</span>
+<span class="nb">name</span><span class="p">,</span> <span class="n">emails</span><span class="p">,</span> <span class="n">friends</span> <span class="o">=</span> <span class="n">params</span><span class="p">.</span><span class="nf">expect</span><span class="p">(</span>
+  <span class="ss">:name</span><span class="p">,</span>                 <span class="c1"># permitted scalar</span>
+  <span class="ss">emails: </span><span class="p">[],</span>            <span class="c1"># array of permitted scalars</span>
+  <span class="ss">friends: </span><span class="p">[[</span>            <span class="c1"># array of permitted Parameter hashes</span>
+    <span class="ss">:name</span><span class="p">,</span>               <span class="c1"># permitted scalar</span>
+    <span class="ss">family: </span><span class="p">[</span><span class="ss">:name</span><span class="p">],</span>     <span class="c1"># family: { name: "permitted scalar" }</span>
+    <span class="ss">hobbies: </span><span class="p">[]</span>          <span class="c1"># array of permitted scalars</span>
+  <span class="p">]]</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>This declaration permits the <code class="language-plaintext highlighter-rouge">name</code>, <code class="language-plaintext highlighter-rouge">emails</code>, and <code class="language-plaintext highlighter-rouge">friends</code> attributes and
+returns them each. It is expected that <code class="language-plaintext highlighter-rouge">emails</code> will be an array of permitted
+scalar values, and that <code class="language-plaintext highlighter-rouge">friends</code> will be an array of resources (note the new
+double array syntax to explicitly require an array) with specific attributes.
+These attributes should have a <code class="language-plaintext highlighter-rouge">name</code> attribute (any permitted scalar values allowed), a
+<code class="language-plaintext highlighter-rouge">hobbies</code> attribute as an array of permitted scalar values, and a <code class="language-plaintext highlighter-rouge">family</code>
+attribute which is restricted to a hash with only a <code class="language-plaintext highlighter-rouge">name</code> key and any permitted
+scalar value.</p>
+
+<h3 id="examples">Examples</h3>
+
+<p>Here are some examples of how to use <code class="language-plaintext highlighter-rouge">permit</code> for different use cases.</p>
+
+<p><strong>Example 1</strong>: You may want to use the permitted attributes in your <code class="language-plaintext highlighter-rouge">new</code> action.
+This raises the problem that you can’t use [<code class="language-plaintext highlighter-rouge">require</code>][] on the root key
+because, normally, it does not exist when calling <code class="language-plaintext highlighter-rouge">new</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># using `fetch` you can supply a default and use</span>
+<span class="c1"># the Strong Parameters API from there.</span>
+<span class="n">params</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="ss">:blog</span><span class="p">,</span> <span class="p">{}).</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:title</span><span class="p">,</span> <span class="ss">:author</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><strong>Example 2</strong>: The model class method <code class="language-plaintext highlighter-rouge">accepts_nested_attributes_for</code> allows you to
+update and destroy associated records. This is based on the <code class="language-plaintext highlighter-rouge">id</code> and <code class="language-plaintext highlighter-rouge">_destroy</code>
+parameters:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># permit :id and :_destroy</span>
+<span class="n">params</span><span class="p">.</span><span class="nf">expect</span><span class="p">(</span><span class="ss">author: </span><span class="p">[</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">books_attributes: </span><span class="p">[[</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:id</span><span class="p">,</span> <span class="ss">:_destroy</span> <span class="p">]]</span> <span class="p">])</span>
+</code></pre></div></div>
+
+<p><strong>Example 3</strong>: Hashes with integer keys are treated differently, and you can declare
+the attributes as if they were direct children. You get these kinds of
+parameters when you use <code class="language-plaintext highlighter-rouge">accepts_nested_attributes_for</code> in combination with a
+<code class="language-plaintext highlighter-rouge">has_many</code> association:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># To permit the following data:</span>
+<span class="c1"># {"book" =&gt; {"title" =&gt; "Some Book",</span>
+<span class="c1">#             "chapters_attributes" =&gt; { "1" =&gt; {"title" =&gt; "First Chapter"},</span>
+<span class="c1">#                                        "2" =&gt; {"title" =&gt; "Second Chapter"}}}}</span>
+
+<span class="n">params</span><span class="p">.</span><span class="nf">expect</span><span class="p">(</span><span class="ss">book: </span><span class="p">[</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">chapters_attributes: </span><span class="p">[[</span> <span class="ss">:title</span> <span class="p">]]</span> <span class="p">])</span>
+</code></pre></div></div>
+
+<p><strong>Example 4</strong>: Imagine a scenario where you have parameters representing a product
+name, and a hash of arbitrary data associated with that product, and you want to
+permit the product name attribute and also the whole data hash:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">product_params</span>
+  <span class="n">params</span><span class="p">.</span><span class="nf">expect</span><span class="p">(</span><span class="ss">product: </span><span class="p">[</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">data: </span><span class="p">{}</span> <span class="p">])</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>[<code class="language-plaintext highlighter-rouge">require</code>]:
+    https://api.rubyonrails.org/classes/ActionController/Parameters.html#method-i-require</p>
+
+<h2 id="cookies">Cookies</h2>
+
+<p>The concept of a cookie is not specific to Rails. A
+<a href="https://en.wikipedia.org/wiki/HTTP_cookie">cookie</a> (also known as an HTTP
+cookie or a web cookie) is a small piece of data from the server that is saved
+in the user’s browser. The browser may store cookies, create new cookies, modify
+existing ones, and send them back to the server with later requests. Cookies
+persist data across web requests and therefore enable web applications to
+remember user preferences.</p>
+
+<p>Rails provides an easy way to access cookies via the [<code class="language-plaintext highlighter-rouge">cookies</code>][] method, which
+works like a hash:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CommentsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">new</span>
+    <span class="c1"># Auto-fill the commenter's name if it has been stored in a cookie</span>
+    <span class="vi">@comment</span> <span class="o">=</span> <span class="no">Comment</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">author: </span><span class="n">cookies</span><span class="p">[</span><span class="ss">:commenter_name</span><span class="p">])</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@comment</span> <span class="o">=</span> <span class="no">Comment</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">comment_params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="vi">@comment</span><span class="p">.</span><span class="nf">save</span>
+      <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="ss">:remember_name</span><span class="p">]</span>
+        <span class="c1"># Save the commenter's name in a cookie.</span>
+        <span class="n">cookies</span><span class="p">[</span><span class="ss">:commenter_name</span><span class="p">]</span> <span class="o">=</span> <span class="vi">@comment</span><span class="p">.</span><span class="nf">author</span>
+      <span class="k">else</span>
+        <span class="c1"># Delete cookie for the commenter's name, if any.</span>
+        <span class="n">cookies</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="ss">:commenter_name</span><span class="p">)</span>
+      <span class="k">end</span>
+      <span class="n">redirect_to</span> <span class="vi">@comment</span><span class="p">.</span><span class="nf">article</span>
+    <span class="k">else</span>
+      <span class="n">render</span> <span class="ss">action: </span><span class="s2">"new"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>NOTE: To delete a cookie, you need to use <code class="language-plaintext highlighter-rouge">cookies.delete(:key)</code>. Setting the
+<code class="language-plaintext highlighter-rouge">key</code> to a <code class="language-plaintext highlighter-rouge">nil</code> value does not delete the cookie.</p>
+
+<p>When passed a scalar value, the cookie will be deleted when the user closes their browser.
+If you want the cookie to expire at a specific time, pass a hash with the <code class="language-plaintext highlighter-rouge">:expires</code> option when setting the cookie.
+For example, to set a cookie that expires in 1 hour:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cookies</span><span class="p">[</span><span class="ss">:login</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">value: </span><span class="s2">"XJ-122"</span><span class="p">,</span> <span class="ss">expires: </span><span class="mi">1</span><span class="p">.</span><span class="nf">hour</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you want to create cookies that never expire use the permanent cookie jar.
+This sets the assigned cookies to have an expiration date 20 years from now.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cookies</span><span class="p">.</span><span class="nf">permanent</span><span class="p">[</span><span class="ss">:locale</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"fr"</span>
+</code></pre></div></div>
+
+<h3 id="encrypted-and-signed-cookies">Encrypted and Signed Cookies</h3>
+
+<p>Since cookies are stored on the client browser, they can be susceptible to
+tampering and are not considered secure for storing sensitive data. Rails
+provides a signed cookie jar and an encrypted cookie jar for storing sensitive
+data. The signed cookie jar appends a cryptographic signature on the cookie
+values to protect their integrity. The encrypted cookie jar encrypts the values
+in addition to signing them, so that they cannot be read by the user.</p>
+
+<p>Refer to the <a href="https://api.rubyonrails.org/classes/ActionDispatch/Cookies.html">API
+documentation</a>
+for more details.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CookiesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">set_cookie</span>
+    <span class="n">cookies</span><span class="p">.</span><span class="nf">signed</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">id</span>
+    <span class="n">cookies</span><span class="p">.</span><span class="nf">encrypted</span><span class="p">[</span><span class="ss">:expiration_date</span><span class="p">]</span> <span class="o">=</span> <span class="no">Date</span><span class="p">.</span><span class="nf">tomorrow</span> <span class="c1"># =&gt; Thu, 20 Mar 2024</span>
+    <span class="n">redirect_to</span> <span class="ss">action: </span><span class="s2">"read_cookie"</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">read_cookie</span>
+    <span class="n">cookies</span><span class="p">.</span><span class="nf">encrypted</span><span class="p">[</span><span class="ss">:expiration_date</span><span class="p">]</span> <span class="c1"># =&gt; "2024-03-20"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>These special cookie jars use a serializer to serialize the cookie values into
+strings and deserialize them into Ruby objects when read back. You can specify
+which serializer to use via [<code class="language-plaintext highlighter-rouge">config.action_dispatch.cookies_serializer</code>][]. The
+default serializer for new applications is <code class="language-plaintext highlighter-rouge">:json</code>.</p>
+
+<p>NOTE: Be aware that JSON has limited support serializing Ruby objects such as
+<code class="language-plaintext highlighter-rouge">Date</code>, <code class="language-plaintext highlighter-rouge">Time</code>, and <code class="language-plaintext highlighter-rouge">Symbol</code>. These will be serialized and deserialized into
+<code class="language-plaintext highlighter-rouge">String</code>s.</p>
+
+<p>If you need to store these or more complex objects, you may need to manually
+convert their values when reading them in subsequent requests.</p>
+
+<p>If you use the cookie session store, the above applies to the <code class="language-plaintext highlighter-rouge">session</code> and
+<code class="language-plaintext highlighter-rouge">flash</code> hash as well.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">config.action_dispatch.cookies_serializer</code>]:
+    configuring.html#config-action-dispatch-cookies-serializer
+[<code class="language-plaintext highlighter-rouge">cookies</code>]:
+    https://api.rubyonrails.org/classes/ActionController/Cookies.html#method-i-cookies</p>
+
+<h2 id="session">Session</h2>
+
+<p>While cookies are stored client-side, session data is stored server-side (in
+memory, a database, or a cache), and the duration is usually temporary and tied
+to the user’s session (e.g. until they close the browser). An example use case
+for session is storing sensitive data like user authentication.</p>
+
+<p>In a Rails application, the session is available in the controller and the view.</p>
+
+<h3 id="working-with-the-session">Working with the Session</h3>
+
+<p>You can use the <code class="language-plaintext highlighter-rouge">session</code> instance method to access the session in your
+controllers. Session values are stored as key/value pairs like a hash:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="kp">private</span>
+    <span class="c1"># Look up the key `:current_user_id` in the session and use it to</span>
+    <span class="c1"># find the current `User`. This is a common way to handle user login in</span>
+    <span class="c1"># a Rails application; logging in sets the session value and</span>
+    <span class="c1"># logging out removes it.</span>
+    <span class="k">def</span> <span class="nf">current_user</span>
+      <span class="vi">@current_user</span> <span class="o">||=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">id: </span><span class="n">session</span><span class="p">[</span><span class="ss">:current_user_id</span><span class="p">])</span> <span class="k">if</span> <span class="n">session</span><span class="p">[</span><span class="ss">:current_user_id</span><span class="p">]</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>To store something in the session, you can assign it to a key similar to adding
+a value to a hash. After a user is authenticated, its <code class="language-plaintext highlighter-rouge">id</code> is saved in the
+session to be used for subsequent requests:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">SessionsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="k">if</span> <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">authenticate_by</span><span class="p">(</span><span class="ss">email: </span><span class="n">params</span><span class="p">[</span><span class="ss">:email</span><span class="p">],</span> <span class="ss">password: </span><span class="n">params</span><span class="p">[</span><span class="ss">:password</span><span class="p">])</span>
+      <span class="c1"># Save the user ID in the session so it can be used in</span>
+      <span class="c1"># subsequent requests</span>
+      <span class="n">session</span><span class="p">[</span><span class="ss">:current_user_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">id</span>
+      <span class="n">redirect_to</span> <span class="n">root_url</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>To remove something from the session, delete the key/value pair. Deleting the
+<code class="language-plaintext highlighter-rouge">current_user_id</code> key from the session is a typical way to log the user out:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">SessionsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">destroy</span>
+    <span class="n">session</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="ss">:current_user_id</span><span class="p">)</span>
+    <span class="c1"># Clear the current user as well.</span>
+    <span class="vi">@current_user</span> <span class="o">=</span> <span class="kp">nil</span>
+    <span class="n">redirect_to</span> <span class="n">root_url</span><span class="p">,</span> <span class="ss">status: :see_other</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>It is possible to reset the entire session with [<code class="language-plaintext highlighter-rouge">reset_session</code>][]. It is
+recommended to use <code class="language-plaintext highlighter-rouge">reset_session</code> after logging in to avoid session fixation
+attacks. Please refer to the <a href="https://edgeguides.rubyonrails.org/security.html#session-fixation-countermeasures">Security
+Guide</a>
+for details.</p>
+
+<p>NOTE: Sessions are lazily loaded. If you don’t access sessions in your action’s
+code, they will not be loaded. Hence, you will never need to disable sessions -
+not accessing them will do the job.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">reset_session</code>]:
+    https://api.rubyonrails.org/classes/ActionController/Metal.html#method-i-reset_session</p>
+
+<h3 id="the-flash">The Flash</h3>
+
+<p>The <a href="https://api.rubyonrails.org/classes/ActionDispatch/Flash.html">flash</a>
+provides a way to pass temporary data between controller actions. Anything you
+place in the flash will be available to the very next action and then cleared.
+The flash is typically used for setting messages (e.g. notices and alerts) in a
+controller action before redirecting to an action that displays the message to
+the user.</p>
+
+<p>The flash is accessed via the [<code class="language-plaintext highlighter-rouge">flash</code>][] method. Similar to the session, the
+flash values are stored as key/value pairs.</p>
+
+<p>For example, in the controller action for logging out a user, the controller can
+set a flash message which can be displayed to the user on the next request:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">SessionsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">destroy</span>
+    <span class="n">session</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="ss">:current_user_id</span><span class="p">)</span>
+    <span class="n">flash</span><span class="p">[</span><span class="ss">:notice</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"You have successfully logged out."</span>
+    <span class="n">redirect_to</span> <span class="n">root_url</span><span class="p">,</span> <span class="ss">status: :see_other</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Displaying a message after a user performs some interactive action in your
+application is a good practice to give the user feedback that their action was
+successful (or that there were errors).</p>
+
+<p>In addition to <code class="language-plaintext highlighter-rouge">:notice</code>, you can also use <code class="language-plaintext highlighter-rouge">:alert</code>. These are typically styled
+(using CSS) with different colors to indicate their meaning (e.g. green for
+notices and orange/red for alerts).</p>
+
+<p>You can also assign a flash message directly within the <code class="language-plaintext highlighter-rouge">redirect_to</code> method by
+including it as a parameter to <code class="language-plaintext highlighter-rouge">redirect_to</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">redirect_to</span> <span class="n">root_url</span><span class="p">,</span> <span class="ss">notice: </span><span class="s2">"You have successfully logged out."</span>
+<span class="n">redirect_to</span> <span class="n">root_url</span><span class="p">,</span> <span class="ss">alert: </span><span class="s2">"There was an issue."</span>
+</code></pre></div></div>
+
+<p>You’re not limited to <code class="language-plaintext highlighter-rouge">notice</code> and <code class="language-plaintext highlighter-rouge">alert</code>.
+You can set any key in a flash (similar to sessions), by assigning it to the <code class="language-plaintext highlighter-rouge">:flash</code> argument.
+For example, assigning <code class="language-plaintext highlighter-rouge">:just_signed_up</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">redirect_to</span> <span class="n">root_url</span><span class="p">,</span> <span class="ss">flash: </span><span class="p">{</span> <span class="ss">just_signed_up: </span><span class="kp">true</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>This will allow you to have the below in the view:</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="k">if</span> <span class="n">flash</span><span class="p">[</span><span class="ss">:just_signed_up</span><span class="p">]</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"welcome"</span><span class="nt">&gt;</span>Welcome to our site!<span class="nt">&lt;/p&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>In the above logout example, the <code class="language-plaintext highlighter-rouge">destroy</code> action redirects to the application’s
+<code class="language-plaintext highlighter-rouge">root_url</code>, where the message is available to be displayed. However, it’s not
+displayed automatically. It’s up to the next action to decide what, if anything,
+it will do with what the previous action put in the flash.</p>
+
+<h4 id="displaying-flash-messages">Displaying flash messages</h4>
+
+<p>If a previous action <em>has</em> set a flash message, it’s a good idea to display that
+to the user. We can accomplish this consistently by adding the HTML for
+displaying any flash messages in the application’s default layout. Here’s an
+example from <code class="language-plaintext highlighter-rouge">app/views/layouts/application.html.erb</code>:</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;html&gt;</span>
+  <span class="c">&lt;!-- &lt;head/&gt; --&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="cp">&lt;%</span> <span class="n">flash</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="p">,</span> <span class="n">msg</span><span class="o">|</span> <span class="cp">-%&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">content_tag</span> <span class="ss">:div</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="ss">class: </span><span class="nb">name</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">-%&gt;</span>
+
+    <span class="c">&lt;!-- more content --&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">name</code> above indicates the type of flash message, such as <code class="language-plaintext highlighter-rouge">notice</code> or
+<code class="language-plaintext highlighter-rouge">alert</code>. This information is normally used to style how the message is displayed
+to the user.</p>
+
+<p>TIP: You can filter by <code class="language-plaintext highlighter-rouge">name</code> if you want to limit to displaying only <code class="language-plaintext highlighter-rouge">notice</code>
+and <code class="language-plaintext highlighter-rouge">alert</code> in layout. Otherwise, all keys set in the <code class="language-plaintext highlighter-rouge">flash</code> will be displayed.</p>
+
+<p>Including the reading and displaying of flash messages in the layout ensures
+that your application will display these automatically, without each view having
+to include logic to read the flash.</p>
+
+<h4 id="flashkeep-and-flashnow"><code class="language-plaintext highlighter-rouge">flash.keep</code> and <code class="language-plaintext highlighter-rouge">flash.now</code></h4>
+
+<p>[<code class="language-plaintext highlighter-rouge">flash.keep</code>][] is used to carry over the flash value through to an additional
+request. This is useful when there are multiple redirects.</p>
+
+<p>For example, assume that the <code class="language-plaintext highlighter-rouge">index</code> action in the controller below corresponds
+to the <code class="language-plaintext highlighter-rouge">root_url</code>. And you want all requests here to be redirected to
+<code class="language-plaintext highlighter-rouge">UsersController#index</code>. If an action sets the flash and redirects to
+<code class="language-plaintext highlighter-rouge">MainController#index</code>, those flash values will be lost when another redirect
+happens, unless you use <code class="language-plaintext highlighter-rouge">flash.keep</code> to make the values persist for another
+request.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MainController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="c1"># Will persist all flash values.</span>
+    <span class="n">flash</span><span class="p">.</span><span class="nf">keep</span>
+
+    <span class="c1"># You can also use a key to keep only some kind of value.</span>
+    <span class="c1"># flash.keep(:notice)</span>
+    <span class="n">redirect_to</span> <span class="n">users_url</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>[<code class="language-plaintext highlighter-rouge">flash.now</code>][] is used to make the flash values available in the same request.
+By default, adding values to the flash will make them available to the next
+request. For example, if the <code class="language-plaintext highlighter-rouge">create</code> action fails to save a resource, and you
+render the <code class="language-plaintext highlighter-rouge">new</code> template directly, that’s not going to result in a new request,
+but you may still want to display a message using the flash. To do this, you can
+use [<code class="language-plaintext highlighter-rouge">flash.now</code>][] in the same way you use the normal <code class="language-plaintext highlighter-rouge">flash</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ClientsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@client</span> <span class="o">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">client_params</span><span class="p">)</span>
+    <span class="k">if</span> <span class="vi">@client</span><span class="p">.</span><span class="nf">save</span>
+      <span class="c1"># ...</span>
+    <span class="k">else</span>
+      <span class="n">flash</span><span class="p">.</span><span class="nf">now</span><span class="p">[</span><span class="ss">:error</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Could not save client"</span>
+      <span class="n">render</span> <span class="ss">action: </span><span class="s2">"new"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>[<code class="language-plaintext highlighter-rouge">flash</code>]:
+    https://api.rubyonrails.org/classes/ActionDispatch/Flash/RequestMethods.html#method-i-flash
+[<code class="language-plaintext highlighter-rouge">flash.keep</code>]:
+    https://api.rubyonrails.org/classes/ActionDispatch/Flash/FlashHash.html#method-i-keep
+[<code class="language-plaintext highlighter-rouge">flash.now</code>]:
+    https://api.rubyonrails.org/classes/ActionDispatch/Flash/FlashHash.html#method-i-now</p>
+
+<h3 id="session-stores">Session Stores</h3>
+
+<p>All sessions have a unique ID that represents the session object; these session
+IDs are stored in a cookie. The actual session objects use one of the following
+storage mechanisms:</p>
+
+<ul>
+  <li>[<code class="language-plaintext highlighter-rouge">ActionDispatch::Session::CookieStore</code>][] - Stores everything on the client.</li>
+  <li>[<code class="language-plaintext highlighter-rouge">ActionDispatch::Session::CacheStore</code>][] - Stores the data in the Rails
+cache.</li>
+  <li>[<code class="language-plaintext highlighter-rouge">ActionDispatch::Session::ActiveRecordStore</code>][activerecord-session_store] -
+Stores the data in a database using Active Record (requires the
+[<code class="language-plaintext highlighter-rouge">activerecord-session_store</code>][activerecord-session_store] gem).</li>
+  <li>A custom store or a store provided by a third party gem.</li>
+</ul>
+
+<p>For most session stores, the unique session ID in the cookie is used to look up
+session data on the server (e.g. a database table). Rails does not allow you to
+pass the session ID in the URL as this is less secure.</p>
+
+<h4 id="cookiestore"><code class="language-plaintext highlighter-rouge">CookieStore</code></h4>
+
+<p>The <code class="language-plaintext highlighter-rouge">CookieStore</code> is the default and recommended session store. It stores all
+session data in the cookie itself (the session ID is still available to you if
+you need it). The <code class="language-plaintext highlighter-rouge">CookieStore</code> is lightweight and does not require any
+configuration to use in a new application.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">CookieStore</code> can store 4 kB of data - much less than the other storage
+options - but this is usually enough. Storing large amounts of data in the
+session is discouraged. You should especially avoid storing complex objects
+(such as model instances) in the session.</p>
+
+<h4 id="cachestore"><code class="language-plaintext highlighter-rouge">CacheStore</code></h4>
+
+<p>You can use the <code class="language-plaintext highlighter-rouge">CacheStore</code> if your sessions don’t store critical data or don’t
+need to be around for long periods (for instance if you just use the flash for
+messaging). This will store sessions using the cache implementation you have
+configured for your application. The advantage is that you can use your existing
+cache infrastructure for storing sessions without requiring any additional setup
+or administration. The downside is that the session storage will be temporary
+and they could disappear at any time.</p>
+
+<p>Read more about session storage in the <a href="security.html#sessions">Security Guide</a>.</p>
+
+<h3 id="session-storage-options">Session Storage Options</h3>
+
+<p>There are a few configuration options related to session storage. You can
+configure the type of storage in an initializer:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">session_store</span> <span class="ss">:cache_store</span>
+</code></pre></div></div>
+
+<p>Rails sets up a session key (the name of the cookie) when signing the session
+data. These can also be changed in an initializer:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">session_store</span> <span class="ss">:cookie_store</span><span class="p">,</span> <span class="ss">key: </span><span class="s2">"_your_app_session"</span>
+</code></pre></div></div>
+
+<p>NOTE: Be sure to restart your server when you modify an initializer file.</p>
+
+<p>You can also pass a <code class="language-plaintext highlighter-rouge">:domain</code> key and specify the domain name for the cookie:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">session_store</span> <span class="ss">:cookie_store</span><span class="p">,</span> <span class="ss">key: </span><span class="s2">"_your_app_session"</span><span class="p">,</span> <span class="ss">domain: </span><span class="s2">".example.com"</span>
+</code></pre></div></div>
+
+<p>TIP: See <a href="configuring.html#config-session-store"><code class="language-plaintext highlighter-rouge">config.session_store</code></a> in the
+configuration guide for more information.</p>
+
+<p>Rails sets up a secret key for <code class="language-plaintext highlighter-rouge">CookieStore</code> used for signing the session data
+in <code class="language-plaintext highlighter-rouge">config/credentials.yml.enc</code>. The credentials can be updated with <code class="language-plaintext highlighter-rouge">bin/rails
+credentials:edit</code>.</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># aws:</span>
+<span class="c1">#   access_key_id: 123</span>
+<span class="c1">#   secret_access_key: 345</span>
+
+<span class="c1"># Used as the base secret for all MessageVerifiers in Rails, including the one protecting cookies.</span>
+<span class="na">secret_key_base</span><span class="pi">:</span> <span class="s">492f...</span>
+</code></pre></div></div>
+
+<p>WARNING: Changing the <code class="language-plaintext highlighter-rouge">secret_key_base</code> when using the <code class="language-plaintext highlighter-rouge">CookieStore</code> will
+invalidate all existing sessions. You’ll need to configure a <a href="https://edgeguides.rubyonrails.org/configuring.html#config-action-dispatch-cookies-rotations">cookie rotator</a>
+to rotate existing sessions.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">ActionDispatch::Session::CookieStore</code>]:
+    https://api.rubyonrails.org/classes/ActionDispatch/Session/CookieStore.html
+[<code class="language-plaintext highlighter-rouge">ActionDispatch::Session::CacheStore</code>]:
+    https://api.rubyonrails.org/classes/ActionDispatch/Session/CacheStore.html
+[activerecord-session_store]:
+    https://github.com/rails/activerecord-session_store</p>
+
+<h2 id="controller-callbacks">Controller Callbacks</h2>
+
+<p>Controller callbacks are methods that are defined to automatically run before
+and/or after a controller action. A controller callback method can be defined in
+a given controller or in the <code class="language-plaintext highlighter-rouge">ApplicationController</code>. Since all controllers
+inherit from <code class="language-plaintext highlighter-rouge">ApplicationController</code>, callbacks defined here will run on every
+controller in your application.</p>
+
+<h3 id="before_action"><code class="language-plaintext highlighter-rouge">before_action</code></h3>
+
+<p>Callback methods registered via <a href="https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-before_action"><code class="language-plaintext highlighter-rouge">before_action</code></a> run <em>before</em> a controller
+action. They may halt the request cycle. A common use case for <code class="language-plaintext highlighter-rouge">before_action</code>
+is ensuring that a user is logged in:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">before_action</span> <span class="ss">:require_login</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">require_login</span>
+      <span class="k">unless</span> <span class="n">logged_in?</span>
+        <span class="n">flash</span><span class="p">[</span><span class="ss">:error</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"You must be logged in to access this section"</span>
+        <span class="n">redirect_to</span> <span class="n">new_login_url</span> <span class="c1"># halts request cycle</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The method stores an error message in the flash and redirects to the login form
+if the user is not already logged in. When a <code class="language-plaintext highlighter-rouge">before_action</code> callback renders or
+redirects (like in the example above), the original controller action is not
+run. If there are additional callbacks registered to run, they are also
+cancelled and not run.</p>
+
+<p>In this example, the <code class="language-plaintext highlighter-rouge">before_action</code> is defined in <code class="language-plaintext highlighter-rouge">ApplicationController</code> so
+all controllers in the application inherit it. That implies that all requests in
+the application will require the user to be logged in. This is fine except for
+the “login” page. The “login” action should succeed even when the user is not
+logged in (to allow the user to log in) otherwise the user will never be able to
+log in. You can use <a href="https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-skip_before_action"><code class="language-plaintext highlighter-rouge">skip_before_action</code></a> to allow specified controller
+actions to skip a given <code class="language-plaintext highlighter-rouge">before_action</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">LoginsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">skip_before_action</span> <span class="ss">:require_login</span><span class="p">,</span> <span class="ss">only: </span><span class="p">[</span><span class="ss">:new</span><span class="p">,</span> <span class="ss">:create</span><span class="p">]</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now, the <code class="language-plaintext highlighter-rouge">LoginsController</code>’s <code class="language-plaintext highlighter-rouge">new</code> and <code class="language-plaintext highlighter-rouge">create</code> actions will work without
+requiring the user to be logged in.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">:only</code> option skips the callback only for the listed actions; there is also
+an <code class="language-plaintext highlighter-rouge">:except</code> option which works the other way. These options can be used when
+registering action callbacks too, to add callbacks which only run for selected
+actions.</p>
+
+<p>NOTE: If you register the same action callback multiple times with different
+options, the last action callback definition will overwrite the previous ones.</p>
+
+<h3 id="after_action-and-around_action"><code class="language-plaintext highlighter-rouge">after_action</code> and <code class="language-plaintext highlighter-rouge">around_action</code></h3>
+
+<p>You can also define action callbacks to run <em>after</em> a controller action has been
+executed with <a href="https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-after_action"><code class="language-plaintext highlighter-rouge">after_action</code></a>, or to run both before and after with
+<a href="https://api.rubyonrails.org/classes/AbstractController/Callbacks/ClassMethods.html#method-i-around_action"><code class="language-plaintext highlighter-rouge">around_action</code></a>.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">after_action</code> callbacks are similar to <code class="language-plaintext highlighter-rouge">before_action</code> callbacks, but
+because the controller action has already been run they have access to the
+response data that’s about to be sent to the client.</p>
+
+<p>NOTE: <code class="language-plaintext highlighter-rouge">after_action</code> callbacks are executed only after a successful controller
+action, and not if an exception is raised in the request cycle.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">around_action</code> callbacks are useful when you want to execute code before
+and after a controller action, allowing you to encapsulate functionality that
+affects the action’s execution. They are responsible for running their
+associated actions by yielding.</p>
+
+<p>For example, imagine you want to monitor the performance of specific actions.
+You could use an <code class="language-plaintext highlighter-rouge">around_action</code> to measure how long each action takes to
+complete and log this information:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">around_action</span> <span class="ss">:measure_execution_time</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">measure_execution_time</span>
+      <span class="n">start_time</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span>
+      <span class="k">yield</span>  <span class="c1"># This executes the action</span>
+      <span class="n">end_time</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span>
+
+      <span class="n">duration</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span> <span class="s2">"Action </span><span class="si">#{</span><span class="n">action_name</span><span class="si">}</span><span class="s2"> from controller </span><span class="si">#{</span><span class="n">controller_name</span><span class="si">}</span><span class="s2"> took </span><span class="si">#{</span><span class="n">duration</span><span class="p">.</span><span class="nf">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> seconds to execute."</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>TIP: Action callbacks receive <code class="language-plaintext highlighter-rouge">controller_name</code> and <code class="language-plaintext highlighter-rouge">action_name</code> as parameters
+you can use, as shown in the example above.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">around_action</code> callback also wraps rendering. In the example above, view
+rendering will be included in the <code class="language-plaintext highlighter-rouge">duration</code>. The code after the <code class="language-plaintext highlighter-rouge">yield</code> in an
+<code class="language-plaintext highlighter-rouge">around_action</code> is run even when there is an exception in the associated action
+and there is an <code class="language-plaintext highlighter-rouge">ensure</code> block in the callback. (This is different from
+<code class="language-plaintext highlighter-rouge">after_action</code> callbacks where an exception in the action cancels the
+<code class="language-plaintext highlighter-rouge">after_action</code> code.)</p>
+
+<h3 id="other-ways-to-use-callbacks">Other Ways to Use Callbacks</h3>
+
+<p>In addition to <code class="language-plaintext highlighter-rouge">before_action</code>, <code class="language-plaintext highlighter-rouge">after_action</code>, or <code class="language-plaintext highlighter-rouge">around_action</code>, there are
+two less common ways to register callbacks.</p>
+
+<p>The first is to use a block directly with the <code class="language-plaintext highlighter-rouge">*_action</code> methods. The block
+receives the controller as an argument. For example, the <code class="language-plaintext highlighter-rouge">require_login</code> action
+callback from above could be rewritten to use a block:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">before_action</span> <span class="k">do</span> <span class="o">|</span><span class="n">controller</span><span class="o">|</span>
+    <span class="k">unless</span> <span class="n">controller</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="ss">:logged_in?</span><span class="p">)</span>
+      <span class="n">flash</span><span class="p">[</span><span class="ss">:error</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"You must be logged in to access this section"</span>
+      <span class="n">redirect_to</span> <span class="n">new_login_url</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Note that the action callback, in this case, uses <code class="language-plaintext highlighter-rouge">send</code> because the
+<code class="language-plaintext highlighter-rouge">logged_in?</code> method is private, and the action callback does not run in the
+scope of the controller. This is not the recommended way to implement this
+particular action callback, but in simpler cases, it might be useful.</p>
+
+<p>Specifically for <code class="language-plaintext highlighter-rouge">around_action</code>, the block also yields in the <code class="language-plaintext highlighter-rouge">action</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">around_action</span> <span class="p">{</span> <span class="o">|</span><span class="n">_controller</span><span class="p">,</span> <span class="n">action</span><span class="o">|</span> <span class="n">time</span><span class="p">(</span><span class="o">&amp;</span><span class="n">action</span><span class="p">)</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>The second way is to specify a class (or any object that responds to the
+expected methods) for the callback action. This can be useful in cases that are
+more complex. As an example, you could rewrite the <code class="language-plaintext highlighter-rouge">around_action</code> callback to
+measure execution time with a class:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">around_action</span> <span class="no">ActionDurationCallback</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">ActionDurationCallback</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">around</span><span class="p">(</span><span class="n">controller</span><span class="p">)</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span>
+    <span class="k">yield</span> <span class="c1"># This executes the action</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span>
+
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+    <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span> <span class="s2">"Action </span><span class="si">#{</span><span class="n">controller</span><span class="p">.</span><span class="nf">action_name</span><span class="si">}</span><span class="s2"> from controller </span><span class="si">#{</span><span class="n">controller</span><span class="p">.</span><span class="nf">controller_name</span><span class="si">}</span><span class="s2"> took </span><span class="si">#{</span><span class="n">duration</span><span class="p">.</span><span class="nf">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2"> seconds to execute."</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>In above example, the <code class="language-plaintext highlighter-rouge">ActionDurationCallback</code>’s method is not run in the scope
+of the controller but gets <code class="language-plaintext highlighter-rouge">controller</code> as an argument.</p>
+
+<p>In general, the class being used for a <code class="language-plaintext highlighter-rouge">*_action</code> callback must implement a
+method with the same name as the action callback. So for the <code class="language-plaintext highlighter-rouge">before_action</code>
+callback, the class must implement a <code class="language-plaintext highlighter-rouge">before</code> method, and so on. Also,
+the <code class="language-plaintext highlighter-rouge">around</code> method must <code class="language-plaintext highlighter-rouge">yield</code> to execute the action.</p>
+
+<h2 id="the-request-and-response-objects">The Request and Response Objects</h2>
+
+<p>Every controller has two methods, <a href="https://api.rubyonrails.org/classes/ActionController/Base.html#method-i-request"><code class="language-plaintext highlighter-rouge">request</code></a> and <a href="https://api.rubyonrails.org/classes/ActionController/Base.html#method-i-response"><code class="language-plaintext highlighter-rouge">response</code></a>, which can be
+used to access the request and response objects associated with the
+current request cycle. The <code class="language-plaintext highlighter-rouge">request</code> method returns an instance of
+<a href="https://api.rubyonrails.org/classes/ActionDispatch/Request.html"><code class="language-plaintext highlighter-rouge">ActionDispatch::Request</code></a>. The <a href="https://api.rubyonrails.org/classes/ActionController/Base.html#method-i-response"><code class="language-plaintext highlighter-rouge">response</code></a> method returns an an instance
+of <a href="https://api.rubyonrails.org/classes/ActionDispatch/Response.html"><code class="language-plaintext highlighter-rouge">ActionDispatch::Response</code></a>, an object representing what is going to be
+sent back to the client browser (e.g. from <code class="language-plaintext highlighter-rouge">render</code> or <code class="language-plaintext highlighter-rouge">redirect</code> in the
+controller action).</p>
+
+<h3 id="the-request-object">The <code class="language-plaintext highlighter-rouge">request</code> Object</h3>
+
+<p>The request object contains useful information about the request coming in from
+the client. This section describes the purpose of some of the properties of the
+<code class="language-plaintext highlighter-rouge">request</code> object.</p>
+
+<p>To get a full list of the available methods, refer to the <a href="https://api.rubyonrails.org/classes/ActionDispatch/Request.html">Rails API
+documentation</a>
+and <a href="https://www.rubydoc.info/github/rack/rack/Rack/Request">Rack</a>
+documentation.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Property of <code class="language-plaintext highlighter-rouge">request</code></th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">host</code></td>
+      <td>The hostname used for this request.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">domain(n=2)</code></td>
+      <td>The hostname’s first <code class="language-plaintext highlighter-rouge">n</code> segments, starting from the right (the TLD).</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">format</code></td>
+      <td>The content type requested by the client.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">method</code></td>
+      <td>The HTTP method used for the request.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">get?</code>, <code class="language-plaintext highlighter-rouge">post?</code>, <code class="language-plaintext highlighter-rouge">patch?</code>, <code class="language-plaintext highlighter-rouge">put?</code>, <code class="language-plaintext highlighter-rouge">delete?</code>, <code class="language-plaintext highlighter-rouge">head?</code></td>
+      <td>Returns true if the HTTP method is GET/POST/PATCH/PUT/DELETE/HEAD.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">headers</code></td>
+      <td>Returns a hash containing the headers associated with the request.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">port</code></td>
+      <td>The port number (integer) used for the request.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">protocol</code></td>
+      <td>Returns a string containing the protocol used plus “://”, for example “http://”.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">query_string</code></td>
+      <td>The query string part of the URL, i.e., everything after “?”.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">remote_ip</code></td>
+      <td>The IP address of the client.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">url</code></td>
+      <td>The entire URL used for the request.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="query_parameters-request_parameters-and-path_parameters"><code class="language-plaintext highlighter-rouge">query_parameters</code>, <code class="language-plaintext highlighter-rouge">request_parameters</code>, and <code class="language-plaintext highlighter-rouge">path_parameters</code></h4>
+
+<p>Rails collects all of the parameters for a given request in the <code class="language-plaintext highlighter-rouge">params</code> hash,
+including the ones set in the URL as query string parameters, and those sent as
+the body of a <code class="language-plaintext highlighter-rouge">POST</code> request. The request object has three methods that give you
+access to the various parameters.</p>
+
+<ul>
+  <li><a href="https://api.rubyonrails.org/classes/ActionDispatch/Request.html#method-i-query_parameters"><code class="language-plaintext highlighter-rouge">query_parameters</code></a> - contains parameters that were sent as part of the
+query string.</li>
+  <li><a href="https://api.rubyonrails.org/classes/ActionDispatch/Request.html#method-i-request_parameters"><code class="language-plaintext highlighter-rouge">request_parameters</code></a> - contains parameters sent as part of the post body.</li>
+  <li><a href="https://api.rubyonrails.org/classes/ActionDispatch/Http/Parameters.html#method-i-path_parameters"><code class="language-plaintext highlighter-rouge">path_parameters</code></a> - contains parameters parsed by the router as being part
+of the path leading to this particular controller and action.</li>
+</ul>
+
+<h3 id="the-response-object">The <code class="language-plaintext highlighter-rouge">response</code> Object</h3>
+
+<p>The response object is built up during the execution of the action from
+rendering data to be sent back to the client browser. It’s not usually used
+directly but sometimes, in an <code class="language-plaintext highlighter-rouge">after_action</code> callback for example, it can be
+useful to access the response directly. One use case is for setting the content type header:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span><span class="p">.</span><span class="nf">content_type</span> <span class="o">=</span> <span class="s2">"application/pdf"</span>
+</code></pre></div></div>
+
+<p>Another use case is for setting custom response headers:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">response</span><span class="p">.</span><span class="nf">headers</span><span class="p">[</span><span class="s2">"X-Custom-Header"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"some value"</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">headers</code> attribute is a hash which maps header names to header values.
+Rails sets some headers automatically but if you need to update a header or add
+a custom header, you can use <code class="language-plaintext highlighter-rouge">response.headers</code> as in the example above.</p>
+
+<p>NOTE: The <code class="language-plaintext highlighter-rouge">headers</code> method can be accessed directly in the controller as well.</p>
+
+<p>Here are some of the properties of the <code class="language-plaintext highlighter-rouge">response</code> object:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Property of <code class="language-plaintext highlighter-rouge">response</code></th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">body</code></td>
+      <td>This is the string of data being sent back to the client. This is most often HTML.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">status</code></td>
+      <td>The HTTP status code for the response, like 200 for a successful request or 404 for file not found.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">location</code></td>
+      <td>The URL the client is being redirected to, if any.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">content_type</code></td>
+      <td>The content type of the response.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">charset</code></td>
+      <td>The character set being used for the response. Default is “utf-8”.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">headers</code></td>
+      <td>Headers used for the response.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>To get a full list of the available methods, refer to the <a href="https://api.rubyonrails.org/classes/ActionDispatch/Response.html">Rails API
+documentation</a>
+and <a href="https://www.rubydoc.info/github/rack/rack/Rack/Response">Rack
+Documentation</a>.</p>
+
+        </div>
+
+        <footer class="guide-footer">
+            <div class="feedback">
+                <h3>Geri Bildirim</h3>
+                <p>Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri bildirimlerinizi bekliyoruz.</p>
+                <p>Lütfen <a href="https://github.com/dilankaya127/rails-tr-TR/issues">GitHub Issues</a> üzerinden katkıda bulunun.</p>
+            </div>
+        </footer>
+    </article>
+</div>
+
+<script>
+// İçindekiler tablosunu otomatik oluştur
+document.addEventListener('DOMContentLoaded', function() {
+    const toc = document.getElementById('toc');
+    const headings = document.querySelectorAll('.guide-content h2, .guide-content h3, .guide-content h4');
+    
+    if (headings.length > 0) {
+        const tocList = document.createElement('ul');
+        
+        headings.forEach(function(heading, index) {
+            const id = 'heading-' + index;
+            heading.id = id;
+            
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.textContent = heading.textContent;
+            a.className = 'toc-' + heading.tagName.toLowerCase();
+            
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+        
+        toc.appendChild(tocList);
+    }
+});
+</script>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Rails Kılavuzları Türkçe Çevirisi. Gönüllüler tarafından hazırlanmıştır.</p>
+            <p>Orijinal dokümantasyon <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine aittir.</p>
+        </div>
+    </footer>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>
