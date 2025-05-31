@@ -30,7 +30,7 @@ log_error() {
 }
 
 # Konfigürasyon
-RAILS_TR_REPO="https://github.com/DilanKaya127/rails-tr-TR"  # rails-tr-TR repository yolu
+RAILS_TR_REPO="../../rails-tr-TR"  # rails-tr-TR repository yolu
 CURRENT_DIR=$(pwd)
 GUIDES_SOURCE="$RAILS_TR_REPO/guides/source"
 SITE_GUIDES_EN="guides/en"
