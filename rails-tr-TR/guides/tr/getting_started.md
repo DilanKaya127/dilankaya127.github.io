@@ -1,9 +1,8 @@
 ---
+---
 layout: guide
-title: "Getting Started"
-lang: tr
-translation: true
-original_file: "getting_started.md"
+title: Rails ile Başlarken
+description: Bu kılavuz rails ile başlarken konusunu ele alır.
 ---
 
 **BU DOSYAYI GITHUB ÜZERİNDEN OKUMAYINIZ, KILAVUZA BU ADRES ÜZERİNDEN ULAŞABİLİRSİNİZ: <https://guides.rubyonrails.org>.**

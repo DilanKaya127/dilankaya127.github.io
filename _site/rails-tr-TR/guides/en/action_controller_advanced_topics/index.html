@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Controller Advanced Topics - Rails Dokümantasyonu - Türkçe</title>
+    <link rel="stylesheet" href="/rails-tr-TR/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <a href="/rails-tr-TR/">Rails Kılavuzları</a>
+                </h1>
+                <nav class="nav">
+                    <a href="/rails-tr-TR/">Ana Sayfa</a>
+                    <a href="https://dilankaya127.github.io">Portföy</a>
+                    <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="guide-container">
+    <aside class="guide-sidebar">
+        <div class="guide-toc">
+            <h3>İçindekiler</h3>
+            <div id="toc"></div>
+        </div>
+        
+        <div class="guide-nav">
+            <h3>Diğer Kılavuzlar</h3>
+            <ul>
+                <li><a href="/rails-tr-TR/rails-tr-TR/guides/tr/getting_started">Rails ile Başlarken</a></li>
+                <li><a href="/rails-tr-TR/rails-tr-TR/guides/en/active_record_basics">Active Record Temelleri</a></li>
+                <li><a href="/rails-tr-TR/rails-tr-TR/guides//en/action_controller_overview">Action Controller</a></li>
+                <li><a href="/rails-tr-TR/rails-tr-TR/guides/tr/action_cable_overview">Action Cable</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <article class="guide-content">
+        <header class="guide-header">
+            <h1>Action Controller Advanced Topics</h1>
+            
+        </header>
+
+        <div class="guide-body">
+            <p><strong>DO NOT READ THIS FILE ON GITHUB, GUIDES ARE PUBLISHED ON <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a>.</strong></p>
+
+<h1 id="action-controller-advanced-topics">Action Controller Advanced Topics</h1>
+
+<p>In this guide, you will learn about some advanced topics related to controllers. After reading this guide, you will know how to:</p>
+
+<ul>
+  <li>Protect against cross-site request forgery.</li>
+  <li>Use Action Controller’s built-in HTTP authentication.</li>
+  <li>Stream data directly to the user’s browser.</li>
+  <li>Filter sensitive parameters from the application logs.</li>
+  <li>Handle exceptions that may be raised during request processing.</li>
+  <li>Use the built-in health check endpoint for load balancers and uptime monitors.</li>
+</ul>
+
+<hr />
+
+<h2 id="introduction">Introduction</h2>
+
+<p>This guide covers a number of advanced topics related to controllers in a Rails
+application. Please see the <a href="action_controller_overview.html">Action Controller
+Overview</a> guide for an introduction to Action
+Controllers.</p>
+
+<h2 id="authenticity-token-and-request-forgery-protection">Authenticity Token and Request Forgery Protection</h2>
+
+<p>Cross-site request forgery
+(<a href="https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection.html#method-i-form_authenticity_token">CSRF</a>)
+is a type of malicious attack where unauthorized requests are submitted by
+impersonating a user that the web application trusts.</p>
+
+<p>The first step to avoid this type of attack is to ensure that all “destructive”
+actions (create, update, and destroy) in your application use non-GET requests (like POST, PUT and DELETE).</p>
+
+<p>However, a malicious site can still send a non-GET request to your site, so
+Rails builds in request forgery protection into controllers by default.</p>
+
+<p>This is done by adding a token using the
+<a href="https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection/ClassMethods.html#method-i-protect_from_forgery">protect_from_forgery</a>
+method. This token is added to each request and is only known to your server.
+Rails verifies the received token with the token in the session. If an incoming
+request does not have the proper matching token, the server will deny access.</p>
+
+<p>The CSRF token is added automatically when <code class="language-plaintext highlighter-rouge">config.action_controller.default_protect_from_forgery</code> is set to <code class="language-plaintext highlighter-rouge">true</code>, which is the default for newly created Rails applications. It can also be manually like this:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">protect_from_forgery</span> <span class="ss">with: :exception</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>NOTE: All subclasses of <code class="language-plaintext highlighter-rouge">ActionController::Base</code> are protected by default and
+will raise an <code class="language-plaintext highlighter-rouge">ActionController::InvalidAuthenticityToken</code> error on unverified
+requests.</p>
+
+<h3 id="authenticity-token-in-forms">Authenticity Token in Forms</h3>
+
+<p>When you generate a form using <code class="language-plaintext highlighter-rouge">form_with</code> like this:</p>
+
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">form_with</span> <span class="ss">model: </span><span class="vi">@user</span> <span class="k">do</span> <span class="o">|</span><span class="n">form</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">form</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:username</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">form</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:password</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre></div></div>
+
+<p>A CSRF token named <code class="language-plaintext highlighter-rouge">authenticity_token</code> is automatically added as a hidden field
+in the generated HTML:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;form</span> <span class="na">accept-charset=</span><span class="s">"UTF-8"</span> <span class="na">action=</span><span class="s">"/users/1"</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"hidden"</span>
+       <span class="na">value=</span><span class="s">"67250ab105eb5ad10851c00a5621854a23af5489"</span>
+       <span class="na">name=</span><span class="s">"authenticity_token"</span><span class="nt">/&gt;</span>
+<span class="c">&lt;!-- fields --&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</code></pre></div></div>
+
+<p>Rails adds this token to every <code class="language-plaintext highlighter-rouge">form</code> that’s generated using the <a href="form_helpers.html">form
+helpers</a>, so most of the time you don’t need to do anything.
+If you’re writing a form manually or need to add the token for another reason,
+it’s available through the
+<a href="https://api.rubyonrails.org/classes/ActionController/RequestForgeryProtection.html#method-i-form_authenticity_token"><code class="language-plaintext highlighter-rouge">form_authenticity_token</code></a>
+method.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- app/views/layouts/application.html.erb --&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+  <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"csrf-token"</span> <span class="na">content=</span><span class="s">"&lt;%= form_authenticity_token %&gt;"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">form_authenticity_token</code> method generates a valid authentication token.
+That can be useful in places where Rails does not add it automatically, like in
+custom Ajax calls.</p>
+
+<p>You can learn more details about the CSRF attack as well as CSRF countermeasures
+in the <a href="security.html#cross-site-request-forgery-csrf">Security Guide</a>.</p>
+
+<h2 id="controlling-allowed-browser-versions">Controlling Allowed Browser Versions</h2>
+
+<p>Starting with version 7.2, Rails controllers use <a href="https://api.rubyonrails.org/classes/ActionController/AllowBrowser/ClassMethods.html#method-i-allow_browser"><code class="language-plaintext highlighter-rouge">allow_browser</code></a> method in <code class="language-plaintext highlighter-rouge">ApplicationController</code> to allow only modern browsers by default.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="c1"># Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.</span>
+  <span class="n">allow_browser</span> <span class="ss">versions: :modern</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>TIP: Modern browsers includes Safari 17.2+, Chrome 120+, Firefox 121+, Opera 106+. You can use <a href="https://caniuse.com/">caniuse.com</a> to check for browser versions supporting the features you’d like to use.</p>
+
+<p>In addition to the default of <code class="language-plaintext highlighter-rouge">:modern</code>, you can also specify the browser versions manually:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="c1"># All versions of Chrome and Opera will be allowed, but no versions of "internet explorer" (ie). Safari needs to be 16.4+ and Firefox 121+.</span>
+  <span class="n">allow_browser</span> <span class="ss">versions: </span><span class="p">{</span> <span class="ss">safari: </span><span class="mf">16.4</span><span class="p">,</span> <span class="ss">firefox: </span><span class="mi">121</span><span class="p">,</span> <span class="ss">ie: </span><span class="kp">false</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Browsers matched in the hash passed to <code class="language-plaintext highlighter-rouge">versions:</code> will be blocked if they’re below the versions specified. This means that all other browsers not mentioned in <code class="language-plaintext highlighter-rouge">versions:</code> (Chrome and Opera in the above example), as well as agents that aren’t reporting a user-agent header, <em>will be</em> allowed access.</p>
+
+<p>You can also use <code class="language-plaintext highlighter-rouge">allow_browser</code> in a given controller and specify actions using <code class="language-plaintext highlighter-rouge">only</code> or <code class="language-plaintext highlighter-rouge">except</code>. For example:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MessagesController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># In addition to the browsers blocked by ApplicationController, also block Opera below 104 and Chrome below 119 for the show action.</span>
+  <span class="n">allow_browser</span> <span class="ss">versions: </span><span class="p">{</span> <span class="ss">opera: </span><span class="mi">104</span><span class="p">,</span> <span class="ss">chrome: </span><span class="mi">119</span> <span class="p">},</span> <span class="ss">only: :show</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>A browser that’s blocked will, by default, be served the file in <code class="language-plaintext highlighter-rouge">public/406-unsupported-browser.html</code> with a HTTP status code of “406 Not Acceptable”.</p>
+
+<h2 id="http-authentication">HTTP Authentication</h2>
+
+<p>Rails comes with three built-in HTTP authentication mechanisms:</p>
+
+<ul>
+  <li>Basic Authentication</li>
+  <li>Digest Authentication</li>
+  <li>Token Authentication</li>
+</ul>
+
+<h3 id="http-basic-authentication">HTTP Basic Authentication</h3>
+
+<p>HTTP Basic Authentication is a simple authentication method where a user is
+required to enter a username and password to access a website or a particular
+section of a website (e.g. admin section). These credentials are entered into a
+browser’s HTTP basic dialog window. The user’s credentials are then encoded and
+sent in the HTTP header with each request.</p>
+
+<p>HTTP basic authentication is an authentication scheme that is supported by most
+browsers. Using HTTP Basic authentication in a Rails controller can be done by
+using the [<code class="language-plaintext highlighter-rouge">http_basic_authenticate_with</code>][] method:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AdminsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">http_basic_authenticate_with</span> <span class="ss">name: </span><span class="s2">"Arthur"</span><span class="p">,</span> <span class="ss">password: </span><span class="s2">"42424242"</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>With the above in place, you can create controllers that inherit from
+<code class="language-plaintext highlighter-rouge">AdminsController</code>. All actions in those controllers will use HTTP basic
+authentication and require user credentials.</p>
+
+<p>WARNING: HTTP Basic Authentication is easy to implement but not secure on its
+own, as it will send unencrypted credentials over the network. Make sure to use
+HTTPS when using Basic Authentication. You can also <a href="#force-https-protocol">force
+HTTPS</a>.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">http_basic_authenticate_with</code>]:
+    https://api.rubyonrails.org/classes/ActionController/HttpAuthentication/Basic/ControllerMethods/ClassMethods.html#method-i-http_basic_authenticate_with</p>
+
+<h3 id="http-digest-authentication">HTTP Digest Authentication</h3>
+
+<p>HTTP digest authentication is more secure than basic authentication as it does
+not require the client to send an unencrypted password over the network. The
+credentials are hashed instead and a
+<a href="https://api.rubyonrails.org/classes/ActionController/HttpAuthentication/Digest.html">Digest</a>
+is sent.</p>
+
+<p>Using digest authentication with Rails can be done by using
+the [<code class="language-plaintext highlighter-rouge">authenticate_or_request_with_http_digest</code>][] method:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AdminsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="no">USERS</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">"admin"</span> <span class="o">=&gt;</span> <span class="s2">"helloworld"</span> <span class="p">}</span>
+
+  <span class="n">before_action</span> <span class="ss">:authenticate</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">authenticate</span>
+      <span class="n">authenticate_or_request_with_http_digest</span> <span class="k">do</span> <span class="o">|</span><span class="n">username</span><span class="o">|</span>
+        <span class="no">USERS</span><span class="p">[</span><span class="n">username</span><span class="p">]</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">authenticate_or_request_with_http_digest</code> block takes only one argument -
+the username. The block returns the password if found. If the return value is
+<code class="language-plaintext highlighter-rouge">false</code> or <code class="language-plaintext highlighter-rouge">nil</code>, it is considered an authentication failure.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">authenticate_or_request_with_http_digest</code>]:
+    https://api.rubyonrails.org/classes/ActionController/HttpAuthentication/Digest/ControllerMethods.html#method-i-authenticate_or_request_with_http_digest</p>
+
+<h3 id="http-token-authentication">HTTP Token Authentication</h3>
+
+<p>Token authentication (aka “Bearer” authentication) is an authentication method
+where a client receives a unique token after successfully logging in, which it
+then includes in the <code class="language-plaintext highlighter-rouge">Authorization</code> header of future requests. Instead of
+sending credentials with each request, the client sends this
+<a href="https://api.rubyonrails.org/classes/ActionController/HttpAuthentication/Token.html">token</a>
+(a string that represents the user’s session) as a “bearer” of the
+authentication.</p>
+
+<p>This approach improves security by separating credentials from the ongoing
+session. You use an authentication token that has been issued in advance to
+perform authentication.</p>
+
+<p>Implementing token authentication with Rails can be done using the
+[<code class="language-plaintext highlighter-rouge">authenticate_or_request_with_http_token</code>][] method.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PostsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="no">TOKEN</span> <span class="o">=</span> <span class="s2">"secret"</span>
+
+  <span class="n">before_action</span> <span class="ss">:authenticate</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">authenticate</span>
+      <span class="n">authenticate_or_request_with_http_token</span> <span class="k">do</span> <span class="o">|</span><span class="n">token</span><span class="p">,</span> <span class="n">options</span><span class="o">|</span>
+        <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">SecurityUtils</span><span class="p">.</span><span class="nf">secure_compare</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="no">TOKEN</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">authenticate_or_request_with_http_token</code> block takes two arguments - the
+token and a hash containing the options that were parsed from the HTTP
+<code class="language-plaintext highlighter-rouge">Authorization</code> header. The block should return <code class="language-plaintext highlighter-rouge">true</code> if the authentication is
+successful. Returning <code class="language-plaintext highlighter-rouge">false</code> or <code class="language-plaintext highlighter-rouge">nil</code> will cause an authentication failure.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">authenticate_or_request_with_http_token</code>]:
+    https://api.rubyonrails.org/classes/ActionController/HttpAuthentication/Token/ControllerMethods.html#method-i-authenticate_or_request_with_http_token</p>
+
+<h2 id="streaming-and-file-downloads">Streaming and File Downloads</h2>
+
+<p>Rails controllers provide a way to send a file to the user instead of rendering
+an HTML page. This can be done with the [<code class="language-plaintext highlighter-rouge">send_data</code>][] and the [<code class="language-plaintext highlighter-rouge">send_file</code>][]
+methods, which stream data to the client. The <code class="language-plaintext highlighter-rouge">send_file</code> method is a
+convenience method that lets you provide the name of a file, and it will stream
+the contents of that file.</p>
+
+<p>Here is an example of how to use <code class="language-plaintext highlighter-rouge">send_data</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s2">"prawn"</span>
+<span class="k">class</span> <span class="nc">ClientsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># Generates a PDF document with information on the client and</span>
+  <span class="c1"># returns it. The user will get the PDF as a file download.</span>
+  <span class="k">def</span> <span class="nf">download_pdf</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+    <span class="n">send_data</span> <span class="n">generate_pdf</span><span class="p">(</span><span class="n">client</span><span class="p">),</span>
+              <span class="ss">filename: </span><span class="s2">"</span><span class="si">#{</span><span class="n">client</span><span class="p">.</span><span class="nf">name</span><span class="si">}</span><span class="s2">.pdf"</span><span class="p">,</span>
+              <span class="ss">type: </span><span class="s2">"application/pdf"</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">generate_pdf</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+      <span class="no">Prawn</span><span class="o">::</span><span class="no">Document</span><span class="p">.</span><span class="nf">new</span> <span class="k">do</span>
+        <span class="n">text</span> <span class="n">client</span><span class="p">.</span><span class="nf">name</span><span class="p">,</span> <span class="ss">align: :center</span>
+        <span class="n">text</span> <span class="s2">"Address: </span><span class="si">#{</span><span class="n">client</span><span class="p">.</span><span class="nf">address</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">text</span> <span class="s2">"Email: </span><span class="si">#{</span><span class="n">client</span><span class="p">.</span><span class="nf">email</span><span class="si">}</span><span class="s2">"</span>
+      <span class="k">end</span><span class="p">.</span><span class="nf">render</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">download_pdf</code> action in the above example calls a private method which
+generates the PDF document and returns it as a string. This string will then be
+streamed to the client as a file download.</p>
+
+<p>Sometimes when streaming files to the user, you may not want them to download
+the file. Take images, for example, which can be embedded into HTML pages. To
+tell the browser a file is not meant to be downloaded, you can set the
+<code class="language-plaintext highlighter-rouge">:disposition</code> option to “inline”. The default value for this option is
+“attachment”.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">send_data</code>]:
+    https://api.rubyonrails.org/classes/ActionController/DataStreaming.html#method-i-send_data
+[<code class="language-plaintext highlighter-rouge">send_file</code>]:
+    https://api.rubyonrails.org/classes/ActionController/DataStreaming.html#method-i-send_file</p>
+
+<h3 id="sending-files">Sending Files</h3>
+
+<p>If you want to send a file that already exists on disk, use the <code class="language-plaintext highlighter-rouge">send_file</code>
+method.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ClientsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># Stream a file that has already been generated and stored on disk.</span>
+  <span class="k">def</span> <span class="nf">download_pdf</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+    <span class="n">send_file</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="no">Rails</span><span class="p">.</span><span class="nf">root</span><span class="si">}</span><span class="s2">/files/clients/</span><span class="si">#{</span><span class="n">client</span><span class="p">.</span><span class="nf">id</span><span class="si">}</span><span class="s2">.pdf"</span><span class="p">,</span>
+              <span class="ss">filename: </span><span class="s2">"</span><span class="si">#{</span><span class="n">client</span><span class="p">.</span><span class="nf">name</span><span class="si">}</span><span class="s2">.pdf"</span><span class="p">,</span>
+              <span class="ss">type: </span><span class="s2">"application/pdf"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The file will be read and streamed at 4 kB at a time by default, to avoid loading
+the entire file into memory at once. You can turn off streaming with the
+<code class="language-plaintext highlighter-rouge">:stream</code> option or adjust the block size with the <code class="language-plaintext highlighter-rouge">:buffer_size</code> option.</p>
+
+<p>If <code class="language-plaintext highlighter-rouge">:type</code> is not specified, it will be guessed from the file extension
+specified in <code class="language-plaintext highlighter-rouge">:filename</code>. If the content-type is not registered for the
+extension, <code class="language-plaintext highlighter-rouge">application/octet-stream</code> will be used.</p>
+
+<p>WARNING: Be careful when using data coming from the client (params, cookies,
+etc.) to locate the file on disk. This is a security risk as it might allow
+someone to gain access to sensitive files.</p>
+
+<p>TIP: It is not recommended that you stream static files through Rails if you can
+instead keep them in a public folder on your web server. It is much more
+efficient to let the user download the file directly using Apache or another web
+server, keeping the request from unnecessarily going through the whole Rails
+stack.</p>
+
+<h3 id="restful-downloads">RESTful Downloads</h3>
+
+<p>While <code class="language-plaintext highlighter-rouge">send_data</code> works fine, if you are creating a RESTful application having
+separate actions for file downloads is usually not necessary. In REST
+terminology, the PDF file from the example above can be considered just another
+representation of the client resource. Rails provides a slick way of doing
+“RESTful” downloads. Here’s how you can rewrite the example so that the PDF
+download is a part of the <code class="language-plaintext highlighter-rouge">show</code> action, without any streaming:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ClientsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># The user can request to receive this resource as HTML or PDF.</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="vi">@client</span> <span class="o">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+
+    <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+      <span class="nb">format</span><span class="p">.</span><span class="nf">html</span>
+      <span class="nb">format</span><span class="p">.</span><span class="nf">pdf</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">pdf: </span><span class="n">generate_pdf</span><span class="p">(</span><span class="vi">@client</span><span class="p">)</span> <span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Now the user can request to get a PDF version of a client just by adding “.pdf”
+to the URL:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /clients/1.pdf
+</code></pre></div></div>
+
+<p>You can call any method on <code class="language-plaintext highlighter-rouge">format</code> that is an extension registered as a MIME
+type by Rails. Rails already registers common MIME types like <code class="language-plaintext highlighter-rouge">"text/html"</code> and
+<code class="language-plaintext highlighter-rouge">"application/pdf"</code>:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Mime</span><span class="o">::</span><span class="no">Type</span><span class="p">.</span><span class="nf">lookup_by_extension</span><span class="p">(</span><span class="ss">:pdf</span><span class="p">)</span>
+<span class="c1"># =&gt; "application/pdf"</span>
+</code></pre></div></div>
+
+<p>If you need additional MIME types, call
+<a href="https://api.rubyonrails.org/classes/Mime/Type.html#method-c-register"><code class="language-plaintext highlighter-rouge">Mime::Type.register</code></a>
+in the file <code class="language-plaintext highlighter-rouge">config/initializers/mime_types.rb</code>. For example, this is how you
+would register the Rich Text Format (RTF):</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Mime</span><span class="o">::</span><span class="no">Type</span><span class="p">.</span><span class="nf">register</span><span class="p">(</span><span class="s2">"application/rtf"</span><span class="p">,</span> <span class="ss">:rtf</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>NOTE: If you modify an initializer file, you have to restart the server for
+their changes to take effect.</p>
+
+<h3 id="live-streaming-of-arbitrary-data">Live Streaming of Arbitrary Data</h3>
+
+<p>Rails allows you to stream more than just files. In fact, you can stream
+anything you would like in a response object. The
+<a href="https://api.rubyonrails.org/classes/ActionController/Live.html"><code class="language-plaintext highlighter-rouge">ActionController::Live</code></a>
+module allows you to create a persistent connection with a browser. By including
+this module in your controller, you can send arbitrary data to the browser at
+specific points in time.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="kp">include</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Live</span>
+
+  <span class="k">def</span> <span class="nf">stream</span>
+    <span class="n">response</span><span class="p">.</span><span class="nf">headers</span><span class="p">[</span><span class="s2">"Content-Type"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"text/event-stream"</span>
+    <span class="mi">100</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span>
+      <span class="n">response</span><span class="p">.</span><span class="nf">stream</span><span class="p">.</span><span class="nf">write</span> <span class="s2">"hello world</span><span class="se">\n</span><span class="s2">"</span>
+      <span class="nb">sleep</span> <span class="mi">1</span>
+    <span class="p">}</span>
+  <span class="k">ensure</span>
+    <span class="n">response</span><span class="p">.</span><span class="nf">stream</span><span class="p">.</span><span class="nf">close</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The above example will keep a persistent connection with the browser and send
+100 messages of <code class="language-plaintext highlighter-rouge">"hello world\n"</code>, each one second apart.</p>
+
+<p>Note that you have to make sure to close the response stream, otherwise the
+stream will leave the socket open indefinitely. You also have to set the content
+type to <code class="language-plaintext highlighter-rouge">text/event-stream</code> <em>before</em> calling <code class="language-plaintext highlighter-rouge">write</code> on the response stream.
+Headers cannot be written after the response has been committed (when
+<code class="language-plaintext highlighter-rouge">response.committed?</code> returns a truthy value) with either <code class="language-plaintext highlighter-rouge">write</code> or <code class="language-plaintext highlighter-rouge">commit</code>.</p>
+
+<h4 id="example-use-case">Example Use Case</h4>
+
+<p>Let’s suppose that you were making a karaoke machine, and a user wants to get
+the lyrics for a particular song. Each <code class="language-plaintext highlighter-rouge">Song</code> has a particular number of lines
+and each line takes time <code class="language-plaintext highlighter-rouge">num_beats</code> to finish singing.</p>
+
+<p>If we wanted to return the lyrics in karaoke fashion (only sending the line when
+the singer has finished the previous line), then we could use
+<code class="language-plaintext highlighter-rouge">ActionController::Live</code> as follows:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">LyricsController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="kp">include</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Live</span>
+
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="n">response</span><span class="p">.</span><span class="nf">headers</span><span class="p">[</span><span class="s2">"Content-Type"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"text/event-stream"</span>
+    <span class="n">response</span><span class="p">.</span><span class="nf">headers</span><span class="p">[</span><span class="s2">"Cache-Control"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"no-cache"</span>
+
+    <span class="n">song</span> <span class="o">=</span> <span class="no">Song</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+
+    <span class="n">song</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">line</span><span class="o">|</span>
+      <span class="n">response</span><span class="p">.</span><span class="nf">stream</span><span class="p">.</span><span class="nf">write</span> <span class="n">line</span><span class="p">.</span><span class="nf">lyrics</span>
+      <span class="nb">sleep</span> <span class="n">line</span><span class="p">.</span><span class="nf">num_beats</span>
+    <span class="k">end</span>
+  <span class="k">ensure</span>
+    <span class="n">response</span><span class="p">.</span><span class="nf">stream</span><span class="p">.</span><span class="nf">close</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<h4 id="streaming-considerations">Streaming Considerations</h4>
+
+<p>Streaming arbitrary data is an extremely powerful tool. As shown in the previous
+examples, you can choose when and what to send across a response stream.
+However, you should also note the following things:</p>
+
+<ul>
+  <li>Each response stream creates a new thread and copies over the thread local
+variables from the original thread. Having too many thread local variables can
+negatively impact performance. Similarly, a large number of threads can also
+hinder performance.</li>
+  <li>Failing to close the response stream will leave the corresponding socket open
+forever. Make sure to call <code class="language-plaintext highlighter-rouge">close</code> whenever you are using a response stream.</li>
+  <li>WEBrick servers buffer all responses, and so streaming with
+<code class="language-plaintext highlighter-rouge">ActionController::Live</code> will not work. You must use a web server which does
+not automatically buffer responses.</li>
+</ul>
+
+<h2 id="log-filtering">Log Filtering</h2>
+
+<p>Rails keeps a log file for each environment in the <code class="language-plaintext highlighter-rouge">log</code> folder at the
+application’s root directory. Log files are extremely useful when debugging your
+application, but in a production environment you may not want every bit of
+information stored in log files. Rails allows you to specify parameters that
+should not be stored.</p>
+
+<h3 id="parameters-filtering">Parameters Filtering</h3>
+
+<p>You can filter out sensitive request parameters from your log files by appending
+them to <a href="configuring.html#config-filter-parameters"><code class="language-plaintext highlighter-rouge">config.filter_parameters</code></a> in the application configuration.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">config</span><span class="p">.</span><span class="nf">filter_parameters</span> <span class="o">&lt;&lt;</span> <span class="ss">:password</span>
+</code></pre></div></div>
+
+<p>These parameters will be marked <code class="language-plaintext highlighter-rouge">[FILTERED]</code> in the log.</p>
+
+<p>The parameters specified in <code class="language-plaintext highlighter-rouge">filter_parameters</code> will be filtered out with
+partial matching regular expression. So for example, <code class="language-plaintext highlighter-rouge">:passw</code> will filter out
+<code class="language-plaintext highlighter-rouge">password</code>, <code class="language-plaintext highlighter-rouge">password_confirmation</code>, etc.</p>
+
+<p>Rails adds a list of default filters, including <code class="language-plaintext highlighter-rouge">:passw</code>, <code class="language-plaintext highlighter-rouge">:secret</code>, and
+<code class="language-plaintext highlighter-rouge">:token</code>, in the appropriate initializer
+(<code class="language-plaintext highlighter-rouge">initializers/filter_parameter_logging.rb</code>) to handle typical application
+parameters like <code class="language-plaintext highlighter-rouge">password</code>, <code class="language-plaintext highlighter-rouge">password_confirmation</code> and <code class="language-plaintext highlighter-rouge">my_token</code>.</p>
+
+<h3 id="redirects-filtering">Redirects Filtering</h3>
+
+<p>Sometimes it’s desirable to filter out sensitive locations that your application
+is redirecting to. You can do that by using the <code class="language-plaintext highlighter-rouge">config.filter_redirect</code>
+configuration option:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">config</span><span class="p">.</span><span class="nf">filter_redirect</span> <span class="o">&lt;&lt;</span> <span class="s2">"s3.amazonaws.com"</span>
+</code></pre></div></div>
+
+<p>You can set it to a String, a Regexp, or an Array of both.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">config</span><span class="p">.</span><span class="nf">filter_redirect</span><span class="p">.</span><span class="nf">concat</span> <span class="p">[</span><span class="s2">"s3.amazonaws.com"</span><span class="p">,</span> <span class="sr">/private_path/</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>Matching URLs will be replaced with <code class="language-plaintext highlighter-rouge">[FILTERED]</code>. However, if you only wish to
+filter the parameters, not the whole URLs, you can use parameter filtering.</p>
+
+<h2 id="force-https-protocol">Force HTTPS Protocol</h2>
+
+<p>If you’d like to ensure that communication to your controller is only possible
+via HTTPS, you can do so by enabling the [<code class="language-plaintext highlighter-rouge">ActionDispatch::SSL</code>][] middleware
+via <a href="configuring.html#config-force-ssl"><code class="language-plaintext highlighter-rouge">config.force_ssl</code></a> in your environment configuration.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">ActionDispatch::SSL</code>]:
+    https://api.rubyonrails.org/classes/ActionDispatch/SSL.html</p>
+
+<h2 id="built-in-health-check-endpoint">Built-in Health Check Endpoint</h2>
+
+<p>Rails comes with a built-in health check endpoint that is reachable at the <code class="language-plaintext highlighter-rouge">/up</code>
+path. This endpoint will return a 200 status code if the app has booted with no
+exceptions, and a 500 status code otherwise.</p>
+
+<p>In production, many applications are required to report their status, whether
+it’s to an uptime monitor that will page an engineer when things go wrong, or a
+load balancer or Kubernetes controller used to determine the health of a given
+instance. This health check is designed to be a one-size fits all that will work
+in many situations.</p>
+
+<p>While any newly generated Rails applications will have the health check at
+<code class="language-plaintext highlighter-rouge">/up</code>, you can configure the path to be anything you’d like in your
+“config/routes.rb”:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+  <span class="n">get</span> <span class="s2">"health"</span> <span class="o">=&gt;</span> <span class="s2">"rails/health#show"</span><span class="p">,</span> <span class="ss">as: :rails_health_check</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The health check will now be accessible via <code class="language-plaintext highlighter-rouge">GET</code> or <code class="language-plaintext highlighter-rouge">HEAD</code> requests to the
+<code class="language-plaintext highlighter-rouge">/health</code> path.</p>
+
+<p>NOTE: This endpoint does not reflect the status of all of your application’s
+dependencies, such as the database or redis. Replace “rails/health#show” with
+your own controller action if you have application specific needs.</p>
+
+<p>Reporting the health of an application requires some considerations. You’ll have
+to decide what you want to include in the check. For example, if a third-party
+service is down and your application reports that it’s down due to the
+dependency, your application may be restarted unnecessarily. Ideally, your
+application should handle third-party outages gracefully.</p>
+
+<h2 id="handling-errors">Handling Errors</h2>
+
+<p>Your application will likely contain bugs and throw exceptions that needs to be
+handled. For example, if the user follows a link to a resource that no longer
+exists in the database, Active Record will throw the
+<code class="language-plaintext highlighter-rouge">ActiveRecord::RecordNotFound</code> exception.</p>
+
+<p>Rails default exception handling displays a “500 Server Error” message for all
+exceptions. If the request was made in development, a nice backtrace and
+additional information is displayed, to help you figure out what went wrong. If
+the request was made in production, Rails will display a simple “500 Server
+Error” message, or a “404 Not Found” if there was a routing error, or a record
+could not be found.</p>
+
+<p>You can customize how these errors are caught and how they’re displayed to the
+user. There are several levels of exception handling available in a Rails
+application. You can use <code class="language-plaintext highlighter-rouge">config.action_dispatch.show_exceptions</code> configuration
+to control how Rails handles exceptions raised while responding to requests. You
+can learn more about the levels of exceptions in the
+<a href="configuring.html#config-action-dispatch-show-exceptions">configuration</a> guide.</p>
+
+<h3 id="the-default-error-templates">The Default Error Templates</h3>
+
+<p>By default, in the production environment the application will render an error
+page. These pages are contained in static HTML files in the public folder, in
+<code class="language-plaintext highlighter-rouge">404.html</code>, <code class="language-plaintext highlighter-rouge">500.html</code>, etc. You can customize these files to add some extra
+information and styles.</p>
+
+<p>NOTE: The error templates are static HTML files so you can’t use ERB, SCSS, or
+layouts for them.</p>
+
+<h3 id="rescue_from"><code class="language-plaintext highlighter-rouge">rescue_from</code></h3>
+
+<p>You can catch specific errors and do something different with them by using the
+<a href="https://api.rubyonrails.org/classes/ActiveSupport/Rescuable/ClassMethods.html#method-i-rescue_from"><code class="language-plaintext highlighter-rouge">rescue_from</code></a> method. It can handle exceptions of a certain type (or
+multiple types) in an entire controller and its subclasses.</p>
+
+<p>When an exception occurs which is caught by a <code class="language-plaintext highlighter-rouge">rescue_from</code> directive, the
+exception object is passed to the handler.</p>
+
+<p>Below is an example of how you can use <code class="language-plaintext highlighter-rouge">rescue_from</code> to intercept all
+<code class="language-plaintext highlighter-rouge">ActiveRecord::RecordNotFound</code> errors and do something with them:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">rescue_from</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">RecordNotFound</span><span class="p">,</span> <span class="ss">with: :record_not_found</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">record_not_found</span>
+      <span class="n">render</span> <span class="ss">plain: </span><span class="s2">"Record Not Found"</span><span class="p">,</span> <span class="ss">status: </span><span class="mi">404</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The handler can be a method or a <code class="language-plaintext highlighter-rouge">Proc</code> object passed to the <code class="language-plaintext highlighter-rouge">:with</code> option. You
+can also use a block directly instead of an explicit <code class="language-plaintext highlighter-rouge">Proc</code> object.</p>
+
+<p>The above example doesn’t improve on the default exception handling at all, but
+it serves to show how once you catch specific exceptions, you’re free to do
+whatever you want with them. For example, you could create custom exception
+classes that will be thrown when a user doesn’t have access to a certain section
+of your application:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">rescue_from</span> <span class="no">User</span><span class="o">::</span><span class="no">NotAuthorized</span><span class="p">,</span> <span class="ss">with: :user_not_authorized</span>
+
+  <span class="kp">private</span>
+    <span class="k">def</span> <span class="nf">user_not_authorized</span>
+      <span class="n">flash</span><span class="p">[</span><span class="ss">:error</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"You don't have access to this section."</span>
+      <span class="n">redirect_back</span><span class="p">(</span><span class="ss">fallback_location: </span><span class="n">root_path</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">ClientsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># Check that the user has the right authorization to access clients.</span>
+  <span class="n">before_action</span> <span class="ss">:check_authorization</span>
+
+  <span class="k">def</span> <span class="nf">edit</span>
+    <span class="vi">@client</span> <span class="o">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+    <span class="c1"># If the user is not authorized, throw the custom exception.</span>
+    <span class="k">def</span> <span class="nf">check_authorization</span>
+      <span class="k">raise</span> <span class="no">User</span><span class="o">::</span><span class="no">NotAuthorized</span> <span class="k">unless</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">admin?</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>WARNING: Using <code class="language-plaintext highlighter-rouge">rescue_from</code> with <code class="language-plaintext highlighter-rouge">Exception</code> or <code class="language-plaintext highlighter-rouge">StandardError</code> would cause
+serious side-effects as it prevents Rails from handling exceptions properly. As
+such, it is not recommended to do so unless there is a strong reason.</p>
+
+<p>NOTE: Certain exceptions are only rescuable from the <code class="language-plaintext highlighter-rouge">ApplicationController</code>
+class, as they are raised before the controller gets initialized, and the action
+gets executed.</p>
+
+
+        </div>
+
+        <footer class="guide-footer">
+            <div class="feedback">
+                <h3>Geri Bildirim</h3>
+                <p>Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri bildirimlerinizi bekliyoruz.</p>
+                <p>Lütfen <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub Issues</a> üzerinden katkıda bulunun.</p>
+            </div>
+        </footer>
+    </article>
+</div>
+
+<script>
+// İçindekiler tablosunu otomatik oluştur
+document.addEventListener('DOMContentLoaded', function() {
+    const toc = document.getElementById('toc');
+    const headings = document.querySelectorAll('.guide-content h2, .guide-content h3, .guide-content h4');
+    
+    if (headings.length > 0) {
+        const tocList = document.createElement('ul');
+        
+        headings.forEach(function(heading, index) {
+            const id = 'heading-' + index;
+            heading.id = id;
+            
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.textContent = heading.textContent;
+            a.className = 'toc-' + heading.tagName.toLowerCase();
+            
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+        
+        toc.appendChild(tocList);
+    }
+});
+</script>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Rails Kılavuzları Türkçe Çevirisi. Gönüllüler tarafından hazırlanmıştır.</p>
+            <p>Orijinal dokümantasyon <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine aittir.</p>
+        </div>
+    </footer>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

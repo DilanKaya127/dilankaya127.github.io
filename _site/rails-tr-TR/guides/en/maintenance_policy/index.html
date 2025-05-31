@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance Policy - Rails Dokümantasyonu - Türkçe</title>
+    <link rel="stylesheet" href="/rails-tr-TR/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <a href="/rails-tr-TR/">Rails Kılavuzları</a>
+                </h1>
+                <nav class="nav">
+                    <a href="/rails-tr-TR/">Ana Sayfa</a>
+                    <a href="https://dilankaya127.github.io">Portföy</a>
+                    <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="guide-container">
+    <aside class="guide-sidebar">
+        <div class="guide-toc">
+            <h3>İçindekiler</h3>
+            <div id="toc"></div>
+        </div>
+        
+        <div class="guide-nav">
+            <h3>Diğer Kılavuzlar</h3>
+            <ul>
+                <li><a href="/rails-tr-TR/rails-tr-TR/guides/tr/getting_started">Rails ile Başlarken</a></li>
+                <li><a href="/rails-tr-TR/rails-tr-TR/guides/en/active_record_basics">Active Record Temelleri</a></li>
+                <li><a href="/rails-tr-TR/rails-tr-TR/guides//en/action_controller_overview">Action Controller</a></li>
+                <li><a href="/rails-tr-TR/rails-tr-TR/guides/tr/action_cable_overview">Action Cable</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <article class="guide-content">
+        <header class="guide-header">
+            <h1>Maintenance Policy</h1>
+            
+        </header>
+
+        <div class="guide-body">
+            <p><strong>DO NOT READ THIS FILE ON GITHUB, GUIDES ARE PUBLISHED ON <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a>.</strong></p>
+
+<h1 id="maintenance-policy-for-ruby-on-rails">Maintenance Policy for Ruby on Rails</h1>
+
+<p>Support of the Rails framework is divided into three groups: New features, bug
+fixes, and security issues. They are handled as
+follows, all versions, except for security releases, in <code class="language-plaintext highlighter-rouge">X.Y.Z</code>, format.</p>
+
+<hr />
+
+<h2 id="versioning">Versioning</h2>
+
+<p>Rails follows a shifted version of <a href="https://semver.org/">semver</a>:</p>
+
+<p><strong>Patch <code class="language-plaintext highlighter-rouge">Z</code></strong></p>
+
+<p>Only bug fixes, no API changes, no new features.
+Except as necessary for security fixes.</p>
+
+<p><strong>Minor <code class="language-plaintext highlighter-rouge">Y</code></strong></p>
+
+<p>New features, may contain API changes (Serve as major versions of Semver).
+Breaking changes are paired with deprecation notices in the previous minor
+or major release.</p>
+
+<p><strong>Major <code class="language-plaintext highlighter-rouge">X</code></strong></p>
+
+<p>New features, will likely contain API changes. The difference between Rails’
+minor and major releases is the magnitude of breaking changes, and usually
+reserved for special occasions.</p>
+
+<h2 id="new-features">New Features</h2>
+
+<p>New features are only added to the main branch and will not be made available
+in Patch releases.</p>
+
+<h2 id="bug-fixes">Bug Fixes</h2>
+
+<p>Minor releases will receive bug fixes for one year after the first release in
+its series. For example, if a theoretical 1.1.0 is released on January 1, 2023, it
+will receive bug fixes until January 1, 2024. After that, it will be considered
+unsupported.</p>
+
+<p>Bug fixes are typically added to the main branch, and backported to the x-y-stable
+branch of the latest release series if there is sufficient need. When enough bugs
+fixes have been added to an x-y-stable branch, a new Patch release is built from it.
+For example, a theoretical 1.2.2 Patch release would be built from the 1-2-stable branch.</p>
+
+<p>For unsupported series, bug fixes may coincidentally land in a stable branch,
+but won’t be released in an official version. It is recommended to point your
+application at the stable branch using Git for unsupported versions.</p>
+
+<h2 id="security-issues">Security Issues</h2>
+
+<p>Minor releases will receive security fixes for two years after the first release in
+its series. For example, if a theoretical 1.1.0 is released on January 1, 2023, it
+will receive security fixes until January 1, 2025. After that, it will reach its
+end-of-life.</p>
+
+<p>These releases are created by taking the last released version, applying the
+security patches, and releasing. Those patches are then applied to the end of
+the x-y-stable branch. For example, a theoretical 1.2.2.1 security release would
+be built from 1.2.2, and then added to the end of 1-2-stable. This means that
+security releases are easy to upgrade to if you’re running the latest version
+of Rails.</p>
+
+<p>Only direct security patches will be included in security releases. Fixes for
+non-security related bugs resulting from a security patch may be published on a
+release’s x-y-stable branch, and will only be released as a new gem in
+accordance with the Bug Fixes policy.</p>
+
+<p>Security releases are cut from the last security release branch/tag. Otherwise
+there could be breaking changes in the security release. A security release
+should only contain the changes needed to ensure the app is secure so that it’s
+easier for applications to remain upgraded.</p>
+
+<h2 id="end-of-life-release-series">End-of-life Release Series</h2>
+
+<p>When a release series reaches its end-of-life, it’s your own responsibility to
+deal with bugs and security issues. We may provide backports of the fixes and
+merge them, however there will be no new versions released. We
+recommend to point your application at the stable branch using Git. If you are
+not comfortable maintaining your own versions, you should upgrade to a supported
+version.</p>
+
+<h2 id="release-schedule">Release schedule</h2>
+
+<p>We aim to release a version containing new features every six months. In the rare case where
+no release was made in one year, we will extend the support period for the previous release
+until the next release is made.</p>
+
+<h2 id="npm-packages">npm Packages</h2>
+
+<p>Due to a constraint with npm, we are unable to use the 4th digit for security
+releases of <a href="https://www.npmjs.com/org/rails">npm packages</a> provided by Rails. This means that instead of the
+equivalent gem version <code class="language-plaintext highlighter-rouge">7.0.1.4</code>, the npm package will be versioned <code class="language-plaintext highlighter-rouge">7.0.104</code>.</p>
+
+<p>The version will be calculated as <code class="language-plaintext highlighter-rouge">X.Y.Z0A</code>, where <code class="language-plaintext highlighter-rouge">A</code> is the security release.</p>
+
+
+        </div>
+
+        <footer class="guide-footer">
+            <div class="feedback">
+                <h3>Geri Bildirim</h3>
+                <p>Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri bildirimlerinizi bekliyoruz.</p>
+                <p>Lütfen <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub Issues</a> üzerinden katkıda bulunun.</p>
+            </div>
+        </footer>
+    </article>
+</div>
+
+<script>
+// İçindekiler tablosunu otomatik oluştur
+document.addEventListener('DOMContentLoaded', function() {
+    const toc = document.getElementById('toc');
+    const headings = document.querySelectorAll('.guide-content h2, .guide-content h3, .guide-content h4');
+    
+    if (headings.length > 0) {
+        const tocList = document.createElement('ul');
+        
+        headings.forEach(function(heading, index) {
+            const id = 'heading-' + index;
+            heading.id = id;
+            
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = '#' + id;
+            a.textContent = heading.textContent;
+            a.className = 'toc-' + heading.tagName.toLowerCase();
+            
+            li.appendChild(a);
+            tocList.appendChild(li);
+        });
+        
+        toc.appendChild(tocList);
+    }
+});
+</script>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Rails Kılavuzları Türkçe Çevirisi. Gönüllüler tarafından hazırlanmıştır.</p>
+            <p>Orijinal dokümantasyon <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine aittir.</p>
+        </div>
+    </footer>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

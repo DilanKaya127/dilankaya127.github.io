@@ -1,9 +1,8 @@
 ---
+---
 layout: guide
-title: "Action Cable Overview"
-lang: tr
-translation: true
-original_file: "action_cable_overview.md"
+title: Action Cable'a Genel Bakış
+description: Bu kılavuz action cable'a genel bakış konusunu ele alır.
 ---
 
 **BU DOSYAYI GITHUB ÜZERİNDEN OKUMAYINIZ, KILAVUZA BU ADRES ÜZERİNDEN ULAŞABİLİRSİNİZ: <https://guides.rubyonrails.org>.**

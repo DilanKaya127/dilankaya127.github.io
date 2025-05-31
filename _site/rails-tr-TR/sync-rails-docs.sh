@@ -225,7 +225,7 @@ main() {
     fi
     
     echo ""
-    log_info "Site URL: https://dilankaya127.github.io/rails-tr-tr/"
+    log_info "Site URL: https://dilankaya127.github.io/rails-tr-TR/"
     log_success "Hazır! 🚀"
 }
 
