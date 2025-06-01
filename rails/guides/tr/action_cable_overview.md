@@ -1,12 +1,8 @@
 ---
 layout: guide
-title: "Action Cable Overview"
-lang: tr
-translation: true
-original_file: "action_cable_overview.md"
 ---
 
-**BU DOSYAYI GITHUB ÜZERİNDEN OKUMAYINIZ, KILAVUZA BU ADRES ÜZERİNDEN ULAŞABİLİRSİNİZ: <https://guides.rubyonrails.org>.**
+**RESMİ KILAVUZA BU ADRES ÜZERİNDEN ULAŞABİLİRSİNİZ: <https://guides.rubyonrails.org>.**
 
 Action Cable'a Genel Bakış
 =====================
@@ -54,7 +50,7 @@ Her bir tüketici sırayla birden fazla *kanala* abone olabilir. Her kanal, bir 
 
 ### Subscribers (Aboneler)
 
-Tüketici bir kanala abone olduğunda *abone* gibi davranır. Abone ile kanal arasındaki bağlantıya ise abonelik denir. Bir tüketici belirli bir kanala istediği kadar abone olabilir. Örneğin, bir tüketici birden fazla chat odasına aynı anda abone olabilir. (Fiziksel bir kullanıcının bağlantınıza her bir sekme veya açık cihaz için birden fazla tüketicisinin olabildiğini unutmayın.)
+Tüketici bir kanala abone olduğunda *abone* gibi davranır. Abone ile kanal arasındaki bağlantıya ise abonelik denir. Bir tüketici belirli bir kanala istediği kadar abone olabilir. Örneğin, bir tüketici birden fazla chat odasına aynı anda abone olabilir. (Fiziksel bir kullanıcının bağlantınıza açık olan her bir sekme veya cihaz için bir tane olmak üzere birden fazla tüketicisinin olabildiğini unutmayın.)
 
 ### Pub/Sub (Yayınla/Abone Ol)
 

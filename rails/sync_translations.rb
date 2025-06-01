@@ -95,42 +95,44 @@ class TranslationSyncer
     FileUtils.mkdir_p(JEKYLL_GUIDES_PATH)
   end
 
-  def process_translation_content(content, guide_name)
-    # YAML front matter'ı kontrol et ve ekle/güncelle
-    if content.start_with?('---')
-      # Mevcut front matter'ı güncelle
-      front_matter_end = content.index('---', 3)
-      if front_matter_end
-        existing_front_matter = content[4..front_matter_end-1]
-        body = content[front_matter_end+4..-1]
-        
-        # YAML'ı parse et ve güncelle
-        begin
-          yaml_data = YAML.load(existing_front_matter) || {}
-          yaml_data['layout'] = 'guide'
-          yaml_data['title'] ||= generate_title(guide_name)
-          yaml_data['description'] ||= "Bu kılavuz #{yaml_data['title'].downcase} konusunu ele alır."
-          
-          new_front_matter = yaml_data.to_yaml.strip
-          return "---\n#{new_front_matter}\n---\n#{body}"
-        rescue => e
-          puts "⚠️  YAML parse hatası #{guide_name}.md için: #{e.message}"
-        end
-      end
-    else
-      # Front matter yoksa ekle
-      yaml_data = {
-        'layout' => 'guide',
-        'title' => generate_title(guide_name),
-        'description' => "Bu kılavuz #{generate_title(guide_name).downcase} konusunu ele alır."
-      }
-      
-      front_matter = yaml_data.to_yaml.strip
-      return "---\n#{front_matter}\n---\n\n#{content}"
+require 'yaml'
+
+def process_translation_content(content, guide_name)
+  # Front matter başlangıç ve bitişini tanımlayan regex
+  front_matter_regex = /\A---\s*\n.*?\n---\s*\n/m
+
+  if content =~ front_matter_regex
+    # Mevcut front matter'ı ayrıştır
+    match = content.match(front_matter_regex)
+    existing_front_matter = match[0].sub(/\A---\s*\n/, '').sub(/\n---\s*\n\z/, '')
+    body = content[match[0].length..-1]
+
+    begin
+      yaml_data = YAML.safe_load(existing_front_matter) || {}
+      yaml_data['layout'] = 'guide'
+      # yaml_data['title'] ||= generate_title(guide_name)
+      # yaml_data['description'] ||= "Bu kılavuz #{yaml_data['title'].downcase} konusunu ele alır."
+
+      # to_yaml çıktısından başındaki --- kısmını temizle
+      new_front_matter = yaml_data.to_yaml.strip.sub(/\A---\n/, '')
+      return "---\n#{new_front_matter}\n---\n\n#{body.lstrip}"
+    rescue => e
+      puts "⚠️  YAML parse hatası #{guide_name}.md için: #{e.message}"
+      return content # parse hatası varsa dokunma
     end
-    
-    content
+  else
+    # Front matter yoksa oluştur
+    yaml_data = {
+      'layout' => 'guide'
+      # 'title' => generate_title(guide_name),
+      # 'description' => "Bu kılavuz #{generate_title(guide_name).downcase} konusunu ele alır."
+    }
+
+    # to_yaml çıktısından başındaki --- kısmını temizle
+    front_matter = yaml_data.to_yaml.strip.sub(/\A---\n/, '')
+    return "---\n#{front_matter}\n---\n\n#{content.lstrip}"
   end
+end
 
   def generate_title(guide_name)
     # İngilizce kılavuz isimlerini Türkçe'ye çevir

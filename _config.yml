@@ -17,7 +17,7 @@ plugins:
 collections:
   guides:
     output: true
-    permalink: /:name/
+    # permalink: /:name/
     permalink: /guides/:path/
 
 # Defaults

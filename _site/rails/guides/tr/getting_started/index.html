@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Getting Started - Rails Dokümantasyonu - Türkçe</title>
-    <link rel="stylesheet" href="/assets/css/main.css">
+    <title>Rails Dokümantasyonu - Türkçe</title>
+    <link rel="stylesheet" href="/assets/css/rails.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+
+    <link rel="icon" type="image/svg" href="/assets/img/logo_rails-circle.svg">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 </head>
 <body>
@@ -13,11 +16,13 @@
         <div class="container">
             <div class="header-content">
                 <h1 class="logo">
-                    <a href="/">Rails Kılavuzları</a>
+                    <a href="/rails/">
+                        <img src="/assets/img/logo_rails-circle.svg" alt="Rails Logo" class="logo-image">
+                    </a>
                 </h1>
                 <nav class="nav">
                     <a href="/">Ana Sayfa</a>
-                    <a href="https://dilankaya127.github.io">Portföy</a>
+                    <!-- <a href="https://dilankaya127.github.io">Portföy</a> -->
                     <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
                 </nav>
             </div>
@@ -27,87 +32,232 @@
     <main class="main">
         <div class="container">
             <div class="guide-container">
-    <aside class="guide-sidebar">
-        <div class="guide-toc">
-            <h3>İçindekiler</h3>
-            <div id="toc"></div>
-        </div>
-        
-        <div class="guide-nav">
-            <h3>Diğer Kılavuzlar</h3>
+  <button id="toc-toggle" class="toc-toggle">☰ İçindekiler</button>
+
+  <aside class="guide-sidebar">
+    <div class="guide-toc">
+      <!-- <h3>İçindekiler</h3> -->
+      <div id="toc"></div>
+      <button class="toc-close" aria-label="İçindekileri Kapat">✕</button>
+    </div>
+
+    <!-- <div class="guide-nav">
+            <h3>Diğer(Tüm) Kılavuzlar</h3>
             <ul>
                 <li><a href="/rails/guides/tr/getting_started">Rails ile Başlarken</a></li>
                 <li><a href="/rails/guides/en/active_record_basics">Active Record Temelleri</a></li>
                 <li><a href="/rails/guides//en/action_controller_overview">Action Controller</a></li>
                 <li><a href="/rails/guides/tr/action_cable_overview">Action Cable</a></li>
             </ul>
-        </div>
-    </aside>
+        </div> -->
+  </aside>
 
-    <article class="guide-content">
-        <header class="guide-header">
-            <h1>Getting Started</h1>
+  <article class="guide-content">
+    <!-- <header class="guide-header">
+            <h1></h1>
             
-        </header>
+        </header> -->
 
-        <div class="guide-body">
-            <p><strong>BU DOSYAYI GITHUB ÜZERİNDEN OKUMAYINIZ, KILAVUZA BU ADRES ÜZERİNDEN ULAŞABİLİRSİNİZ: <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a>.</strong></p>
+    <div class="guide-body"><p><strong>RESMİ KILAVUZA BU ADRES ÜZERİNDEN ULAŞABİLİRSİNİZ: <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a>.</strong></p>
 
-<h1 id="action-cablea-genel-bakış">Action Cable’a Genel Bakış</h1>
+<h1 id="rails-ile-başlarken">Rails ile Başlarken</h1>
 
-<p>Bu kılavuzda Action Cable’ın nasıl çalıştığını ve WebSocketleri kullanarak
-gerçek zamanlı özellikleri Rails uygulamanıza nasıl dahil edeceğinizi öğreneceksiniz.</p>
+<p>Bu kılavuz Ruby on Rails’i nasıl kurup çalıştıracağınızı anlatmaktadır.</p>
 
-<p>Bu kılavuzu okuduktan sonra şunları bileceksiniz:</p>
+<p>Bu kılavuzu okuduktan sonra şunları öğreneceksiniz:</p>
 
 <ul>
-  <li>Action Cable’ın ne olduğunu, backend ve frontende nasıl entegre edeceğinizi</li>
-  <li>Action Cable’ı nasıl kuracağınızı</li>
-  <li>Kanalları (channels) nasıl kuracağınızı</li>
-  <li>Action Cable’ı çalıştırmak için dağıtım ve mimari kurulumunu</li>
+  <li>Rails’i nasıl kuracağınızı, yeni bir Rails uygulaması nasıl oluşturacağınızı ve uygulamanızı bir veritabanına nasıl bağlayacağınızı.</li>
+  <li>Rails uygulamasının genel yapısını.</li>
+  <li>MVC (Model, View, Controller) ve RESTful tasarımının temel ilkelerini.</li>
+  <li>Rails uygulamasının başlangıç parçalarını hızlı bir şekilde nasıl oluşturacağınızı.</li>
+  <li>Kamal kullanarak uygulamanızı bir ürüne nasıl dağıtacağınızı (deploy edeceğinizi).</li>
 </ul>
 
 <hr />
 
-        </div>
+<h2 id="giriş">Giriş</h2>
+<p>Ruby on Rails’e hoş geldiniz! Bu kılavuzda, Rails ile web uygulamaları geliştirmenin temel konularını ele alacağız. Bu kılavuzu takip etmek için Rails’te herhangi bir deneyime ihtiyacınız yok.</p>
 
-        <footer class="guide-footer">
-            <div class="feedback">
-                <h3>Geri Bildirim</h3>
-                <p>Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri bildirimlerinizi bekliyoruz.</p>
-                <p>Lütfen <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub Issues</a> üzerinden katkıda bulunun.</p>
-            </div>
-        </footer>
-    </article>
+<p>Rails, Ruby programlama dili için geliştirilmiş bi web çerçevesidir. Rails, Ruby’nin birçok özelliğinin avantajını barındırmaktadır, bu yüzden sizlere Ruby’nin temellerini öğrenmenizi <em>şiddetle</em> öneririz. Böylece bu kılavuzda karşılacağınız bazı temel terimleri ve kelimeleri anlıyor olacaksınız.</p>
+
+<ul>
+  <li><a href="https://www.ruby-lang.org/en/documentation/">Resmi Ruby Websitesi</a></li>
+  <li><a href="https://github.com/EbookFoundation/free-programming-books/blob/main/books/free-programming-books-langs.md#ruby">Ücretsiz Programlama Kitaplarını İçeren Liste</a></li>
+</ul>
+
+<h2 id="railsin-felsefesi">Rails’in Felsefesi</h2>
+
+<p>Rails, Ruby programlama dilinde yazılmış bir web uygulaması geliştirme çerçevesidir. Her geliştiricinin başlangıç için ihtiyaç duyduğu şeyleri varsayarak web uygulamalarını programlamayı kolaylaştırmak için tasarlanmıştır. Diğer birçok dil ve çerçeveye göre daha az kod yazarak daha fazlasını başarmanızı sağlar. Deneyimli Rails geliştiricileri, web uygulaması geliştirmeyi daha eğlenceli hale getirdiğini de belirtmektedir.</p>
+
+<p>Rails, inatçı bir yazılımdır. İşleri yapmanın “en iyi” bir yolu olduğu varsayımından hareket eder ve bu yolu teşvik etmek için tasarlanmıştır - ve bazı durumlarda alternatiflerden caydırır. “Rails Yöntemi”ni öğrenirseniz, muhtemelen üretkenliğinizde muazzam bir artış göreceksiniz. Diğer dillerden edindiğiniz eski alışkanlıkları Rails geliştirirken ısrarla sürdürür ve başka yerlerde öğrendiğiniz kalıpları kullanmaya çalışırsanız, daha az mutlu bir deneyim yaşayabilirsiniz.</p>
+
+<p>Rails felsefesi iki ana kılavuz ilke içerir:</p>
+
+<ul>
+  <li><strong>Kendini Tekrar Etme:</strong> DRY, yazılım geliştirmenin bir ilkesidir ve “Her bilgi parçası, sistem içinde tek, açık ve kesin bir şekilde temsil edilmelidir” der. Aynı bilgiyi tekrar tekrar yazmayarak, kodumuz daha kolay bakımı yapılabilir, daha genişletilebilir ve daha az hata içerir hale gelir.</li>
+  <li><strong>Yapılandırma Üzerine Kurallar:</strong> Rails, bir web uygulamasında birçok şeyin en iyi şekilde nasıl yapılacağına dair fikirlere sahiptir ve bunları sonsuz yapılandırma dosyaları aracılığıyla kendiniz tanımlamanızı gerektirmek yerine, varsayılan olarak bu kurallar kümesini kullanır.</li>
+</ul>
+
+<h2 id="yeni-bir-rails-uygulaması-geliştirme">Yeni Bir Rails Uygulaması Geliştirme</h2>
+
+<p><code class="language-plaintext highlighter-rouge">store</code> adında bir proje geliştireceğiz, Rails’in yerleşik özelliklerinden birkaçını gösteren basit bir e-ticaret sitesi olacak.</p>
+
+<p>İPUCU: Dolar işareti <code class="language-plaintext highlighter-rouge">$</code> ile başlayan tüm komutlar terminalde çalıştırılmalıdır.</p>
+
+<h3 id="önkoşullar">Önkoşullar</h3>
+
+<p>Bu proje için şunlar gerekli:</p>
+
+<ul>
+  <li>Ruby 3.2 veya daha üst sürümü</li>
+  <li>Rails 8.1.0 veya daha üst sürümü</li>
+  <li>Bir kod editörü</li>
+</ul>
+
+<p>Ruby ve/veya Rails’i indirmeniz gerekiyorsa, bu tutorialı takip edin:<a href="install_ruby_on_rails.html">Ruby on Rails İndirme Kılavuzu</a></p>
+
+<p>Rails’in doğru sürümünün yüklü olduğunu doğrulayalım. Mevcut sürümü görüntülemek için bir terminal açın ve aşağıdakileri çalıştırın. Bir sürüm numarası görmelisiniz:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails <span class="nt">--version</span>
+Rails 8.1.0
+</code></pre></div></div>
+
+<p>Rails 8.1.0 veya daha yüksek bir sürüm olmalı.</p>
+
+<h3 id="i̇lk-rails-uygulamanızı-oluşturmak">İlk Rails Uygulamanızı Oluşturmak</h3>
+
+<p>Rails, hayatınızı kolaylaştırmak için çeşitli komutlar sunar. Tüm komutları görmek için <code class="language-plaintext highlighter-rouge">rails --help</code> komutunu çalıştırın.</p>
+
+<p><code class="language-plaintext highlighter-rouge">rails new</code> komutu, yeni bir Rails uygulamasının temelini oluşturur, bu yüzden buradan başlayalım.</p>
+
+<p><code class="language-plaintext highlighter-rouge">store</code> uygulamamızı oluşturmak için terminalinizde aşağıdaki komutu çalıştırın:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails new store
+</code></pre></div></div>
+
+<p>NOT: Rails’in oluşturduğu uygulamayı flag kullanarak özelleştirebilirsiniz.
+Bu seçenekleri görmek için <code class="language-plaintext highlighter-rouge">rails new --help</code> komutunu çalıştırın.</p>
+
+<p>Yeni uygulamanız oluşturulduktan sonra, uygulama dizinine geçin:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>store
+</code></pre></div></div>
+
+</div>
+
+    <footer class="guide-footer">
+      <div class="feedback">
+        <h3>Geri Bildirim</h3>
+        <p>
+          Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri
+          bildirimlerinizi bekliyoruz.
+        </p>
+        <p>
+          Lütfen
+          <a href="https://github.com/dilankaya127/rails-tr-TR"
+            >GitHub Issues</a
+          >
+          üzerinden katkıda bulunun.
+        </p>
+      </div>
+    </footer>
+  </article>
 </div>
 
 <script>
-// İçindekiler tablosunu otomatik oluştur
-document.addEventListener('DOMContentLoaded', function() {
-    const toc = document.getElementById('toc');
-    const headings = document.querySelectorAll('.guide-content h2, .guide-content h3, .guide-content h4');
-    
+  document.addEventListener("DOMContentLoaded", function () {
+    const toc = document.getElementById("toc");
+    const headings = document.querySelectorAll(
+      ".guide-content h2, .guide-content h3, .guide-content h4"
+    );
+
     if (headings.length > 0) {
-        const tocList = document.createElement('ul');
-        
-        headings.forEach(function(heading, index) {
-            const id = 'heading-' + index;
-            heading.id = id;
-            
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            a.href = '#' + id;
-            a.textContent = heading.textContent;
-            a.className = 'toc-' + heading.tagName.toLowerCase();
-            
-            li.appendChild(a);
-            tocList.appendChild(li);
-        });
-        
-        toc.appendChild(tocList);
+      const tocList = document.createElement("ul");
+      const headingMap = new Map();
+
+      headings.forEach(function (heading, index) {
+        const id = "heading-" + index;
+        heading.id = id;
+
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = "#" + id;
+        a.textContent = heading.textContent;
+        a.className = "toc-" + heading.tagName.toLowerCase();
+
+        li.appendChild(a);
+        tocList.appendChild(li);
+
+        headingMap.set(id, a);
+      });
+
+      toc.appendChild(tocList);
+
+      // Başlıkların görünürlük oranlarını takip et
+      const visibilityMap = new Map();
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const id = entry.target.getAttribute("id");
+            visibilityMap.set(id, entry.intersectionRatio);
+          });
+
+          // En çok görünür olan başlığı bul
+          let mostVisibleId = null;
+          let maxRatio = 0;
+
+          visibilityMap.forEach((ratio, id) => {
+            if (ratio > maxRatio) {
+              mostVisibleId = id;
+              maxRatio = ratio;
+            }
+          });
+
+          if (mostVisibleId) {
+            headingMap.forEach((linkEl) => linkEl.classList.remove("active"));
+            const activeLink = headingMap.get(mostVisibleId);
+            if (activeLink) {
+              activeLink.classList.add("active");
+
+              // Ortalamak için:
+              const linkTop = activeLink.offsetTop;
+              const linkHeight = activeLink.offsetHeight;
+              const tocScrollParent = toc;
+              const tocHeight = tocScrollParent.offsetHeight;
+
+              tocScrollParent.scrollTo({
+                top: linkTop - tocHeight / 2 + linkHeight / 2,
+                behavior: "smooth",
+              });
+            }
+          }
+        },
+        {
+          threshold: [0, 0.25, 0.5, 0.75, 1.0],
+        }
+      );
+
+      headings.forEach((heading) => {
+        observer.observe(heading);
+      });
+
+      const toggleBtn = document.getElementById("toc-toggle");
+      const sidebar = document.querySelector(".guide-sidebar");
+
+      toggleBtn.addEventListener("click", function () {
+        sidebar.classList.toggle("open");
+      });
+      const closeBtn = document.querySelector(".toc-close");
+
+      closeBtn?.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+      });
     }
-});
+  });
 </script>
+
         </div>
     </main>
 
