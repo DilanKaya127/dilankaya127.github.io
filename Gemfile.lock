@@ -103,6 +103,7 @@ PLATFORMS
 
 DEPENDENCIES
   faraday-retry
+  google-protobuf
   http_parser.rb (~> 0.6.0)
   jekyll (~> 4.3)
   jekyll-feed

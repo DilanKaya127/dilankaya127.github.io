@@ -3,6 +3,7 @@ source "https://rubygems.org"
 gem "jekyll", "~> 4.3"
 gem "faraday-retry" # önceki uyarı için
 gem "webrick", "~> 1.7" # Ruby 3+ için gerekebilir
+gem 'google-protobuf'
 
 group :jekyll_plugins do
   gem "jekyll-sitemap"
