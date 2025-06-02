@@ -2,7 +2,9 @@
 layout: guide
 ---
 
-**RESMİ KILAVUZA BU ADRES ÜZERİNDEN ULAŞABİLİRSİNİZ: <https://guides.rubyonrails.org>.**
+**RESMİ KILAVUZA BU ADRES ÜZERİNDEN ULAŞABİLİRSİNİZ: <https://guides.rubyonrails.org>**
+
+--------------------------------------------------------------------------------
 
 Action Cable'a Genel Bakış
 =====================
@@ -16,8 +18,6 @@ Bu kılavuzu okuduktan sonra şunları bileceksiniz:
 * Action Cable'ı nasıl kuracağınızı
 * Kanalları (channels) nasıl kuracağınızı
 * Action Cable'ı çalıştırmak için dağıtım ve mimari kurulumunu
-
---------------------------------------------------------------------------------
 
 Action Cable Nedir? 
 ---------------------
@@ -140,7 +140,7 @@ end
 [`around_command`]: https://api.rubyonrails.org/classes/ActionCable/Connection/Callbacks/ClassMethods.html#method-i-around_command
 [`before_command`]: https://api.rubyonrails.org/classes/ActionCable/Connection/Callbacks/ClassMethods.html#method-i-before_command
 
-### Channels (Kanalalr)
+### Channels (Kanallar)
 
 Bir *kanal*, bir controllerın tipik bir MVC kurulumunda yaptığına benzer bir şekilde mantıksal bir iş birimini kapsar. Varsayılan olarak Rails, kanal oluşturucuyu (channel generator) ilk kez kullandığınızda, kanallarınız arasında paylaşılan mantığı kapsüllemek için bir ebeveyn sınıf olan `ApplicationCable::Channel` (ki bu sınıf `ActionCable::Channel::Base` sınıfını genişletir) oluşturur.
 

@@ -1,68 +1,166 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rails Dokümantasyonu - Türkçe - Rails Dokümantasyonu - Türkçe</title>
-    <link rel="stylesheet" href="/assets/css/rails.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Rails Dokümantasyonu - Türkçe
+    </title>
+    <link
+      rel="stylesheet"
+      href="/assets/css/rails.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css"
+    />
 
-    <link rel="icon" type="image/svg" href="/assets/img/logo_rails-circle.svg">
+    <link
+      rel="icon"
+      type="image/svg"
+      href="/assets/img/logo_rails-circle.svg"
+    />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <h1 class="logo">
-                    <a href="/rails/">
-                        <img src="/assets/img/logo_rails-circle.svg" alt="Rails Logo" class="logo-image">
-                    </a>
-                </h1>
-                <nav class="nav">
-                    <a href="/">Ana Sayfa</a>
-                    <!-- <a href="https://dilankaya127.github.io">Portföy</a> -->
-                    <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
-                </nav>
+      <div class="container">
+        <div class="header-content">
+          <h1 class="logo">
+            <a href="/rails/">
+              <img
+                src="/assets/img/logo_rails-circle.svg"
+                alt="Rails Logo"
+                class="logo-image"
+              />
+            </a>
+          </h1>
+          <nav class="nav">
+            <a href="/">Ana Sayfa</a>
+            <!-- <a href="https://dilankaya127.github.io">Portföy</a> -->
+
+            <div class="dropdown">
+              <a class="dropbtn">Kılavuzlar</a>
+              <div class="dropdown-content multi-column">
+                 
+                <div class="dropdown-column">
+                  <h4>Buradan Başlayın</h4>
+                  
+                  <a href="/rails/guides/tr/getting_started">Rails ile Başlarken</a>
+                  
+                </div>
+                      
+                <div class="dropdown-column">
+                  <h4>Controllers</h4>
+                  
+                  <a href="/rails/guides/tr/action_controller_overview">Action Controller</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Diğer Bileşenler</h4>
+                  
+                  <a href="/rails/guides/tr/action_cable_overview">Action Cable</a>
+                  
+                </div>
+                               
+              </div>
             </div>
+            <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+          </nav>
         </div>
+      </div>
     </header>
 
     <main class="main">
-        <div class="container">
-            <h1 id="ruby-on-rails-kılavuzları">Ruby on Rails Kılavuzları</h1>
+      <div class="container"><p><em>Kılavuzlardaki tüm çeviriler Dilan Kaya tarafından yapılmıştır. Hata bulursanız veya katkıda bulunmak isterseniz <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a> üzerinden iletişime geçebilirsiniz.</em></p>
 
-<p>Bu kılavuzlar, Ruby on Rails ile daha üretken olmanıza yardımcı olmak için tasarlanmıştır.</p>
+<h1 id="ruby-on-rails-kılavuzları-v802">Ruby on Rails Kılavuzları (v8.0.2)</h1>
 
-<h2 id="başlarken">Başlarken</h2>
+<p>Bunlar v8.0.2 tabanlı Rails 8.0 için yeni kılavuzlardır. Bu kılavuzlar, Ruby on Rails ile daha üretken olmanıza ve tüm parçaların nasıl bir araya geldiğini anlamanıza yardımcı olmak için tasarlanmıştır.</p>
 
-<p>Bu kılavuzlar Rails’in temellerini öğrenmenize yardımcı olacaktır.</p>
+<div class="guide-alert guide-alert-info">
+  <div class="guide-alert-icon">💡</div>
+  <div class="guide-alert-content">
+    <strong>Rails Kılavuzları Kindle için de mevcuttur.</strong>
+  </div>
+</div>
 
-<ul>
-  <li><a href="/rails/guides/tr/getting_started/">Rails ile Başlarken</a> - Rails’i nasıl kuracağınızı ve ilk uygulamanızı nasıl oluşturacağınızı öğrenin.</li>
-</ul>
+<div class="guide-alert guide-alert-warning">
+  <div class="guide-alert-icon">🚧</div>
+  <div class="guide-alert-content">
+    <strong>Bu simgeyle işaretlenen kılavuzlar şu anda üzerinde çalışılmaktadır ve Kılavuzlar Dizini menüsünde bulunmayacaktır.</strong> Hâlâ yararlı olsalar da, eksik bilgiler ve hatta hatalar içerebilirler. Bunları inceleyerek ve yorumlarınızı ve düzeltmelerinizi yayınlayarak yardımcı olabilirsiniz.
+  </div>
+</div>
 
-<h2 id="notlar">Notlar</h2>
+<h2 id="buradan-başlayın">Buradan Başlayın</h2>
 
-<p>Bu kılavuzlar Rails  için yazılmıştır.</p>
+<h3 id="rails-ile-başlarken"><a href="/rails/guides/tr/getting_started/">Rails ile Başlarken</a></h3>
 
-<p>Kılavuzlardaki kod örnekleri, hiçbir uyarı üretmeyecek şekilde yazılmıştır (uygun uyarı modunda çalıştırıldığında).</p>
+<p>Rails’i nasıl kuracağınızı ve ilk uygulamanızı nasıl oluşturacağınızı öğrenin.</p>
 
-<hr />
+<h2 id="models">Models</h2>
 
-<p><em>Bu çeviri gönüllüler tarafından yapılmıştır. Hata bulursanız veya katkıda bulunmak isterseniz <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a> üzerinden iletişime geçebilirsiniz.</em></p>
+<h2 id="views">Views</h2>
 
-        </div>
+<h2 id="controllers">Controllers</h2>
+
+<h3 id="action-controller"><a href="/rails/guides/tr/action_controller_overview/">Action Controller</a></h3>
+
+<p>Action Controller, Rails’teki bir web isteğinin temelidir. Bu kılavuz, denetleyicilerin nasıl çalıştığını ve uygulamanızın istek döngüsüne nasıl uyduğunu ele alır. Konular arasında denetleyici eylemlerinde parametrelere erişim, oturum ve çerez kullanımı, denetleyici geri aramaları yer almaktadır.</p>
+
+<h2 id="diğer-bileşenler">Diğer Bileşenler</h2>
+
+<h3 id="action-cable"><a href="/rails/guides/tr/action_cable_overview/">Action Cable</a></h3>
+
+<p>Action Cable, Rails uygulamanıza WebSocket‘i sorunsuz bir şekilde entegre eder. Performans ve ölçeklenebilirliği sağlarken aynı zamanda gerçek zamanlı özelliklerin, Rails uygulamanızın geri kalanında olduğu gibi aynı stil ve formda Ruby’de yazılmasını sağlar. Bu kılavuz, Action Cable’ın nasıl çalıştığını ve gerçek zamanlı özellikler oluşturmak için WebSocket’in nasıl kullanılacağını açıklamaktadır.</p>
+
+<h2 id="daha-derin-konular">Daha Derin Konular</h2>
+
+<h2 id="ürün-çıkarmak">Ürün Çıkarmak</h2>
+
+<h2 id="i̇leri-seviye-active-record">İleri Seviye Active Record</h2>
+
+<h2 id="rails-uygulamalarını-büyütelim">Rails Uygulamalarını Büyütelim</h2>
+
+<h2 id="katkıda-bulunun">Katkıda Bulunun</h2>
+
+<h2 id="politikalar">Politikalar</h2>
+
+<h2 id="sürüm-notları">Sürüm Notları</h2>
+
+<h1 id="geri-bildirim">Geri Bildirim</h1>
+
+<p>Bu rehberin kalitesinin iyileştirilmesine yardımcı olmanızı öneririz.</p>
+
+<p>Herhangi bir yazım hatası veya olgusal hata görürseniz lütfen katkıda bulunun. Başlamak için, <a href="https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#contributing-to-the-rails-documentation">dokümantasyon katkıları</a> bölümünü okuyabilirsiniz.</p>
+
+<p>Ayrıca eksik veya güncel olmayan içerik de bulabilirsiniz. Lütfen main için eksik olan belgeleri ekleyin. Sorunların main dalda zaten düzeltilip düzeltilmediğini doğrulamak için önce <a href="https://edgeguides.rubyonrails.org/">Edge Guides</a>‘ı kontrol ettiğinizden emin olun. Stil ve kurallar için <a href="https://guides.rubyonrails.org/v8.0/ruby_on_rails_guides_guidelines.html">Ruby on Rails Guides Guidelines</a>‘ı kontrol edin.</p>
+
+<p>Herhangi bir sebepten dolayı düzeltebileceğiniz bir şey bulursanız ancak kendiniz patch yapamıyorsanız lütfen bir <a href="https://github.com/rails/rails/issues">issue</a> açın.</p>
+
+<p>Ve son olarak, Ruby on Rails dokümantasyonu ile ilgili her türlü tartışma resmi <a href="https://discuss.rubyonrails.org/c/rubyonrails-docs/6">Ruby on Rails Forum</a>‘unda memnuniyetle karşılanacaktır.</p>
+</div>
     </main>
 
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Rails Kılavuzları Türkçe Çevirisi. Gönüllüler tarafından hazırlanmıştır.</p>
-            <p>Orijinal dokümantasyon <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine aittir.</p>
-        </div>
+      <div class="container">
+        <p>
+          &copy; 2025 Rails Kılavuzları Türkçe Çevirisi.
+          <a href="https://github.com/DilanKaya127">Dilan Kaya</a> tarafından
+          hazırlanmıştır.
+        </p>
+        <p>
+          Orijinal dokümantasyon
+          <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine
+          aittir.
+        </p>
+      </div>
     </footer>
 
-    <script>hljs.highlightAll();</script>
-</body>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
 </html>

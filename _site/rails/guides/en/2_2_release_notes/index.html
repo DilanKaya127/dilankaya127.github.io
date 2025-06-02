@@ -1,37 +1,80 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2 2 Release Notes - Rails Dokümantasyonu - Türkçe</title>
-    <link rel="stylesheet" href="/assets/css/rails.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      2 2 Release Notes - Rails Dokümantasyonu - Türkçe
+    </title>
+    <link
+      rel="stylesheet"
+      href="/assets/css/rails.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css"
+    />
 
-    <link rel="icon" type="image/svg" href="/assets/img/logo_rails-circle.svg">
+    <link
+      rel="icon"
+      type="image/svg"
+      href="/assets/img/logo_rails-circle.svg"
+    />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <h1 class="logo">
-                    <a href="/rails/">
-                        <img src="/assets/img/logo_rails-circle.svg" alt="Rails Logo" class="logo-image">
-                    </a>
-                </h1>
-                <nav class="nav">
-                    <a href="/">Ana Sayfa</a>
-                    <!-- <a href="https://dilankaya127.github.io">Portföy</a> -->
-                    <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
-                </nav>
+      <div class="container">
+        <div class="header-content">
+          <h1 class="logo">
+            <a href="/rails/">
+              <img
+                src="/assets/img/logo_rails-circle.svg"
+                alt="Rails Logo"
+                class="logo-image"
+              />
+            </a>
+          </h1>
+          <nav class="nav">
+            <a href="/">Ana Sayfa</a>
+            <!-- <a href="https://dilankaya127.github.io">Portföy</a> -->
+
+            <div class="dropdown">
+              <a class="dropbtn">Kılavuzlar</a>
+              <div class="dropdown-content multi-column">
+                 
+                <div class="dropdown-column">
+                  <h4>Buradan Başlayın</h4>
+                  
+                  <a href="/rails/guides/tr/getting_started">Rails ile Başlarken</a>
+                  
+                </div>
+                      
+                <div class="dropdown-column">
+                  <h4>Controllers</h4>
+                  
+                  <a href="/rails/guides/tr/action_controller_overview">Action Controller</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Diğer Bileşenler</h4>
+                  
+                  <a href="/rails/guides/tr/action_cable_overview">Action Cable</a>
+                  
+                </div>
+                               
+              </div>
             </div>
+            <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+          </nav>
         </div>
+      </div>
     </header>
 
     <main class="main">
-        <div class="container">
-            <div class="guide-container">
+      <div class="container"><div class="guide-container">
   <button id="toc-toggle" class="toc-toggle">☰ İçindekiler</button>
 
   <aside class="guide-sidebar">
@@ -544,8 +587,9 @@
 
 <p>Release notes compiled by <a href="http://afreshcup.com">Mike Gunderloy</a></p>
 </div>
-
-    <footer class="guide-footer">
+  </article>
+</div>
+<footer class="guide-footer">
       <div class="feedback">
         <h3>Geri Bildirim</h3>
         <p>
@@ -561,8 +605,6 @@
         </p>
       </div>
     </footer>
-  </article>
-</div>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -656,17 +698,26 @@
     }
   });
 </script>
-
-        </div>
+</div>
     </main>
 
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Rails Kılavuzları Türkçe Çevirisi. Gönüllüler tarafından hazırlanmıştır.</p>
-            <p>Orijinal dokümantasyon <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine aittir.</p>
-        </div>
+      <div class="container">
+        <p>
+          &copy; 2025 Rails Kılavuzları Türkçe Çevirisi.
+          <a href="https://github.com/DilanKaya127">Dilan Kaya</a> tarafından
+          hazırlanmıştır.
+        </p>
+        <p>
+          Orijinal dokümantasyon
+          <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine
+          aittir.
+        </p>
+      </div>
     </footer>
 
-    <script>hljs.highlightAll();</script>
-</body>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
 </html>

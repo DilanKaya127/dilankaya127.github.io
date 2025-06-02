@@ -75,11 +75,97 @@ body {
     color: #fff;
     text-decoration: none;
     transition: opacity 0.3s;
+    /* vertical-align: middle; */
+    /* line-height:1.5rem; */
 }
 
 .nav a:hover {
     opacity: 0.8;
 }
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+  background-color: transparent;
+  color: inherit;
+  padding: 10px 16px;
+  font-size: 1em;
+  border: none;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.dropbtn:hover {
+  color: #f0f0f0;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #fff;
+  width: 650px;
+  max-width: 90vw;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.dropdown-content.multi-column {
+  display: none;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.dropdown-column {
+  flex: 1;
+  min-width: 180px;
+  max-width: 200px;
+}
+
+.dropdown-column h4 {
+  color: #CC0000; /* Rails kırmızısı */
+  font-size: 0.85em;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  padding: 4px 0;
+  letter-spacing: 0.3px;
+}
+
+.dropdown-content a {
+  color: #666;
+  padding: 4px 0;
+  text-decoration: none;
+  display: block;
+  font-size: 0.8em;
+  transition: color 0.2s ease;
+  margin: 1px 0;
+  line-height: 1.4;
+}
+
+.dropdown-content a:hover {
+  color: black;
+  font-weight: bold;
+}
+
+/* Hover efekti - sadece buton hover olduğunda göster */
+.dropdown:hover .dropdown-content {
+  display: flex;
+}
+
+/* Dropdown açık kalması için hover alanını genişlet */
+.dropdown:hover .dropdown-content.multi-column {
+  display: flex;
+}
+/* Alternatif olarak menü tamamen hover yerine JavaScript ile toggle yapılabilir */
+/* Header sonu */
 
 /* Main content */
 .main {
@@ -313,6 +399,53 @@ body {
     font-weight: bold;
 }
 
+.guide-alert {
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  display: flex;
+  align-items: flex-start;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.guide-alert-icon {
+  margin-right: 12px;
+  font-size: 20px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.guide-alert-content {
+  flex: 1;
+  line-height: 1.5;
+}
+
+.guide-alert-info {
+  /* background-color: #0f2f3d; */
+  /* background-color: #17a2b8; */
+  background-color: rgba(15,47,61,0.9);
+  border: 2px solid #17a2b8;
+  color: #ffffff;
+}
+
+.guide-alert-warning {
+  background-color: rgba(61,47,15,0.9);
+  border: 2px solid #ffc107;
+  color: #ffffff;
+}
+
+.guide-alert-success {
+  background-color: #0f3d1a;
+  border: 2px solid #28a745;
+  color: #ffffff;
+}
+
+.guide-alert-danger {
+  background-color: #3d0f0f;
+  border: 2px solid #dc3545;
+  color: #ffffff;
+}
+
 /* Ana sayfa linkleri */
 .main h1 {
     color: #d30001;
@@ -320,7 +453,7 @@ body {
 }
 
 .main h2 {
-    color: #333;
+    color: #444;
     margin: 2rem 0 1rem 0;
     border-bottom: 2px solid #eee;
     padding-bottom: 0.5rem;
@@ -365,9 +498,12 @@ body {
 .feedback {
     background: #f6f8fa;
     padding: 1.5rem;
-    border-radius: 6px;
     margin-top: 3rem;
     border-left: 4px solid #d30001;
+    width:fit-content;
+    flex: 1;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .feedback h3 {
@@ -460,6 +596,21 @@ body {
     .nav {
         justify-content: center;
     }
+  .dropdown-content {
+    width: 95vw;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .dropdown-content.multi-column {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .dropdown-column {
+    min-width: 100%;
+    max-width: 100%;
+  }
     
     .guide-content {
         padding: 1rem;
@@ -468,4 +619,20 @@ body {
     .guide-header h1 {
         font-size: 2rem;
     }
+}
+
+/* Çok küçük ekranlar için ek ayar */
+@media (max-width: 480px) {
+  .dropdown-content {
+    width: 98vw;
+    padding: 12px;
+  }
+  
+  .dropdown-column h4 {
+    font-size: 0.8em;
+  }
+  
+  .dropdown-content a {
+    font-size: 0.75em;
+  }
 }

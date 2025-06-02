@@ -33,6 +33,7 @@ defaults:
     values:
       layout: "default"
 
+
 # Exclude files
 exclude:
   - README.md

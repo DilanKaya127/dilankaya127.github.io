@@ -2,7 +2,9 @@
 layout: guide
 ---
 
-**RESMİ KILAVUZA BU ADRES ÜZERİNDEN ULAŞABİLİRSİNİZ: <https://guides.rubyonrails.org>.**
+**RESMİ KILAVUZA BU ADRES ÜZERİNDEN ULAŞABİLİRSİNİZ: <https://guides.rubyonrails.org>**
+
+--------------------------------------------------------------------------------
 
 Rails ile Başlarken
 =====================
@@ -17,7 +19,6 @@ Bu kılavuzu okuduktan sonra şunları öğreneceksiniz:
 * Rails uygulamasının başlangıç parçalarını hızlı bir şekilde nasıl oluşturacağınızı.
 * Kamal kullanarak uygulamanızı bir ürüne nasıl dağıtacağınızı (deploy edeceğinizi).
 
---------------------------------------------------------------------------------
 
 Giriş
 ------------
@@ -38,7 +39,7 @@ Rails, inatçı bir yazılımdır. İşleri yapmanın “en iyi” bir yolu oldu
 
 Rails felsefesi iki ana kılavuz ilke içerir:
 
-- **Kendini Tekrar Etme:** DRY, yazılım geliştirmenin bir ilkesidir ve “Her bilgi parçası, sistem içinde tek, açık ve kesin bir şekilde temsil edilmelidir” der. Aynı bilgiyi tekrar tekrar yazmayarak, kodumuz daha kolay bakımı yapılabilir, daha genişletilebilir ve daha az hata içerir hale gelir.
+- **Kendini Tekrar Etme:** DRY (Don't Repeat Yourself), yazılım geliştirmenin bir ilkesidir ve “Her bilgi parçası; sistem içinde tek, açık ve kesin bir şekilde temsil edilmelidir” der. Aynı bilgiyi tekrar tekrar yazmayarak kodumuz daha kolay bakımı yapılabilir, daha genişletilebilir ve daha az hata içerir hale gelir.
 - **Yapılandırma Üzerine Kurallar:** Rails, bir web uygulamasında birçok şeyin en iyi şekilde nasıl yapılacağına dair fikirlere sahiptir ve bunları sonsuz yapılandırma dosyaları aracılığıyla kendiniz tanımlamanızı gerektirmek yerine, varsayılan olarak bu kurallar kümesini kullanır.
 
 Yeni Bir Rails Uygulaması Geliştirme
@@ -48,7 +49,7 @@ Yeni Bir Rails Uygulaması Geliştirme
 
 İPUCU: Dolar işareti `$` ile başlayan tüm komutlar terminalde çalıştırılmalıdır.
 
-### Önkoşullar
+### Ön Koşullar
 
 Bu proje için şunlar gerekli:
 
@@ -89,3 +90,4 @@ Yeni uygulamanız oluşturulduktan sonra, uygulama dizinine geçin:
 $ cd store
 ```
 
+### Klasör Yapısı

@@ -391,7 +391,7 @@ body {
         footer {
             background: var(--surface);
             border-top: 1px solid var(--border);
-            padding: 3rem 0;
+            padding: 1.5rem 0;
             text-align: center;
         }
         
@@ -399,7 +399,6 @@ body {
             display: flex;
             justify-content: center;
             gap: 1rem;
-            margin-bottom: 2rem;
         }
         
         .social-link {
