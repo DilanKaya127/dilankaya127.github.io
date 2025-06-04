@@ -174,3 +174,4 @@ Bir tüketici, bu kanallardan birine veya her ikisine birden abone olabilir.
 
 #### Subscriptions (Abonelikler)
 
+Tüketiciler kanallara abone olarak "abone" durumuna gelirler. Bağlantılarına abonelik denir. Üretilen mesajlar daha sonra kanal tüketicisi tarafından gönderilen bir tanımlayıcıya göre bu kanal aboneliklerine yönlendirilir.

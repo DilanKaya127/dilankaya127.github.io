@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Rails Dokümantasyonu - Türkçe
+    </title>
+    <link
+      rel="stylesheet"
+      href="/assets/css/rails.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css"
+    />
+
+    <link
+      rel="icon"
+      type="image/svg"
+      href="/assets/images/logo_rails-circle.svg"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-Y6Q8S53SSQ"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-Y6Q8S53SSQ");
+    </script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="header-content">
+          <h1 class="logo">
+            <a href="/rails/">
+              <img
+                src="/assets/images/logo_rails-circle.svg"
+                alt="Rails Logo"
+                class="logo-image"
+              />
+            </a>
+          </h1>
+          <nav class="nav">
+            <a href="/">Ana Sayfa</a>
+            <!-- <a href="https://dilankaya127.github.io">Portföy</a> -->
+
+            <div class="dropdown">
+              <a class="dropbtn">Kılavuzlar</a>
+              <div class="dropdown-content multi-column">
+                 
+                <div class="dropdown-column">
+                  <h4>Buradan Başlayın</h4>
+                  
+                  <a href="/rails/guides/tr/getting_started">Rails ile Başlarken</a>
+                  
+                  <a href="/rails/guides/tr/install_ruby_on_rails">Ruby on Rails İndirme Kılavuzu</a>
+                  
+                </div>
+                      
+                <div class="dropdown-column">
+                  <h4>Controllers</h4>
+                  
+                  <a href="/rails/guides/tr/action_controller_overview">Action Controller</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Diğer Bileşenler</h4>
+                  
+                  <a href="/rails/guides/tr/action_cable_overview">Action Cable</a>
+                  
+                </div>
+                               
+              </div>
+            </div>
+            <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="container">
+        <div class="guide-container">
+  <button id="toc-toggle" class="toc-toggle">☰ İçindekiler</button>
+
+  <aside class="guide-sidebar">
+    <div class="guide-toc">
+      <!-- <h3>İçindekiler</h3> -->
+      <div id="toc"></div>
+      <button class="toc-close" aria-label="İçindekileri Kapat">✕</button>
+    </div>
+
+    <!-- <div class="guide-nav">
+            <h3>Diğer(Tüm) Kılavuzlar</h3>
+            <ul>
+                <li><a href="/rails/guides/tr/getting_started">Rails ile Başlarken</a></li>
+                <li><a href="/rails/guides/en/active_record_basics">Active Record Temelleri</a></li>
+                <li><a href="/rails/guides//en/action_controller_overview">Action Controller</a></li>
+                <li><a href="/rails/guides/tr/action_cable_overview">Action Cable</a></li>
+            </ul>
+        </div> -->
+  </aside>
+
+  <article class="guide-content">
+    <!-- <header class="guide-header">
+            <h1></h1>
+            
+        </header> -->
+
+    <div class="guide-body"><p><strong>RESMİ KILAVUZA BU ADRES ÜZERİNDEN ULAŞABİLİRSİNİZ: <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a></strong></p>
+
+<hr />
+
+<h1 id="ruby-on-rails-i̇ndirme-kılavuzu">Ruby on Rails İndirme Kılavuzu</h1>
+
+<p>Bu kılavuz, Ruby programlama dilini ve Rails çerçevesini işletim sisteminize kurmanızda size yol gösterecektir.</p>
+
+<p>İşletim sisteminize Ruby önceden yüklenmiş olarak gelse de, genellikle güncel değildir ve yükseltilemez. <a href="https://mise.jdx.dev/getting-started.html">Mise</a> gibi bir sürüm yöneticisi kullanmak, en son Ruby sürümünü yüklemenize, her uygulama için farklı bir Ruby sürümü kullanmanıza ve yeni sürümler yayınlandığında kolayca yükseltmenize olanak tanır.</p>
+
+<p>Alternatif olarak, Ruby veya Rails’i doğrudan makinenize kurmadan Rails’i çalıştırmak için Dev Containers’ı kullanabilirsiniz. Daha fazla bilgi edinmek için <a href="getting_started_with_devcontainer.html">Dev Containers ile Başlarken</a> kılavuzuna göz atın.</p>
+
+<hr />
+
+<h2 id="i̇şletim-sisteminizi-seçin">İşletim Sisteminizi Seçin</h2>
+
+<p>Kullandığınız işletim sistemi için olan bölümü takip edin:</p>
+
+<ul>
+  <li><a href="#macos-a-ruby-yukleyin">macOS</a></li>
+  <li><a href="#ubuntu-ya-ruby-yukleyin">Ubuntu</a></li>
+  <li><a href="#windows-a-ruby-yukleyin">Windows</a></li>
+</ul>
+
+<div class="guide-alert guide-alert-info">
+  <div class="guide-alert-icon">💡</div>
+  <div class="guide-alert-content">
+    Dolar işareti <code>$</code> ile başlayan tüm komutlar terminalde çalıştırılmalıdır.
+  </div>
+</div>
+
+<h3 id="macosa-ruby-yükleyin">macOS’a Ruby Yükleyin</h3>
+
+<p>Bu talimatları takip etmek için macOS Catalina 10.15 veya daha yüksek sürümüne ihtiyacınız olacak.</p>
+
+<p>macOS’ta, Ruby’yi derlemek için gereken bağımlılıkları yüklemek amacıyla Xcode Komut Satırı Araçlarına ve Homebrew’a ihtiyacınız olacak.</p>
+
+<p>Terminali açın ve aşağıdaki komutları çalıştırın:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install Xcode Command Line Tools</span>
+<span class="nv">$ </span>xcode-select <span class="nt">--install</span>
+
+<span class="c"># Install Homebrew and dependencies</span>
+<span class="nv">$ </span>/bin/bash <span class="nt">-c</span> <span class="s2">"</span><span class="si">$(</span>curl <span class="nt">-fsSL</span> https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="si">)</span><span class="s2">"</span>
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'export PATH="/opt/homebrew/bin:$PATH"'</span> <span class="o">&gt;&gt;</span> ~/.zshrc
+<span class="nv">$ </span><span class="nb">source</span> ~/.zshrc
+<span class="nv">$ </span>brew <span class="nb">install </span>openssl@3 libyaml gmp rust
+
+<span class="c"># Install Mise version manager</span>
+<span class="nv">$ </span>curl https://mise.run | sh
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'eval "$(~/.local/bin/mise activate)"'</span> <span class="o">&gt;&gt;</span> ~/.zshrc
+<span class="nv">$ </span><span class="nb">source</span> ~/.zshrc
+
+<span class="c"># Install Ruby globally with Mise</span>
+<span class="nv">$ </span>mise use <span class="nt">-g</span> ruby@3
+</code></pre></div></div>
+
+<h3 id="ubuntuya-ruby-yükleyin">Ubuntu’ya Ruby Yükleyin</h3>
+
+<p>Bu talimatları takip etmek için Ubuntu Jammy 22.04 veya daha yüksek sürümüne ihtiyacınız olacak.</p>
+
+<p>Terminali açın ve aşağıdaki komutları çalıştırın:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install dependencies with apt</span>
+<span class="nv">$ </span><span class="nb">sudo </span>apt update
+<span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install </span>build-essential rustc libssl-dev libyaml-dev zlib1g-dev libgmp-dev
+
+<span class="c"># Install Mise version manager</span>
+<span class="nv">$ </span>curl https://mise.run | sh
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'eval "$(~/.local/bin/mise activate)"'</span> <span class="o">&gt;&gt;</span> ~/.bashrc
+<span class="nv">$ </span><span class="nb">source</span> ~/.bashrc
+
+<span class="c"># Install Ruby globally with Mise</span>
+<span class="nv">$ </span>mise use <span class="nt">-g</span> ruby@3
+</code></pre></div></div>
+
+<h3 id="windowsa-ruby-yükleyin">Windows’a Ruby Yükleyin</h3>
+
+<p>Linux Windows Alt Sistemi (WSL), Windows üzerinde Ruby on Rails geliştirme için en iyi deneyimi sağlayacaktır. Ubuntu’yu Windows içinde çalıştırır, bu da sunucularınızın ürün üzerinde çalışacağı ortama yakın bir ortamda çalışmanıza olanak tanır.</p>
+
+<p>Windows 11 veya Windows 10 sürüm 2004 ve üstü (Build 19041 ve üstü) gerekir.</p>
+
+<p>PowerShell veya Windows Komut İstemi’ni açın ve çalıştırın:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wsl <span class="nt">--install</span> <span class="nt">--distribution</span> Ubuntu-24.04
+</code></pre></div></div>
+
+<p>Yükleme işlemi sırasında yeniden başlatmanız gerekebilir.</p>
+
+<p>Kurulduktan sonra, Başlat menüsünden Ubuntu’yu açabilirsiniz. İstendiğinde Ubuntu kullanıcınız için bir kullanıcı adı ve parola girin.</p>
+
+<p>Ardından aşağıdaki komutları çalıştırın:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install dependencies with apt</span>
+<span class="nv">$ </span><span class="nb">sudo </span>apt update
+<span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install </span>build-essential rustc libssl-dev libyaml-dev zlib1g-dev libgmp-dev
+
+<span class="c"># Install Mise version manager</span>
+<span class="nv">$ </span>curl https://mise.run | sh
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'eval "$(~/.local/bin/mise activate bash)"'</span> <span class="o">&gt;&gt;</span> ~/.bashrc
+<span class="nv">$ </span><span class="nb">source</span> ~/.bashrc
+
+<span class="c"># Install Ruby globally with Mise</span>
+<span class="nv">$ </span>mise use <span class="nt">-g</span> ruby@3
+</code></pre></div></div>
+
+<h2 id="ruby-kurulumunuzu-doğrulama">Ruby Kurulumunuzu Doğrulama</h2>
+
+<p>Ruby kurulduktan sonra, aşağıdaki şekilde (run ederek) çalıştığını doğrulayabilirsiniz:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ruby <span class="nt">--version</span>
+ruby 3.3.6
+</code></pre></div></div>
+
+<h2 id="rails-i̇ndirme">Rails İndirme</h2>
+
+<p>A “gem” in Ruby is a self-contained package of a library or Ruby program. We can use Ruby’s <code class="language-plaintext highlighter-rouge">gem</code> command to install the latest version of Rails and its dependencies from <a href="https://rubygems.org">RubyGems.org</a>.</p>
+
+<p>Run the following command to install the latest Rails and make it available in your terminal:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gem <span class="nb">install </span>rails
+</code></pre></div></div>
+
+<p>To verify that Rails is installed correctly, run the following and you should see a version number printed out:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails <span class="nt">--version</span>
+Rails 8.0.0
+</code></pre></div></div>
+
+<p>NOTE: If the <code class="language-plaintext highlighter-rouge">rails</code> command is not found, try restarting your terminal.</p>
+
+<p>You’re ready to <a href="getting_started.html">Get Started with Rails</a>!</p>
+</div>
+  </article>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toc = document.getElementById("toc");
+    const headings = document.querySelectorAll(
+      ".guide-content h2, .guide-content h3, .guide-content h4"
+    );
+
+    if (headings.length > 0) {
+      const tocList = document.createElement("ul");
+      const headingMap = new Map();
+
+      // Türkçe karakterleri URL-dostu hale getiren fonksiyon
+      function turkishToSlug(text) {
+        const turkishChars = {
+          'ç': 'c', 'Ç': 'c',
+          'ğ': 'g', 'Ğ': 'g',
+          'ı': 'i', 'I': 'i',
+          'İ': 'i', 'i': 'i',
+          'ö': 'o', 'Ö': 'o',
+          'ş': 's', 'Ş': 's',
+          'ü': 'u', 'Ü': 'u'
+        };
+        
+        return text
+          .split('')
+          .map(char => turkishChars[char] || char)
+          .join('')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
+      // Aynı ID'nin tekrarlanmasını önlemek için sayaç
+      const idCounts = new Map();
+
+      headings.forEach(function (heading, index) {
+        // Başlık metninden anlamlı ID oluştur
+        const headingText = heading.textContent.trim();
+        let baseId = turkishToSlug(headingText);
+        
+        // Boş ID kontrolü
+        if (!baseId) {
+          baseId = "heading-" + index;
+        }
+        
+        // Tekrarlanan ID'leri önle
+        let finalId = baseId;
+        if (idCounts.has(baseId)) {
+          const count = idCounts.get(baseId) + 1;
+          idCounts.set(baseId, count);
+          finalId = baseId + "-" + count;
+        } else {
+          idCounts.set(baseId, 1);
+        }
+        
+        heading.id = finalId;
+
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = "#" + finalId;
+        a.textContent = headingText;
+        a.className = "toc-" + heading.tagName.toLowerCase();
+
+        li.appendChild(a);
+        tocList.appendChild(li);
+
+        headingMap.set(finalId, a);
+      });
+
+      toc.appendChild(tocList);
+
+      // Başlıkların görünürlük oranlarını takip et
+      const visibilityMap = new Map();
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const id = entry.target.getAttribute("id");
+            visibilityMap.set(id, entry.intersectionRatio);
+          });
+
+          // En çok görünür olan başlığı bul
+          let mostVisibleId = null;
+          let maxRatio = 0;
+
+          visibilityMap.forEach((ratio, id) => {
+            if (ratio > maxRatio) {
+              mostVisibleId = id;
+              maxRatio = ratio;
+            }
+          });
+
+          if (mostVisibleId) {
+            headingMap.forEach((linkEl) => linkEl.classList.remove("active"));
+            const activeLink = headingMap.get(mostVisibleId);
+            if (activeLink) {
+              activeLink.classList.add("active");
+
+              // Ortalamak için:
+              const linkTop = activeLink.offsetTop;
+              const linkHeight = activeLink.offsetHeight;
+              const tocScrollParent = toc;
+              const tocHeight = tocScrollParent.offsetHeight;
+
+              tocScrollParent.scrollTo({
+                top: linkTop - tocHeight / 2 + linkHeight / 2,
+                behavior: "smooth",
+              });
+            }
+          }
+        },
+        {
+          threshold: [0, 0.25, 0.5, 0.75, 1.0],
+        }
+      );
+
+      headings.forEach((heading) => {
+        observer.observe(heading);
+      });
+
+      const toggleBtn = document.getElementById("toc-toggle");
+      const sidebar = document.querySelector(".guide-sidebar");
+
+      toggleBtn.addEventListener("click", function () {
+        sidebar.classList.toggle("open");
+      });
+      const closeBtn = document.querySelector(".toc-close");
+
+      closeBtn?.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+      });
+    }
+  });
+</script>
+        <!-- <footer class="guide-footer"> -->
+        <div class="feedback">
+          <h3>Geri Bildirim</h3>
+          <p>
+            Bu rehberin kalitesinin iyileştirilmesine yardımcı olmanızı
+            öneririz.
+          </p>
+          <p>
+            Herhangi bir yazım hatası veya olgusal hata görürseniz lütfen
+            katkıda bulunun. Başlamak için,
+            <a
+              href="https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#contributing-to-the-rails-documentation"
+              >dokümantasyon katkıları</a
+            >
+            bölümünü okuyabilirsiniz.
+          </p>
+          <p>
+            Ayrıca eksik veya güncel olmayan içerik de bulabilirsiniz. Lütfen
+            main için eksik olan belgeleri ekleyin. Sorunların main dalda zaten
+            düzeltilip düzeltilmediğini doğrulamak için önce
+            <a href="https://edgeguides.rubyonrails.org/">Edge Guides</a>'ı
+            kontrol ettiğinizden emin olun. Stil ve kurallar için
+            <a
+              href="https://guides.rubyonrails.org/v8.0/ruby_on_rails_guides_guidelines.html"
+              >Ruby on Rails Guides Guidelines</a
+            >'ı kontrol edin.
+          </p>
+          <p>
+            Herhangi bir sebepten dolayı düzeltebileceğiniz bir şey bulursanız
+            ancak kendiniz patch yapamıyorsanız lütfen bir
+            <a href="https://github.com/rails/rails/issues">issue</a> açın.
+          </p>
+          <p>
+            Ve son olarak, Ruby on Rails dokümantasyonu ile ilgili her türlü
+            tartışma resmi
+            <a href="https://discuss.rubyonrails.org/c/rubyonrails-docs/6"
+              >Ruby on Rails Forum</a
+            >'unda memnuniyetle karşılanacaktır.
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Yukarı çık">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="18,15 12,9 6,15"></polyline>
+      </svg>
+    </button>
+
+    <footer class="footer">
+      <div class="container">
+        <p>
+          Bu çalışma <a href=" Creative Commons Attribution-ShareAlike 4.0 International">Creative Commons Attribution-ShareAlike 4.0 International</a> Lisansı kapsamında lisanslanmıştır.
+          </p>
+        <p>
+          "Rails", "Ruby on Rails" ve Rails logosu David Heinemeier Hansson'un ticari markalarıdır. Tüm hakları saklıdır.
+        </p><br/>
+        <p>
+          &copy; 2025 Rails Kılavuzları Türkçe Çevirisi.
+          <a href="https://github.com/DilanKaya127">Dilan Kaya</a> tarafından
+          hazırlanmıştır.
+          Orijinal dokümantasyon
+          <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine
+          aittir.
+        </p>
+        
+
+      </div>
+    </footer>
+
+    <script>
+      hljs.highlightAll();
+      // Yukarı çık butonu işlevselliği
+      const scrollToTopBtn = document.getElementById("scrollToTop");
+
+      // Scroll pozisyonunu kontrol et
+      window.addEventListener("scroll", function () {
+        if (window.pageYOffset > 500) {
+          scrollToTopBtn.classList.add("visible");
+        } else {
+          scrollToTopBtn.classList.remove("visible");
+        }
+      });
+
+      // Butona tıklandığında yukarı çık
+      scrollToTopBtn.addEventListener("click", function () {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
+    </script>
+  </body>
+</html>

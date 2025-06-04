@@ -34,22 +34,6 @@ layout: default
     <div class="guide-body">{{ content }}</div>
   </article>
 </div>
-<footer class="guide-footer">
-      <div class="feedback">
-        <h3>Geri Bildirim</h3>
-        <p>
-          Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri
-          bildirimlerinizi bekliyoruz.
-        </p>
-        <p>
-          Lütfen
-          <a href="https://github.com/dilankaya127/rails-tr-TR"
-            >GitHub Issues</a
-          >
-          üzerinden katkıda bulunun.
-        </p>
-      </div>
-    </footer>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -62,20 +46,62 @@ layout: default
       const tocList = document.createElement("ul");
       const headingMap = new Map();
 
+      // Türkçe karakterleri URL-dostu hale getiren fonksiyon
+      function turkishToSlug(text) {
+        const turkishChars = {
+          'ç': 'c', 'Ç': 'c',
+          'ğ': 'g', 'Ğ': 'g',
+          'ı': 'i', 'I': 'i',
+          'İ': 'i', 'i': 'i',
+          'ö': 'o', 'Ö': 'o',
+          'ş': 's', 'Ş': 's',
+          'ü': 'u', 'Ü': 'u'
+        };
+        
+        return text
+          .split('')
+          .map(char => turkishChars[char] || char)
+          .join('')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
+      // Aynı ID'nin tekrarlanmasını önlemek için sayaç
+      const idCounts = new Map();
+
       headings.forEach(function (heading, index) {
-        const id = "heading-" + index;
-        heading.id = id;
+        // Başlık metninden anlamlı ID oluştur
+        const headingText = heading.textContent.trim();
+        let baseId = turkishToSlug(headingText);
+        
+        // Boş ID kontrolü
+        if (!baseId) {
+          baseId = "heading-" + index;
+        }
+        
+        // Tekrarlanan ID'leri önle
+        let finalId = baseId;
+        if (idCounts.has(baseId)) {
+          const count = idCounts.get(baseId) + 1;
+          idCounts.set(baseId, count);
+          finalId = baseId + "-" + count;
+        } else {
+          idCounts.set(baseId, 1);
+        }
+        
+        heading.id = finalId;
 
         const li = document.createElement("li");
         const a = document.createElement("a");
-        a.href = "#" + id;
-        a.textContent = heading.textContent;
+        a.href = "#" + finalId;
+        a.textContent = headingText;
         a.className = "toc-" + heading.tagName.toLowerCase();
 
         li.appendChild(a);
         tocList.appendChild(li);
 
-        headingMap.set(id, a);
+        headingMap.set(finalId, a);
       });
 
       toc.appendChild(tocList);

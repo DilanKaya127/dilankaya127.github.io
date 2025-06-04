@@ -18,7 +18,7 @@
     <link
       rel="icon"
       type="image/svg"
-      href="/assets/img/logo_rails-circle.svg"
+      href="/assets/images/logo_rails-circle.svg"
     />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
@@ -44,7 +44,7 @@
           <h1 class="logo">
             <a href="/rails/">
               <img
-                src="/assets/img/logo_rails-circle.svg"
+                src="/assets/images/logo_rails-circle.svg"
                 alt="Rails Logo"
                 class="logo-image"
               />
@@ -62,6 +62,8 @@
                   <h4>Buradan Başlayın</h4>
                   
                   <a href="/rails/guides/tr/getting_started">Rails ile Başlarken</a>
+                  
+                  <a href="/rails/guides/tr/install_ruby_on_rails">Ruby on Rails İndirme Kılavuzu</a>
                   
                 </div>
                       
@@ -88,7 +90,8 @@
     </header>
 
     <main class="main">
-      <div class="container"><div class="guide-container">
+      <div class="container">
+        <div class="guide-container">
   <button id="toc-toggle" class="toc-toggle">☰ İçindekiler</button>
 
   <aside class="guide-sidebar">
@@ -1199,22 +1202,6 @@ config option. You can do this in an initializer file like
 </div>
   </article>
 </div>
-<footer class="guide-footer">
-      <div class="feedback">
-        <h3>Geri Bildirim</h3>
-        <p>
-          Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri
-          bildirimlerinizi bekliyoruz.
-        </p>
-        <p>
-          Lütfen
-          <a href="https://github.com/dilankaya127/rails-tr-TR"
-            >GitHub Issues</a
-          >
-          üzerinden katkıda bulunun.
-        </p>
-      </div>
-    </footer>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -1227,20 +1214,62 @@ config option. You can do this in an initializer file like
       const tocList = document.createElement("ul");
       const headingMap = new Map();
 
+      // Türkçe karakterleri URL-dostu hale getiren fonksiyon
+      function turkishToSlug(text) {
+        const turkishChars = {
+          'ç': 'c', 'Ç': 'c',
+          'ğ': 'g', 'Ğ': 'g',
+          'ı': 'i', 'I': 'i',
+          'İ': 'i', 'i': 'i',
+          'ö': 'o', 'Ö': 'o',
+          'ş': 's', 'Ş': 's',
+          'ü': 'u', 'Ü': 'u'
+        };
+        
+        return text
+          .split('')
+          .map(char => turkishChars[char] || char)
+          .join('')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
+      // Aynı ID'nin tekrarlanmasını önlemek için sayaç
+      const idCounts = new Map();
+
       headings.forEach(function (heading, index) {
-        const id = "heading-" + index;
-        heading.id = id;
+        // Başlık metninden anlamlı ID oluştur
+        const headingText = heading.textContent.trim();
+        let baseId = turkishToSlug(headingText);
+        
+        // Boş ID kontrolü
+        if (!baseId) {
+          baseId = "heading-" + index;
+        }
+        
+        // Tekrarlanan ID'leri önle
+        let finalId = baseId;
+        if (idCounts.has(baseId)) {
+          const count = idCounts.get(baseId) + 1;
+          idCounts.set(baseId, count);
+          finalId = baseId + "-" + count;
+        } else {
+          idCounts.set(baseId, 1);
+        }
+        
+        heading.id = finalId;
 
         const li = document.createElement("li");
         const a = document.createElement("a");
-        a.href = "#" + id;
-        a.textContent = heading.textContent;
+        a.href = "#" + finalId;
+        a.textContent = headingText;
         a.className = "toc-" + heading.tagName.toLowerCase();
 
         li.appendChild(a);
         tocList.appendChild(li);
 
-        headingMap.set(id, a);
+        headingMap.set(finalId, a);
       });
 
       toc.appendChild(tocList);
@@ -1308,26 +1337,106 @@ config option. You can do this in an initializer file like
     }
   });
 </script>
-</div>
+        <!-- <footer class="guide-footer"> -->
+        <div class="feedback">
+          <h3>Geri Bildirim</h3>
+          <p>
+            Bu rehberin kalitesinin iyileştirilmesine yardımcı olmanızı
+            öneririz.
+          </p>
+          <p>
+            Herhangi bir yazım hatası veya olgusal hata görürseniz lütfen
+            katkıda bulunun. Başlamak için,
+            <a
+              href="https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#contributing-to-the-rails-documentation"
+              >dokümantasyon katkıları</a
+            >
+            bölümünü okuyabilirsiniz.
+          </p>
+          <p>
+            Ayrıca eksik veya güncel olmayan içerik de bulabilirsiniz. Lütfen
+            main için eksik olan belgeleri ekleyin. Sorunların main dalda zaten
+            düzeltilip düzeltilmediğini doğrulamak için önce
+            <a href="https://edgeguides.rubyonrails.org/">Edge Guides</a>'ı
+            kontrol ettiğinizden emin olun. Stil ve kurallar için
+            <a
+              href="https://guides.rubyonrails.org/v8.0/ruby_on_rails_guides_guidelines.html"
+              >Ruby on Rails Guides Guidelines</a
+            >'ı kontrol edin.
+          </p>
+          <p>
+            Herhangi bir sebepten dolayı düzeltebileceğiniz bir şey bulursanız
+            ancak kendiniz patch yapamıyorsanız lütfen bir
+            <a href="https://github.com/rails/rails/issues">issue</a> açın.
+          </p>
+          <p>
+            Ve son olarak, Ruby on Rails dokümantasyonu ile ilgili her türlü
+            tartışma resmi
+            <a href="https://discuss.rubyonrails.org/c/rubyonrails-docs/6"
+              >Ruby on Rails Forum</a
+            >'unda memnuniyetle karşılanacaktır.
+          </p>
+        </div>
+      </div>
     </main>
+
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Yukarı çık">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="18,15 12,9 6,15"></polyline>
+      </svg>
+    </button>
 
     <footer class="footer">
       <div class="container">
         <p>
+          Bu çalışma <a href=" Creative Commons Attribution-ShareAlike 4.0 International">Creative Commons Attribution-ShareAlike 4.0 International</a> Lisansı kapsamında lisanslanmıştır.
+          </p>
+        <p>
+          "Rails", "Ruby on Rails" ve Rails logosu David Heinemeier Hansson'un ticari markalarıdır. Tüm hakları saklıdır.
+        </p><br/>
+        <p>
           &copy; 2025 Rails Kılavuzları Türkçe Çevirisi.
           <a href="https://github.com/DilanKaya127">Dilan Kaya</a> tarafından
           hazırlanmıştır.
-        </p>
-        <p>
           Orijinal dokümantasyon
           <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine
           aittir.
         </p>
+        
+
       </div>
     </footer>
 
     <script>
       hljs.highlightAll();
+      // Yukarı çık butonu işlevselliği
+      const scrollToTopBtn = document.getElementById("scrollToTop");
+
+      // Scroll pozisyonunu kontrol et
+      window.addEventListener("scroll", function () {
+        if (window.pageYOffset > 500) {
+          scrollToTopBtn.classList.add("visible");
+        } else {
+          scrollToTopBtn.classList.remove("visible");
+        }
+      });
+
+      // Butona tıklandığında yukarı çık
+      scrollToTopBtn.addEventListener("click", function () {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
     </script>
   </body>
 </html>

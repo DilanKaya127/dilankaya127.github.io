@@ -28,6 +28,10 @@ Bunlar v8.0.2 tabanlı Rails 8.0 için yeni kılavuzlardır. Bu kılavuzlar, Rub
 
 Rails'i nasıl kuracağınızı ve ilk uygulamanızı nasıl oluşturacağınızı öğrenin.
 
+### [Ruby on Rails İndirme Kılavuzu]({% link rails/guides/tr/install_ruby_on_rails.md %})
+
+Ruby programlama dilini ve Ruby on Rails'i nasıl kuracağınızı öğrenin.
+
 
 
 ## Models
@@ -61,14 +65,3 @@ Action Cable, Rails uygulamanıza WebSocket‘i sorunsuz bir şekilde entegre ed
 
 ## Sürüm Notları
 
-# Geri Bildirim
-
-Bu rehberin kalitesinin iyileştirilmesine yardımcı olmanızı öneririz.
-
-Herhangi bir yazım hatası veya olgusal hata görürseniz lütfen katkıda bulunun. Başlamak için, [dokümantasyon katkıları](https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#contributing-to-the-rails-documentation) bölümünü okuyabilirsiniz.
-
-Ayrıca eksik veya güncel olmayan içerik de bulabilirsiniz. Lütfen main için eksik olan belgeleri ekleyin. Sorunların main dalda zaten düzeltilip düzeltilmediğini doğrulamak için önce [Edge Guides](https://edgeguides.rubyonrails.org/)'ı kontrol ettiğinizden emin olun. Stil ve kurallar için [Ruby on Rails Guides Guidelines](https://guides.rubyonrails.org/v8.0/ruby_on_rails_guides_guidelines.html)'ı kontrol edin.
-
-Herhangi bir sebepten dolayı düzeltebileceğiniz bir şey bulursanız ancak kendiniz patch yapamıyorsanız lütfen bir [issue](https://github.com/rails/rails/issues) açın.
-
-Ve son olarak, Ruby on Rails dokümantasyonu ile ilgili her türlü tartışma resmi [Ruby on Rails Forum](https://discuss.rubyonrails.org/c/rubyonrails-docs/6)'unda memnuniyetle karşılanacaktır.

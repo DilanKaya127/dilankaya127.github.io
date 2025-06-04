@@ -418,6 +418,7 @@ body {
 .guide-alert-content {
   flex: 1;
   line-height: 1.5;
+  margin-top: 4px;
 }
 
 .guide-alert-info {
@@ -426,24 +427,31 @@ body {
   background-color: rgba(15,47,61,0.9);
   border: 2px solid #17a2b8;
   color: #ffffff;
+  margin-top: 4px;
+
 }
 
 .guide-alert-warning {
   background-color: rgba(61,47,15,0.9);
   border: 2px solid #ffc107;
   color: #ffffff;
+  margin-top: 4px;
+
 }
 
 .guide-alert-success {
   background-color: #0f3d1a;
   border: 2px solid #28a745;
   color: #ffffff;
+  margin-top: 4px;
+
 }
 
 .guide-alert-danger {
   background-color: #3d0f0f;
   border: 2px solid #dc3545;
   color: #ffffff;
+  margin-top: 4px;
 }
 
 /* Ana sayfa linkleri */
@@ -482,7 +490,7 @@ body {
     color: #fff;
     text-align: center;
     padding: 2rem 0;
-    margin-top: 4rem;
+    margin-top: 3rem;
 }
 
 .footer a {
@@ -500,7 +508,7 @@ body {
     padding: 1.5rem;
     margin-top: 3rem;
     border-left: 4px solid #d30001;
-    width:fit-content;
+    width: 100%;
     flex: 1;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -510,6 +518,57 @@ body {
     color: #d30001;
     margin-bottom: 1rem;
 }
+
+.feedback p {
+    margin-bottom: 0.8rem;
+}
+
+/* Yukarı Çık Butonu */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background-color: #d30001;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(211, 0, 1, 0.3);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+    font-size: 0;
+}
+
+.scroll-to-top:hover {
+    background-color: #b50001;
+    transform: translateY(0) scale(1.05);
+    box-shadow: 0 6px 16px rgba(211, 0, 1, 0.4);
+}
+
+.scroll-to-top:active {
+    transform: translateY(0) scale(0.95);
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.scroll-to-top svg {
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+}
+
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -619,6 +678,20 @@ body {
     .guide-header h1 {
         font-size: 2rem;
     }
+    .feedback {
+        width: 100%;
+    }
+    .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+    
+    .scroll-to-top svg {
+        width: 18px;
+        height: 18px;
+    }
 }
 
 /* Çok küçük ekranlar için ek ayar */
@@ -635,4 +708,15 @@ body {
   .dropdown-content a {
     font-size: 0.75em;
   }
+  .scroll-to-top {
+    bottom: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    }
+    
+    .scroll-to-top svg {
+    width: 16px;
+    height: 16px;
+    }
 }

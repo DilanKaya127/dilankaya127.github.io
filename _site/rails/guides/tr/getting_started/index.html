@@ -18,7 +18,7 @@
     <link
       rel="icon"
       type="image/svg"
-      href="/assets/img/logo_rails-circle.svg"
+      href="/assets/images/logo_rails-circle.svg"
     />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
@@ -44,7 +44,7 @@
           <h1 class="logo">
             <a href="/rails/">
               <img
-                src="/assets/img/logo_rails-circle.svg"
+                src="/assets/images/logo_rails-circle.svg"
                 alt="Rails Logo"
                 class="logo-image"
               />
@@ -62,6 +62,8 @@
                   <h4>Buradan Başlayın</h4>
                   
                   <a href="/rails/guides/tr/getting_started">Rails ile Başlarken</a>
+                  
+                  <a href="/rails/guides/tr/install_ruby_on_rails">Ruby on Rails İndirme Kılavuzu</a>
                   
                 </div>
                       
@@ -88,7 +90,8 @@
     </header>
 
     <main class="main">
-      <div class="container"><div class="guide-container">
+      <div class="container">
+        <div class="guide-container">
   <button id="toc-toggle" class="toc-toggle">☰ İçindekiler</button>
 
   <aside class="guide-sidebar">
@@ -134,6 +137,7 @@
 </ul>
 
 <h2 id="giriş">Giriş</h2>
+
 <p>Ruby on Rails’e hoş geldiniz! Bu kılavuzda, Rails ile web uygulamaları geliştirmenin temel konularını ele alacağız. Bu kılavuzu takip etmek için Rails’te herhangi bir deneyime ihtiyacınız yok.</p>
 
 <p>Rails, Ruby programlama dili için geliştirilmiş bi web çerçevesidir. Rails, Ruby’nin birçok özelliğinin avantajını barındırmaktadır, bu yüzden sizlere Ruby’nin temellerini öğrenmenizi <em>şiddetle</em> öneririz. Böylece bu kılavuzda karşılacağınız bazı temel terimleri ve kelimeleri anlıyor olacaksınız.</p>
@@ -160,7 +164,12 @@
 
 <p><code class="language-plaintext highlighter-rouge">store</code> adında bir proje geliştireceğiz, Rails’in yerleşik özelliklerinden birkaçını gösteren basit bir e-ticaret sitesi olacak.</p>
 
-<p>İPUCU: Dolar işareti <code class="language-plaintext highlighter-rouge">$</code> ile başlayan tüm komutlar terminalde çalıştırılmalıdır.</p>
+<div class="guide-alert guide-alert-info">
+  <div class="guide-alert-icon">💡</div>
+  <div class="guide-alert-content">
+    Dolar işareti <code>$</code> ile başlayan tüm komutlar terminalde çalıştırılmalıdır.
+  </div>
+</div>
 
 <h3 id="ön-koşullar">Ön Koşullar</h3>
 
@@ -172,7 +181,7 @@
   <li>Bir kod editörü</li>
 </ul>
 
-<p>Ruby ve/veya Rails’i indirmeniz gerekiyorsa, bu tutorialı takip edin:<a href="install_ruby_on_rails.html">Ruby on Rails İndirme Kılavuzu</a></p>
+<p>Ruby ve/veya Rails’i indirmeniz gerekiyorsa, bu tutorialı takip edin: <a href="install_ruby_on_rails.html">Ruby on Rails İndirme Kılavuzu</a></p>
 
 <p>Rails’in doğru sürümünün yüklü olduğunu doğrulayalım. Mevcut sürümü görüntülemek için bir terminal açın ve aşağıdakileri çalıştırın. Bir sürüm numarası görmelisiniz:</p>
 
@@ -193,34 +202,478 @@ Rails 8.1.0
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails new store
 </code></pre></div></div>
 
-<p>NOT: Rails’in oluşturduğu uygulamayı flag kullanarak özelleştirebilirsiniz.
-Bu seçenekleri görmek için <code class="language-plaintext highlighter-rouge">rails new --help</code> komutunu çalıştırın.</p>
+<div class="guide-alert guide-alert-warning">
+  <div class="guide-alert-icon">📝</div>
+  <div class="guide-alert-content">
+    Rails'in oluşturduğu uygulamayı flag kullanarak özelleştirebilirsiniz.
+Bu seçenekleri görmek için <code>rails new --help</code> komutunu çalıştırın.
+  </div>
+</div>
 
 <p>Yeni uygulamanız oluşturulduktan sonra, uygulama dizinine geçin:</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>store
 </code></pre></div></div>
 
-<h3 id="klasör-yapısı">Klasör Yapısı</h3>
+<h3 id="dizin-yapısı">Dizin Yapısı</h3>
+
+<p>Yeni bir Rails uygulamasında yer alan dosya ve dizinlere hızlıca bir göz atalım. Dosyaları ve dizinleri görmek için bu klasörü kod editörünüzde açabilir veya terminalinizde <code class="language-plaintext highlighter-rouge">ls -la</code> komutunu çalıştırabilirsiniz.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dosya/Klasör</th>
+      <th>Amacı</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>app/</td>
+      <td>Uygulamanız için controllers, models, views, helpers, mailer, jobs ve assets içerir. <strong>Bu kılavuzun geri kalanında çoğunlukla bu klasöre odaklanacaksınız.</strong></td>
+    </tr>
+    <tr>
+      <td>bin/</td>
+      <td>Uygulamanızı başlatan <code class="language-plaintext highlighter-rouge">rails</code> betiğini (scriptini) içerir ve uygulamanızı kurmak, güncellemek, dağıtmak veya çalıştırmak için kullandığınız diğer betikleri de içerebilir.</td>
+    </tr>
+    <tr>
+      <td>config/</td>
+      <td>Uygulamanızın yönlendirmeleri (route), veritabanı ve daha fazlası için yapılandırma içerir. Bu konu <a href="configuring.html">Rails Uygulamalarının Yapılandırılması</a> bölümünde daha ayrıntılı olarak ele alınmıştır.</td>
+    </tr>
+    <tr>
+      <td>db/</td>
+      <td>Mevcut veritabanı şemanızın yanı sıra veritabanı değişikliklerini (migrations) de içerir.</td>
+    </tr>
+    <tr>
+      <td>Dockerfile</td>
+      <td>Docker için yapılandırma dosyasıdır.</td>
+    </tr>
+    <tr>
+      <td>Gemfile<br />Gemfile.lock</td>
+      <td>Bu dosyalar, Rails uygulamanız için hangi gem bağımlılıklarının gerekli olduğunu belirtmenizi sağlar. Bu dosyalar <a href="https://bundler.io">Bundler</a> gem’i tarafından kullanılır.</td>
+    </tr>
+    <tr>
+      <td>lib/</td>
+      <td>Uygulamanız için genişletilmiş modüller.</td>
+    </tr>
+    <tr>
+      <td>log/</td>
+      <td>Uygulama log dosyaları.</td>
+    </tr>
+    <tr>
+      <td>public/</td>
+      <td>Statik dosyaları ve derlenmiş assetleri içerir. Uygulamanız çalışırken, bu dizin olduğu gibi gösterilecektir.</td>
+    </tr>
+    <tr>
+      <td>Rakefile</td>
+      <td>Bu dosya komut satırından çalıştırılabilecek görevleri bulur ve yükler. Görev tanımları Rails’in bileşenleri boyunca tanımlanmıştır. <code class="language-plaintext highlighter-rouge">Rakefile</code>ı değiştirmek yerine, uygulamanızın <code class="language-plaintext highlighter-rouge">lib/tasks</code> dizinine dosyalar ekleyerek kendi görevlerinizi eklemelisiniz.</td>
+    </tr>
+    <tr>
+      <td>README.md</td>
+      <td>Bu, uygulamanız için kısa bir kullanım kılavuzudur. Uygulamanızın ne yaptığını, nasıl kurulacağını vb. başkalarına anlatmak için bu dosyayı düzenlemelisiniz.</td>
+    </tr>
+    <tr>
+      <td>script/</td>
+      <td>Tek seferlik veya genel amaçlı <a href="https://github.com/rails/rails/blob/main/railties/lib/rails/generators/rails/script/USAGE">script</a> ve <a href="https://github.com/rails/rails/blob/main/railties/lib/rails/generators/rails/benchmark/USAGE">benchmark</a>  içerir.</td>
+    </tr>
+    <tr>
+      <td>storage/</td>
+      <td>Disk Hizmeti (Disk Service) için SQLite veritabanlarını ve Active Storage dosyalarını içerir. Bu konu <a href="active_storage_overview.html">Active Storage</a> bölümünde ele alınmıştır.</td>
+    </tr>
+    <tr>
+      <td>test/</td>
+      <td>Birim testleri (unit test), fikstürler ve diğer test aparatları. Bunlar <a href="testing.html">Rails Uygulamalarını Test Etme</a> bölümünde ele alınmıştır.</td>
+    </tr>
+    <tr>
+      <td>tmp/</td>
+      <td>Geçici dosyalar (önbellek ve pid dosyaları gibi).</td>
+    </tr>
+    <tr>
+      <td>vendor/</td>
+      <td>Tüm üçüncü taraf kodları için bir alan. Tipik bir Rails uygulamasında bu, üçüncü taraf kodlar arasında özel olarak eklenen (vendored) gem’ler içerir.</td>
+    </tr>
+    <tr>
+      <td>.dockerignore</td>
+      <td>Bu dosya Docker’a hangi dosyaları konteynere kopyalamaması gerektiğini söyler.</td>
+    </tr>
+    <tr>
+      <td>.gitattributes</td>
+      <td>Bu dosya, bir Git deposundaki belirli yollar için meta verileri tanımlar. Bu meta veriler Git ve diğer araçlar tarafından davranışlarını geliştirmek için kullanılabilir. Daha fazla bilgi için <a href="https://git-scm.com/docs/gitattributes">gitattributes belgelerine</a> bakın.</td>
+    </tr>
+    <tr>
+      <td>.git/</td>
+      <td>Git deposu dosyalarını içerir.</td>
+    </tr>
+    <tr>
+      <td>.github/</td>
+      <td>GitHub’a özgü dosyaları içerir.</td>
+    </tr>
+    <tr>
+      <td>.gitignore</td>
+      <td>Bu dosya Git’e hangi dosyaları veya kalıpları (pattern) yok sayması gerektiğini söyler. Dosyaları yok sayma hakkında daha fazla bilgi için <a href="https://help.github.com/articles/ignoring-files">GitHub - Ignoring files</a> adresine bakın.</td>
+    </tr>
+    <tr>
+      <td>.kamal/</td>
+      <td>Kamal’ın gizli/önemli verilerini ve dağıtım betiklerini (hook) içerir.</td>
+    </tr>
+    <tr>
+      <td>.rubocop.yml</td>
+      <td>Bu dosya RuboCop için yapılandırmayı içerir.</td>
+    </tr>
+    <tr>
+      <td>.ruby-version</td>
+      <td>Bu dosya varsayılan Ruby sürümünü içerir.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="model-view-controller-temelleri">Model-View-Controller Temelleri</h3>
+
+<p>Rails kodu Model-View-Controller (MVC) mimarisi kullanılarak düzenlenmiştir. MVC ile, kodlarımızın çoğunun içinde çalıştığı üç ana yapı vardır:</p>
+
+<ul>
+  <li>Model - Uygulamanızdaki verileri yönetir. Tipik olarak, veritabanı tablolarınızdır.</li>
+  <li>View - Yanıtları (response) HTML, JSON, XML gibi farklı biçimlerde göstermeyi (render) yönetir.</li>
+  <li>Controller - Her istek için kullanıcı etkileşimlerini ve  mantığı (logic) işler.</li>
+</ul>
+
+<picture class="flowdiagram">
+  <source srcset="/assets/images/getting_started/mvc_architecture_dark.jpg" media="(prefers-color-scheme:dark)" />
+  <img src="/assets/images/getting_started/mvc_architecture_light.jpg" />
+</picture>
+
+<p>Şimdi MVC hakkında temel bir anlayışa sahip olduğumuza göre, Rails’te bunun nasıl kullanıldığını görelim.</p>
+
+<h2 id="merhaba-rails">Merhaba, Rails!</h2>
+
+<p>Uygulamamızın veritabanını oluşturarak ve Rails sunucumuzu ilk kez başlatarak kolay bir başlangıç yapalım.</p>
+
+<p>Terminalinizde, <code class="language-plaintext highlighter-rouge">store</code> dizininde aşağıdaki komutları çalıştırın:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails db:create
+</code></pre></div></div>
+
+<p>Bu, başlangıçta uygulamanın veritabanını oluşturacaktır.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails server
+</code></pre></div></div>
+
+<p>NOT: Komutları bir uygulama dizini içinde çalıştırdığımızda <code class="language-plaintext highlighter-rouge">bin/rails</code> kullanmalıyız. Bu, uygulamanın Rails sürümünün kullanıldığından emin olunmasını sağlar.</p>
+
+<p>Bu, statik dosyaları ve Rails uygulamanızı sunacak olan Puma adlı bir web sunucusunu başlatacaktır:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">=&gt;</span> Booting Puma
+<span class="o">=&gt;</span> Rails 8.1.0 application starting <span class="k">in </span>development
+<span class="o">=&gt;</span> Run <span class="sb">`</span>bin/rails server <span class="nt">--help</span><span class="sb">`</span> <span class="k">for </span>more startup options
+Puma starting <span class="k">in </span>single mode...
+<span class="k">*</span> Puma version: 6.4.3 <span class="o">(</span>ruby 3.3.5-p100<span class="o">)</span> <span class="o">(</span><span class="s2">"The Eagle of Durango"</span><span class="o">)</span>
+<span class="k">*</span>  Min threads: 3
+<span class="k">*</span>  Max threads: 3
+<span class="k">*</span>  Environment: development
+<span class="k">*</span>          PID: 12345
+<span class="k">*</span> Listening on http://127.0.0.1:3000
+<span class="k">*</span> Listening on http://[::1]:3000
+Use Ctrl-C to stop
+</code></pre></div></div>
+
+<p>Rails uygulamanızı görmek için tarayıcınızda http://localhost:3000 adresini açın. Varsayılan Rails karşılama sayfasını göreceksiniz:</p>
+
+<p><img src="/assets/images/getting_started/rails_welcome.png" alt="Rails welcome page" /></p>
+
+<p>İşe yarıyor!</p>
+
+<p>Bu sayfa, yeni bir Rails uygulaması için <em>smoke test</em> olup, bir sayfayı sunmak için perde arkasında her şeyin çalıştığından emin olunmasını sağlar.</p>
+
+<p>Rails sunucusunu istediğiniz zaman durdurmak için terminalinizde <code class="language-plaintext highlighter-rouge">Ctrl-C</code> tuşuna basın.</p>
+
+<h3 id="geliştirme-aşamasında-otomatik-yükleme">Geliştirme Aşamasında Otomatik Yükleme</h3>
+
+<p>Geliştiricinin mutluluğu Rails’in temel felsefelerinden biridir ve bunu sağlamanın bir yolu da geliştirme sırasında kodun otomatik yeniden yüklenmesidir (reload).</p>
+
+<p>Rails sunucusunu başlattığınızda, yeni dosyalar veya mevcut dosyalardaki değişiklikler algılanır ve otomatik olarak yüklenir veya gerektiğinde yeniden yüklenir. Bu, her değişiklikten sonra Rails sunucunuzu yeniden başlatmak zorunda kalmadan kodlamaya odaklanmanızı sağlar.</p>
+
+<p>Rails uygulamalarının diğer programlama dillerinde gördüğünüz <code class="language-plaintext highlighter-rouge">require</code> deyimlerini (statement) nadiren kullandığını da fark edebilirsiniz. Rails, uygulama kodunuzu yazmaya odaklanabilmeniz için dosyaları otomatik olarak istemek üzere adlandırma kurallarını kullanır.</p>
+
+<p>Daha fazla ayrıntı için <a href="autoloading_and_reloading_constants.html">Otomatik Yükleme ve Yeniden Yükleme Sabitleri</a> bölümüne bakın.</p>
+
+<h2 id="veritabanı-modeli-oluşturma">Veritabanı Modeli Oluşturma</h2>
+
+<p>Active Record, ilişkisel veritabanlarını Ruby koduna eşleyen bir Rails özelliğidir.
+Tablo ve kayıt oluşturma, güncelleme ve silme gibi veritabanı ile etkileşim için yapılandırılmış sorgu dilinin (SQL) oluşturulmasına yardımcı olur. Uygulamamız Rails için varsayılan olan SQLite kullanmaktadır.</p>
+
+<p>Basit e-ticaret mağazamıza ürün eklemek için Rails uygulamamıza bir veritabanı tablosu ekleyerek başlayalım.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails generate model Product name:string
+</code></pre></div></div>
+
+<p>Bu komut Rails’e veritabanında <code class="language-plaintext highlighter-rouge">name</code> sütunu ve türü <code class="language-plaintext highlighter-rouge">string</code> olan <code class="language-plaintext highlighter-rouge">Product</code> adında bir model oluşturmasını söyler. Diğer sütun türlerini nasıl ekleyeceğinizi daha sonra öğreneceksiniz.</p>
+
+<p>Terminalinizde aşağıdakileri göreceksiniz:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      invoke  active_record
+      create    db/migrate/20240426151900_create_products.rb
+      create    app/models/product.rb
+      invoke    test_unit
+      create      <span class="nb">test</span>/models/product_test.rb
+      create      <span class="nb">test</span>/fixtures/products.yml
+</code></pre></div></div>
+
+<p>Bu komut birkaç şey yaparak şunları oluşturur:</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">db/migrate</code> klasöründe bir şema değişikliği (migration).</li>
+  <li><code class="language-plaintext highlighter-rouge">app/models/product.rb</code> içinde bir Active Record modeli.</li>
+  <li>Bu model için testler ve test fikstürleri.</li>
+</ol>
+
+<p>NOT: Model adları <em>tekildir</em>, çünkü örneklenen bir model veritabanındaki tek bir kaydı temsil eder (yani, veritabanına eklemek için bir <em>product</em> oluşturuyorsunuz).</p>
+
+<h3 id="veritabanı-değişiklikleri">Veritabanı Değişiklikleri</h3>
+
+<p>Bir <em>migration</em> veritabanımızda yapmak istediğimiz bir değişikliktir.</p>
+
+<p>Migration’ları tanımlayarak, Rails’e veritabanındaki tabloları, sütunları veya diğer öznitelikleri eklemek, değiştirmek veya kaldırmak için veritabanını nasıl değiştireceğini söylüyoruz. Bu, geliştirme aşamasında (sadece bizim bilgisayarımızda) yaptığımız değişiklikleri takip etmemize yardımcı olur, böylece üretime (canlıda/çevrimiçiyken!) güvenli bir şekilde dağıtılabilirler.</p>
+
+<p>Kod editörünüzde Rails’in bizim için oluşturduğu migration’ı açın, böylece migration’ın ne yaptığını görebiliriz. <code class="language-plaintext highlighter-rouge">db/migrate/&lt;timestamp&gt;_create_products.rb</code> şeklinde bir dosyada bulunur:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CreateProducts</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">8.1</span><span class="p">]</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="ss">:products</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:name</span>
+
+      <span class="n">t</span><span class="p">.</span><span class="nf">timestamps</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Bu migration Rails’e <code class="language-plaintext highlighter-rouge">products</code> adında yeni bir veritabanı tablosu oluşturmasını söylüyor.</p>
+
+<p>NOT: Yukarıdaki modelin aksine, Rails veritabanı tablo adlarını <em>çoğul</em> yapar, çünkü veritabanı her modelin tüm örneklerini tutar (yani, <em>products</em> veritabanı oluşturuyorsunuz).</p>
+
+<p>Daha sonra <code class="language-plaintext highlighter-rouge">create_table</code> bloğu bu veritabanı tablosunda hangi sütunların ve türlerin tanımlanması gerektiğini belirler.</p>
+
+<p><code class="language-plaintext highlighter-rouge">t.timestamps</code> Rails’e <code class="language-plaintext highlighter-rouge">products</code> tablosunda <code class="language-plaintext highlighter-rouge">name</code> adında bir sütun oluşturmasını ve türünü <code class="language-plaintext highlighter-rouge">string</code> olarak ayarlamasını söyler.</p>
+
+<p><code class="language-plaintext highlighter-rouge">t.timestamps</code>, modellerinizde <code class="language-plaintext highlighter-rouge">created_at:datetime</code> ve <code class="language-plaintext highlighter-rouge">updated_at:datetime</code> adında iki sütun tanımlamak için bir kısayoldur. Bu sütunları Rails’teki çoğu Active Record modelinde görürsünüz ve kayıtlar oluşturulurken veya güncellenirken Active Record tarafından otomatik olarak ayarlanırlar.</p>
+
+<h3 id="değişiklikleri-migration-çalıştırmak">Değişiklikleri (Migration) Çalıştırmak</h3>
+
+<p>Artık veritabanında hangi değişikliklerin yapılacağını belirlediğinize göre, migration’ları çalıştırmak için aşağıdaki komutu kullanın:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails db:migrate
+</code></pre></div></div>
+
+<p>Bu komut yeni migration’ları kontrol eder ve bunları veritabanınıza uygular. Çıktısı şu şekilde görünür:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">==</span> 20240426151900 CreateProducts: migrating <span class="o">===================================</span>
+<span class="nt">--</span> create_table<span class="o">(</span>:products<span class="o">)</span>
+   -&gt; 0.0030s
+<span class="o">==</span> 20240426151900 CreateProducts: migrated <span class="o">(</span>0.0031s<span class="o">)</span> <span class="o">==========================</span>
+</code></pre></div></div>
+
+<div class="guide-alert guide-alert-info">
+  <div class="guide-alert-icon">💡</div>
+  <div class="guide-alert-content">
+    Eğer bir hata yaparsanız, son migration'ı geri almak için <code>bin/rails db:rollback</code> komutunu çalıştırabilirsiniz.
+  </div>
+</div>
+
+<h2 id="rails-konsolu">Rails Konsolu</h2>
+
+<p>Artık products tablomuzu oluşturduğumuza göre, Rails’te onunla etkileşime geçebiliriz. Hadi deneyelim.</p>
+
+<p>Bunun için <em>console</em> adı verilen bir Rails özelliğini kullanacağız. Konsol, Rails uygulamamızdaki kodumuzu test etmek için yararlı, etkileşimli bir araçtır.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails console
+</code></pre></div></div>
+
+<p>Aşağıdaki gibi bir komut istemi ile karşılaşacaksınız:</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">Loading development environment (Rails 8.1.0)
+store(dev)&gt;
+</span></code></pre></div></div>
+
+<p>Burada <code class="language-plaintext highlighter-rouge">Enter</code> tuşuna bastığımızda çalıştırılacak kodu yazabiliriz. Rails sürümünü yazdırmayı deneyelim:</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; Rails.version
+</span><span class="p">=&gt;</span> <span class="s2">"8.1.0"</span>
+</code></pre></div></div>
+
+<p>İşe yarıyor!</p>
+
+<h2 id="active-record-model-temelleri">Active Record Model Temelleri</h2>
+
+<p>Rails model oluşturucusunu <code class="language-plaintext highlighter-rouge">Product</code> modelini oluşturmak için çalıştırdığımızda, <code class="language-plaintext highlighter-rouge">app/models/product.rb</code> adresinde bir dosya oluşturdu. Bu dosya, <code class="language-plaintext highlighter-rouge">products</code> veritabanı tablomuzla etkileşim için Active Record kullanan bir sınıf oluşturur.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Bu sınıfta hiç kod olmaması sizi şaşırtabilir. Rails bu modeli neyin tanımladığını nasıl biliyor?</p>
+
+<p><code class="language-plaintext highlighter-rouge">Product</code> modeli kullanıldığında, Rails sütun adları ve türleri için veritabanı tablosunu sorgulayacak ve bu nitelikler (attribute) için otomatik olarak kod oluşturacaktır. Rails bizi bu şablon kodu yazmaktan kurtarır ve bunun yerine uygulama mantığımıza odaklanabilmemiz için bu işi bizim yerimize perde arkasında halleder.</p>
+
+<p>Rails’in Product modeli için hangi sütunları algıladığını görmek için Rails konsolunu kullanalım.</p>
+
+<p>Çalıştırın:</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; Product.column_names
+</span></code></pre></div></div>
+
+<p>Bunu görmelisiniz:</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">=&gt;</span> <span class="p">[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">,</span> <span class="s2">"created_at"</span><span class="p">,</span> <span class="s2">"updated_at"</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>Rails, veritabanından yukarıdaki sütun bilgilerini istedi ve bu bilgileri `Product’ sınıfındaki öznitelikleri dinamik olarak tanımlamak için kullandı, böylece her birini manuel olarak sizin tanımlamanız gerekmez. Bu, Rails’in geliştirmeyi nasıl kolaylaştırdığının bir örneğidir.</p>
+
+<h3 id="kayıtları-oluşturma">Kayıtları Oluşturma</h3>
+
+<p>Aşağıdaki kod ile yeni bir Product kaydı oluşturabiliriz:</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; product = Product.new(name: "T-Shirt")
+</span><span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">Product</span><span class="p">:</span><span class="mh">0x000000012e616c30</span> <span class="ss">id: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"T-Shirt"</span><span class="p">,</span> <span class="ss">created_at: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="kp">nil</span><span class="kt">&gt;</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">product</code> değişkeni <code class="language-plaintext highlighter-rouge">Product</code>‘ın bir örneklenmesidir. Veritabanına kaydedilmemiştir ve bu nedenle bir ID, created_at veya updated_at gibi zaman damgaları yoktur.</p>
+
+<p>Kaydı veritabanına yazmak için <code class="language-plaintext highlighter-rouge">save</code> çağrısı yapabiliriz.</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; product.save
+  TRANSACTION (0.1ms)  BEGIN immediate TRANSACTION /*application='Store'*/
+  Product Create (0.9ms)  INSERT INTO "products" ("name", "created_at", "updated_at") VALUES ('T-Shirt', '2024-11-09 16:35:01.117836', '2024-11-09 16:35:01.117836') RETURNING "id" /*application='Store'*/
+  TRANSACTION (0.9ms)  COMMIT TRANSACTION /*application='Store'*/
+</span><span class="p">=&gt;</span> <span class="kp">true</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">save</code> çağrıldığında, Rails bellekteki öznitelikleri alır ve bu kaydı veritabanına eklemek için bir <code class="language-plaintext highlighter-rouge">INSERT</code> SQL sorgusu oluşturur.</p>
+
+<p>Rails ayrıca bellekteki nesneyi <code class="language-plaintext highlighter-rouge">created_at</code> ve <code class="language-plaintext highlighter-rouge">updated_at</code> zaman damgalarıyla birlikte veritabanı kaydı <code class="language-plaintext highlighter-rouge">id</code> ile günceller. Bunu <code class="language-plaintext highlighter-rouge">product</code> değişkenini yazdırarak görebiliriz.</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; product
+</span><span class="gp">=&gt; #&lt;Product:0x00000001221f6260 id: 1, name: "T-Shirt", created_at: "2024-11-09 16:35:01.117836000 +0000", updated_at: "2024-11-09 16:35:01.117836000 +0000"&gt;</span><span class="w">
+</span></code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">save</code>e benzer şekilde, bir Active Record nesnesini tek bir çağrıda oluşturmak ve kaydetmek için <code class="language-plaintext highlighter-rouge">create</code> kullanabiliriz.</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; Product.create(name: "Pants")
+  TRANSACTION (0.1ms)  BEGIN immediate TRANSACTION /*application='Store'*/
+  Product Create (0.4ms)  INSERT INTO "products" ("name", "created_at", "updated_at") VALUES ('Pants', '2024-11-09 16:36:01.856751', '2024-11-09 16:36:01.856751') RETURNING "id" /*application='Store'*/
+  TRANSACTION (0.1ms)  COMMIT TRANSACTION /*application='Store'*/
+</span><span class="gp">=&gt; #&lt;Product:0x0000000120485c80 id: 2, name: "Pants", created_at: "2024-11-09 16:36:01.856751000 +0000", updated_at: "2024-11-09 16:36:01.856751000 +0000"&gt;</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="kayıtları-sorgulama">Kayıtları Sorgulama</h3>
+
+<p>Active Record modelimizi kullanarak veritabanındaki kayıtlara da bakabiliriz.</p>
+
+<p>Veritabanındaki tüm Product kayıtlarını bulmak için <code class="language-plaintext highlighter-rouge">all</code> metodunu kullanabiliriz.
+Bu bir <em>sınıf</em> metodudur, bu yüzden Product üzerinde kullanabiliriz (yukarıdaki <code class="language-plaintext highlighter-rouge">save</code> gibi product örneklemesi/örneği üzerinde çağıracağımız bir örnekleme metoduna karşılık gelir).</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; Product.all
+  Product Load (0.1ms)  SELECT "products".* FROM "products" /* loading for pp */ LIMIT 11 /*application='Store'*/
+</span><span class="gp">=&gt; [#&lt;Product:0x0000000121845158 id: 1, name: "T-Shirt", created_at: "2024-11-09 16:35:01.117836000 +0000", updated_at: "2024-11-09 16:35:01.117836000 +0000"&gt;</span><span class="p">,</span>
+<span class="gp"> #&lt;Product:0x0000000121845018 id: 2, name: "Pants", created_at: "2024-11-09 16:36:01.856751000 +0000", updated_at: "2024-11-09 16:36:01.856751000 +0000"&gt;</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>Bu, <code class="language-plaintext highlighter-rouge">products</code> tablosundaki tüm kayıtları yüklemek için bir <code class="language-plaintext highlighter-rouge">SELECT</code> SQL sorgusu oluşturur. Her kayıt otomatik olarak Product Active Record modelimizin bir örneğine dönüştürülür, böylece Ruby’den onlarla kolayca çalışabiliriz.</p>
+
+<div class="guide-alert guide-alert-info">
+  <div class="guide-alert-icon">💡</div>
+  <div class="guide-alert-content">
+    <code>all</code> metodu; filtreleme, sıralama ve diğer veritabanı işlemlerini yürütme özelliklerine sahip veritabanı kayıtlarının Array benzeri bir koleksiyonu olan bir <code>ActiveRecord::Relation</code> nesnesini döndürür.
+  </div>
+</div>
+
+<h3 id="kayıtları-filtreleme-ve-sıralama">Kayıtları Filtreleme ve Sıralama</h3>
+
+<p>Veritabanımızdaki sonuçları filtrelemek istersek ne olur? Kayıtları bir sütuna göre filtrelemek için <code class="language-plaintext highlighter-rouge">where</code> kullanabiliriz.</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; Product.where(name: "Pants")
+  Product Load (1.5ms)  SELECT "products".* FROM "products" WHERE "products"."name" = 'Pants' /* loading for pp */ LIMIT 11 /*application='Store'*/
+</span><span class="gp">=&gt; [#&lt;Product:0x000000012184d858 id: 2, name: "Pants", created_at: "2024-11-09 16:36:01.856751000 +0000", updated_at: "2024-11-09 16:36:01.856751000 +0000"&gt;</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>Bu bir <code class="language-plaintext highlighter-rouge">SELECT</code> SQL sorgusu oluşturur, ancak <code class="language-plaintext highlighter-rouge">"Pants"</code> ile eşleşen bir <code class="language-plaintext highlighter-rouge">name</code>e sahip kayıtları filtrelemek için bir <code class="language-plaintext highlighter-rouge">WHERE</code> cümleciği de ekler. Bu aynı zamanda bir <code class="language-plaintext highlighter-rouge">ActiveRecord::Relation</code> döndürür çünkü birden fazla kayıt aynı isme sahip olabilir.</p>
+
+<p>Kayıtları isme göre artan alfabetik sırada sıralamak için <code class="language-plaintext highlighter-rouge">order(name: :asc)</code> kullanabiliriz.</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; Product.order(name: :asc)
+  Product Load (0.3ms)  SELECT "products".* FROM "products" /* loading for pp */ ORDER BY "products"."name" ASC LIMIT 11 /*application='Store'*/
+</span><span class="gp">=&gt; [#&lt;Product:0x0000000120e02a88 id: 2, name: "Pants", created_at: "2024-11-09 16:36:01.856751000 +0000", updated_at: "2024-11-09 16:36:01.856751000 +0000"&gt;</span><span class="p">,</span>
+<span class="gp"> #&lt;Product:0x0000000120e02948 id: 1, name: "T-Shirt", created_at: "2024-11-09 16:35:01.117836000 +0000", updated_at: "2024-11-09 16:35:01.117836000 +0000"&gt;</span><span class="p">]</span>
+</code></pre></div></div>
+
+<h3 id="kayıtları-bulma">Kayıtları Bulma</h3>
+
+<p>Peki ya belirli bir kaydı bulmak istiyorsak?</p>
+
+<p>Bunu, tek bir kaydı ID’ye göre aramak için <code class="language-plaintext highlighter-rouge">find</code> sınıf metodunu kullanarak yapabiliriz. Aşağıdaki kodu kullanarak metodu çağırın ve belirli bir ID girin:</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; Product.find(1)
+  Product Load (0.2ms)  SELECT "products".* FROM "products" WHERE "products"."id" = 1 LIMIT 1 /*application='Store'*/
+</span><span class="gp">=&gt; #&lt;Product:0x000000012054af08 id: 1, name: "T-Shirt", created_at: "2024-11-09 16:35:01.117836000 +0000", updated_at: "2024-11-09 16:35:01.117836000 +0000"&gt;</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Bu bir <code class="language-plaintext highlighter-rouge">SELECT</code> sorgusu oluşturur, ancak <code class="language-plaintext highlighter-rouge">id</code> sütunu için aktarılan <code class="language-plaintext highlighter-rouge">1</code> ile eşleşen bir <code class="language-plaintext highlighter-rouge">WHERE</code> belirtir. Ayrıca, yalnızca tek bir kayıt döndürmek için bir <code class="language-plaintext highlighter-rouge">LIMIT</code> ekler.</p>
+
+<p>Bu kez, veritabanından yalnızca tek bir kayıt aldığımız için <code class="language-plaintext highlighter-rouge">ActiveRecord::Relation</code> yerine bir <code class="language-plaintext highlighter-rouge">Product</code> örneği alıyoruz.</p>
+
+<h3 id="kayıtları-güncelleme">Kayıtları Güncelleme</h3>
+
+<p>Kayıtlar 2 şekilde güncellenebilir: <code class="language-plaintext highlighter-rouge">update</code> kullanılarak veya öznitelikler atanarak ve <code class="language-plaintext highlighter-rouge">save</code> çağrısı yapılarak.</p>
+
+<p>Bir Product örneği üzerinde <code class="language-plaintext highlighter-rouge">update</code> çağrısı yapabilir ve veritabanına kaydedilecek yeni özelliklerin bir Hash’ini iletebiliriz. Bu; öznitelikleri atayacak, doğrulamaları çalıştıracak ve değişiklikleri tek bir metod çağrısında veritabanına kaydedecektir.</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; product = Product.find(1)
+store(dev)&gt; product.update(name: "Shoes")
+  TRANSACTION (0.1ms)  BEGIN immediate TRANSACTION /*application='Store'*/
+  Product Update (0.3ms)  UPDATE "products" SET "name" = 'Shoes', "updated_at" = '2024-11-09 22:38:19.638912' WHERE "products"."id" = 1 /*application='Store'*/
+  TRANSACTION (0.4ms)  COMMIT TRANSACTION /*application='Store'*/
+</span><span class="p">=&gt;</span> <span class="kp">true</span>
+</code></pre></div></div>
+
+<p>This updated the name of the “T-Shirt” product to “Shoes” in the database.
+Confirm this by running <code class="language-plaintext highlighter-rouge">Product.all</code> again.</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; Product.all
+</span></code></pre></div></div>
+
+<p>You will see two products: Shoes and Pants.</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">  Product Load (0.3ms)  SELECT "products".* FROM "products" /* loading for pp */ LIMIT 11 /*application='Store'*/
+</span><span class="p">=&gt;</span>
+<span class="p">[</span><span class="kt">#&lt;</span><span class="no">Product</span><span class="p">:</span><span class="mh">0x000000012c0f7300</span>
+  <span class="ss">id: </span><span class="mi">1</span><span class="p">,</span>
+  <span class="ss">name: </span><span class="s2">"Shoes"</span><span class="p">,</span>
+  <span class="ss">created_at: </span><span class="s2">"2024-12-02 20:29:56.303546000 +0000"</span><span class="p">,</span>
+<span class="gp">  updated_at: "2024-12-02 20:30:14.127456000 +0000"&gt;</span><span class="p">,</span>
+<span class="c"> #&lt;Product:0x000000012c0f71c0
+</span><span class="go">  id: 2,
+  name: "Pants",
+  created_at: "2024-12-02 20:30:02.997261000 +0000",
+</span><span class="gp">  updated_at: "2024-12-02 20:30:02.997261000 +0000"&gt;</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>Alternatively, we can assign attributes and call <code class="language-plaintext highlighter-rouge">save</code> when we’re ready to
+validate and save changes to the database.</p>
+
+<p>“Ayakkabı” adını “T-Shirt” olarak değiştirelim.</p>
+
+<div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; product = Product.find(1)
+store(dev)&gt; product.name = "T-Shirt"
+</span><span class="p">=&gt;</span> <span class="s2">"T-Shirt"</span>
+<span class="n">store</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">product</span><span class="p">.</span><span class="nf">save</span>
+  <span class="no">TRANSACTION</span> <span class="p">(</span><span class="mf">0.1</span><span class="n">ms</span><span class="p">)</span>  <span class="k">BEGIN</span> <span class="n">immediate</span> <span class="no">TRANSACTION</span> <span class="sr">/*application='Store'*/</span>
+  <span class="no">Product</span> <span class="no">Update</span> <span class="p">(</span><span class="mf">0.2</span><span class="n">ms</span><span class="p">)</span>  <span class="no">UPDATE</span> <span class="s2">"products"</span> <span class="no">SET</span> <span class="s2">"name"</span> <span class="o">=</span> <span class="s1">'T-Shirt'</span><span class="p">,</span> <span class="s2">"updated_at"</span> <span class="o">=</span> <span class="s1">'2024-11-09 22:39:09.693548'</span> <span class="no">WHERE</span> <span class="s2">"products"</span><span class="o">.</span><span class="s2">"id"</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/*</span><span class="n">application</span><span class="o">=</span><span class="s1">'Store'</span><span class="o">*</span><span class="sr">/
+  TRANSACTION (0.0ms)  COMMIT TRANSACTION /</span><span class="o">*</span><span class="n">application</span><span class="o">=</span><span class="s1">'Store'</span><span class="o">*</span><span class="sr">/
+=&gt; true
+</span></code></pre></div></div>
+
+<h3 id="kayıtları-silme">Kayıtları Silme</h3>
 </div>
   </article>
 </div>
-<footer class="guide-footer">
-      <div class="feedback">
-        <h3>Geri Bildirim</h3>
-        <p>
-          Bu kılavuzun kalitesini artırmamıza yardımcı olmak için geri
-          bildirimlerinizi bekliyoruz.
-        </p>
-        <p>
-          Lütfen
-          <a href="https://github.com/dilankaya127/rails-tr-TR"
-            >GitHub Issues</a
-          >
-          üzerinden katkıda bulunun.
-        </p>
-      </div>
-    </footer>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -233,20 +686,62 @@ Bu seçenekleri görmek için <code class="language-plaintext highlighter-rouge"
       const tocList = document.createElement("ul");
       const headingMap = new Map();
 
+      // Türkçe karakterleri URL-dostu hale getiren fonksiyon
+      function turkishToSlug(text) {
+        const turkishChars = {
+          'ç': 'c', 'Ç': 'c',
+          'ğ': 'g', 'Ğ': 'g',
+          'ı': 'i', 'I': 'i',
+          'İ': 'i', 'i': 'i',
+          'ö': 'o', 'Ö': 'o',
+          'ş': 's', 'Ş': 's',
+          'ü': 'u', 'Ü': 'u'
+        };
+        
+        return text
+          .split('')
+          .map(char => turkishChars[char] || char)
+          .join('')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
+      // Aynı ID'nin tekrarlanmasını önlemek için sayaç
+      const idCounts = new Map();
+
       headings.forEach(function (heading, index) {
-        const id = "heading-" + index;
-        heading.id = id;
+        // Başlık metninden anlamlı ID oluştur
+        const headingText = heading.textContent.trim();
+        let baseId = turkishToSlug(headingText);
+        
+        // Boş ID kontrolü
+        if (!baseId) {
+          baseId = "heading-" + index;
+        }
+        
+        // Tekrarlanan ID'leri önle
+        let finalId = baseId;
+        if (idCounts.has(baseId)) {
+          const count = idCounts.get(baseId) + 1;
+          idCounts.set(baseId, count);
+          finalId = baseId + "-" + count;
+        } else {
+          idCounts.set(baseId, 1);
+        }
+        
+        heading.id = finalId;
 
         const li = document.createElement("li");
         const a = document.createElement("a");
-        a.href = "#" + id;
-        a.textContent = heading.textContent;
+        a.href = "#" + finalId;
+        a.textContent = headingText;
         a.className = "toc-" + heading.tagName.toLowerCase();
 
         li.appendChild(a);
         tocList.appendChild(li);
 
-        headingMap.set(id, a);
+        headingMap.set(finalId, a);
       });
 
       toc.appendChild(tocList);
@@ -314,26 +809,106 @@ Bu seçenekleri görmek için <code class="language-plaintext highlighter-rouge"
     }
   });
 </script>
-</div>
+        <!-- <footer class="guide-footer"> -->
+        <div class="feedback">
+          <h3>Geri Bildirim</h3>
+          <p>
+            Bu rehberin kalitesinin iyileştirilmesine yardımcı olmanızı
+            öneririz.
+          </p>
+          <p>
+            Herhangi bir yazım hatası veya olgusal hata görürseniz lütfen
+            katkıda bulunun. Başlamak için,
+            <a
+              href="https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#contributing-to-the-rails-documentation"
+              >dokümantasyon katkıları</a
+            >
+            bölümünü okuyabilirsiniz.
+          </p>
+          <p>
+            Ayrıca eksik veya güncel olmayan içerik de bulabilirsiniz. Lütfen
+            main için eksik olan belgeleri ekleyin. Sorunların main dalda zaten
+            düzeltilip düzeltilmediğini doğrulamak için önce
+            <a href="https://edgeguides.rubyonrails.org/">Edge Guides</a>'ı
+            kontrol ettiğinizden emin olun. Stil ve kurallar için
+            <a
+              href="https://guides.rubyonrails.org/v8.0/ruby_on_rails_guides_guidelines.html"
+              >Ruby on Rails Guides Guidelines</a
+            >'ı kontrol edin.
+          </p>
+          <p>
+            Herhangi bir sebepten dolayı düzeltebileceğiniz bir şey bulursanız
+            ancak kendiniz patch yapamıyorsanız lütfen bir
+            <a href="https://github.com/rails/rails/issues">issue</a> açın.
+          </p>
+          <p>
+            Ve son olarak, Ruby on Rails dokümantasyonu ile ilgili her türlü
+            tartışma resmi
+            <a href="https://discuss.rubyonrails.org/c/rubyonrails-docs/6"
+              >Ruby on Rails Forum</a
+            >'unda memnuniyetle karşılanacaktır.
+          </p>
+        </div>
+      </div>
     </main>
+
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Yukarı çık">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="18,15 12,9 6,15"></polyline>
+      </svg>
+    </button>
 
     <footer class="footer">
       <div class="container">
         <p>
+          Bu çalışma <a href=" Creative Commons Attribution-ShareAlike 4.0 International">Creative Commons Attribution-ShareAlike 4.0 International</a> Lisansı kapsamında lisanslanmıştır.
+          </p>
+        <p>
+          "Rails", "Ruby on Rails" ve Rails logosu David Heinemeier Hansson'un ticari markalarıdır. Tüm hakları saklıdır.
+        </p><br/>
+        <p>
           &copy; 2025 Rails Kılavuzları Türkçe Çevirisi.
           <a href="https://github.com/DilanKaya127">Dilan Kaya</a> tarafından
           hazırlanmıştır.
-        </p>
-        <p>
           Orijinal dokümantasyon
           <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine
           aittir.
         </p>
+        
+
       </div>
     </footer>
 
     <script>
       hljs.highlightAll();
+      // Yukarı çık butonu işlevselliği
+      const scrollToTopBtn = document.getElementById("scrollToTop");
+
+      // Scroll pozisyonunu kontrol et
+      window.addEventListener("scroll", function () {
+        if (window.pageYOffset > 500) {
+          scrollToTopBtn.classList.add("visible");
+        } else {
+          scrollToTopBtn.classList.remove("visible");
+        }
+      });
+
+      // Butona tıklandığında yukarı çık
+      scrollToTopBtn.addEventListener("click", function () {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
     </script>
   </body>
 </html>

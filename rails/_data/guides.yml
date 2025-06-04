@@ -126,7 +126,7 @@ guides:
     title: "Action Controller Overview"
     en_file: "guides/en/action_controller_overview.html"
     tr_file: "guides/tr/action_controller_overview.html"
-    status: "pending"
+    status: "completed"
     
   - id: "action_mailbox_basics"
     title: "Action Mailbox Basics"
@@ -433,3 +433,4 @@ guides:
     en_file: "guides/en/working_with_javascript_in_rails.html"
     tr_file: "guides/tr/working_with_javascript_in_rails.html"
     status: "pending"
+    
