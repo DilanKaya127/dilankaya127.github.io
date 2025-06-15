@@ -1,0 +1,52 @@
+name: Build and Deploy Rails Turkish Docs
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Her gün saat 06:00'da çeviri repo'sunu kontrol et
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    # Manuel tetikleme için
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Jekyll Site
+      uses: actions/checkout@v4
+      with:
+        path: rails-site
+
+    - name: Checkout Rails TR-TR Repository
+      uses: actions/checkout@v4
+      with:
+        repository: DilanKaya127/rails-tr-TR
+        path: rails-tr-TR
+
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.1'
+        bundler-cache: true
+        working-directory: rails-site
+
+    - name: Sync Turkish Translations
+      working-directory: rails-site
+      run: |
+        ruby sync_translations.rb sync
+
+    - name: Build Jekyll Site
+      working-directory: rails-site
+      run: |
+        bundle exec jekyll build
+
+    - name: Deploy to GitHub Pages
+      if: github.ref == 'refs/heads/main'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: rails-site/_site
+        publish_branch: gh-pages

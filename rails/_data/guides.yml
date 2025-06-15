@@ -1,436 +1,198 @@
-# Rails Kılavuzları Veri Dosyası
-# Bu dosya otomatik olarak sync-rails-docs.sh ile güncellenir
-
+---
+updated_at: '2025-06-15 14:37:27'
+total_guides: 30
+completed_guides: 3
 guides:
-  - id: "2_2_release_notes"
-    title: "2 2 Release Notes"
-    en_file: "guides/en/2_2_release_notes.html"
-    tr_file: "guides/tr/2_2_release_notes.html"
-    status: "pending"
-    
-  - id: "2_3_release_notes"
-    title: "2 3 Release Notes"
-    en_file: "guides/en/2_3_release_notes.html"
-    tr_file: "guides/tr/2_3_release_notes.html"
-    status: "pending"
-    
-  - id: "3_0_release_notes"
-    title: "3 0 Release Notes"
-    en_file: "guides/en/3_0_release_notes.html"
-    tr_file: "guides/tr/3_0_release_notes.html"
-    status: "pending"
-    
-  - id: "3_1_release_notes"
-    title: "3 1 Release Notes"
-    en_file: "guides/en/3_1_release_notes.html"
-    tr_file: "guides/tr/3_1_release_notes.html"
-    status: "pending"
-    
-  - id: "3_2_release_notes"
-    title: "3 2 Release Notes"
-    en_file: "guides/en/3_2_release_notes.html"
-    tr_file: "guides/tr/3_2_release_notes.html"
-    status: "pending"
-    
-  - id: "4_0_release_notes"
-    title: "4 0 Release Notes"
-    en_file: "guides/en/4_0_release_notes.html"
-    tr_file: "guides/tr/4_0_release_notes.html"
-    status: "pending"
-    
-  - id: "4_1_release_notes"
-    title: "4 1 Release Notes"
-    en_file: "guides/en/4_1_release_notes.html"
-    tr_file: "guides/tr/4_1_release_notes.html"
-    status: "pending"
-    
-  - id: "4_2_release_notes"
-    title: "4 2 Release Notes"
-    en_file: "guides/en/4_2_release_notes.html"
-    tr_file: "guides/tr/4_2_release_notes.html"
-    status: "pending"
-    
-  - id: "5_0_release_notes"
-    title: "5 0 Release Notes"
-    en_file: "guides/en/5_0_release_notes.html"
-    tr_file: "guides/tr/5_0_release_notes.html"
-    status: "pending"
-    
-  - id: "5_1_release_notes"
-    title: "5 1 Release Notes"
-    en_file: "guides/en/5_1_release_notes.html"
-    tr_file: "guides/tr/5_1_release_notes.html"
-    status: "pending"
-    
-  - id: "5_2_release_notes"
-    title: "5 2 Release Notes"
-    en_file: "guides/en/5_2_release_notes.html"
-    tr_file: "guides/tr/5_2_release_notes.html"
-    status: "pending"
-    
-  - id: "6_0_release_notes"
-    title: "6 0 Release Notes"
-    en_file: "guides/en/6_0_release_notes.html"
-    tr_file: "guides/tr/6_0_release_notes.html"
-    status: "pending"
-    
-  - id: "6_1_release_notes"
-    title: "6 1 Release Notes"
-    en_file: "guides/en/6_1_release_notes.html"
-    tr_file: "guides/tr/6_1_release_notes.html"
-    status: "pending"
-    
-  - id: "7_0_release_notes"
-    title: "7 0 Release Notes"
-    en_file: "guides/en/7_0_release_notes.html"
-    tr_file: "guides/tr/7_0_release_notes.html"
-    status: "pending"
-    
-  - id: "7_1_release_notes"
-    title: "7 1 Release Notes"
-    en_file: "guides/en/7_1_release_notes.html"
-    tr_file: "guides/tr/7_1_release_notes.html"
-    status: "pending"
-    
-  - id: "7_2_release_notes"
-    title: "7 2 Release Notes"
-    en_file: "guides/en/7_2_release_notes.html"
-    tr_file: "guides/tr/7_2_release_notes.html"
-    status: "pending"
-    
-  - id: "8_0_release_notes"
-    title: "8 0 Release Notes"
-    en_file: "guides/en/8_0_release_notes.html"
-    tr_file: "guides/tr/8_0_release_notes.html"
-    status: "pending"
-    
-  - id: "8_1_release_notes"
-    title: "8 1 Release Notes"
-    en_file: "guides/en/8_1_release_notes.html"
-    tr_file: "guides/tr/8_1_release_notes.html"
-    status: "pending"
-    
-  - id: "action_cable_overview"
-    title: "Action Cable Overview"
-    en_file: "guides/en/action_cable_overview.html"
-    tr_file: "guides/tr/action_cable_overview.html"
-    status: "completed"
-    
-  - id: "action_controller_advanced_topics"
-    title: "Action Controller Advanced Topics"
-    en_file: "guides/en/action_controller_advanced_topics.html"
-    tr_file: "guides/tr/action_controller_advanced_topics.html"
-    status: "pending"
-    
-  - id: "action_controller_overview"
-    title: "Action Controller Overview"
-    en_file: "guides/en/action_controller_overview.html"
-    tr_file: "guides/tr/action_controller_overview.html"
-    status: "completed"
-    
-  - id: "action_mailbox_basics"
-    title: "Action Mailbox Basics"
-    en_file: "guides/en/action_mailbox_basics.html"
-    tr_file: "guides/tr/action_mailbox_basics.html"
-    status: "pending"
-    
-  - id: "action_mailer_basics"
-    title: "Action Mailer Basics"
-    en_file: "guides/en/action_mailer_basics.html"
-    tr_file: "guides/tr/action_mailer_basics.html"
-    status: "pending"
-    
-  - id: "action_text_overview"
-    title: "Action Text Overview"
-    en_file: "guides/en/action_text_overview.html"
-    tr_file: "guides/tr/action_text_overview.html"
-    status: "pending"
-    
-  - id: "action_view_helpers"
-    title: "Action View Helpers"
-    en_file: "guides/en/action_view_helpers.html"
-    tr_file: "guides/tr/action_view_helpers.html"
-    status: "pending"
-    
-  - id: "action_view_overview"
-    title: "Action View Overview"
-    en_file: "guides/en/action_view_overview.html"
-    tr_file: "guides/tr/action_view_overview.html"
-    status: "pending"
-    
-  - id: "active_job_basics"
-    title: "Active Job Basics"
-    en_file: "guides/en/active_job_basics.html"
-    tr_file: "guides/tr/active_job_basics.html"
-    status: "pending"
-    
-  - id: "active_model_basics"
-    title: "Active Model Basics"
-    en_file: "guides/en/active_model_basics.html"
-    tr_file: "guides/tr/active_model_basics.html"
-    status: "pending"
-    
-  - id: "active_record_basics"
-    title: "Active Record Basics"
-    en_file: "guides/en/active_record_basics.html"
-    tr_file: "guides/tr/active_record_basics.html"
-    status: "pending"
-    
-  - id: "active_record_callbacks"
-    title: "Active Record Callbacks"
-    en_file: "guides/en/active_record_callbacks.html"
-    tr_file: "guides/tr/active_record_callbacks.html"
-    status: "pending"
-    
-  - id: "active_record_composite_primary_keys"
-    title: "Active Record Composite Primary Keys"
-    en_file: "guides/en/active_record_composite_primary_keys.html"
-    tr_file: "guides/tr/active_record_composite_primary_keys.html"
-    status: "pending"
-    
-  - id: "active_record_encryption"
-    title: "Active Record Encryption"
-    en_file: "guides/en/active_record_encryption.html"
-    tr_file: "guides/tr/active_record_encryption.html"
-    status: "pending"
-    
-  - id: "active_record_migrations"
-    title: "Active Record Migrations"
-    en_file: "guides/en/active_record_migrations.html"
-    tr_file: "guides/tr/active_record_migrations.html"
-    status: "pending"
-    
-  - id: "active_record_multiple_databases"
-    title: "Active Record Multiple Databases"
-    en_file: "guides/en/active_record_multiple_databases.html"
-    tr_file: "guides/tr/active_record_multiple_databases.html"
-    status: "pending"
-    
-  - id: "active_record_postgresql"
-    title: "Active Record Postgresql"
-    en_file: "guides/en/active_record_postgresql.html"
-    tr_file: "guides/tr/active_record_postgresql.html"
-    status: "pending"
-    
-  - id: "active_record_querying"
-    title: "Active Record Querying"
-    en_file: "guides/en/active_record_querying.html"
-    tr_file: "guides/tr/active_record_querying.html"
-    status: "pending"
-    
-  - id: "active_record_validations"
-    title: "Active Record Validations"
-    en_file: "guides/en/active_record_validations.html"
-    tr_file: "guides/tr/active_record_validations.html"
-    status: "pending"
-    
-  - id: "active_storage_overview"
-    title: "Active Storage Overview"
-    en_file: "guides/en/active_storage_overview.html"
-    tr_file: "guides/tr/active_storage_overview.html"
-    status: "pending"
-    
-  - id: "active_support_core_extensions"
-    title: "Active Support Core Extensions"
-    en_file: "guides/en/active_support_core_extensions.html"
-    tr_file: "guides/tr/active_support_core_extensions.html"
-    status: "pending"
-    
-  - id: "active_support_instrumentation"
-    title: "Active Support Instrumentation"
-    en_file: "guides/en/active_support_instrumentation.html"
-    tr_file: "guides/tr/active_support_instrumentation.html"
-    status: "pending"
-    
-  - id: "api_app"
-    title: "Api App"
-    en_file: "guides/en/api_app.html"
-    tr_file: "guides/tr/api_app.html"
-    status: "pending"
-    
-  - id: "api_documentation_guidelines"
-    title: "Api Documentation Guidelines"
-    en_file: "guides/en/api_documentation_guidelines.html"
-    tr_file: "guides/tr/api_documentation_guidelines.html"
-    status: "pending"
-    
-  - id: "asset_pipeline"
-    title: "Asset Pipeline"
-    en_file: "guides/en/asset_pipeline.html"
-    tr_file: "guides/tr/asset_pipeline.html"
-    status: "pending"
-    
-  - id: "association_basics"
-    title: "Association Basics"
-    en_file: "guides/en/association_basics.html"
-    tr_file: "guides/tr/association_basics.html"
-    status: "pending"
-    
-  - id: "autoloading_and_reloading_constants"
-    title: "Autoloading And Reloading Constants"
-    en_file: "guides/en/autoloading_and_reloading_constants.html"
-    tr_file: "guides/tr/autoloading_and_reloading_constants.html"
-    status: "pending"
-    
-  - id: "caching_with_rails"
-    title: "Caching With Rails"
-    en_file: "guides/en/caching_with_rails.html"
-    tr_file: "guides/tr/caching_with_rails.html"
-    status: "pending"
-    
-  - id: "command_line"
-    title: "Command Line"
-    en_file: "guides/en/command_line.html"
-    tr_file: "guides/tr/command_line.html"
-    status: "pending"
-    
-  - id: "configuring"
-    title: "Configuring"
-    en_file: "guides/en/configuring.html"
-    tr_file: "guides/tr/configuring.html"
-    status: "pending"
-    
-  - id: "contributing_to_ruby_on_rails"
-    title: "Contributing To Ruby On Rails"
-    en_file: "guides/en/contributing_to_ruby_on_rails.html"
-    tr_file: "guides/tr/contributing_to_ruby_on_rails.html"
-    status: "pending"
-    
-  - id: "debugging_rails_applications"
-    title: "Debugging Rails Applications"
-    en_file: "guides/en/debugging_rails_applications.html"
-    tr_file: "guides/tr/debugging_rails_applications.html"
-    status: "pending"
-    
-  - id: "development_dependencies_install"
-    title: "Development Dependencies Install"
-    en_file: "guides/en/development_dependencies_install.html"
-    tr_file: "guides/tr/development_dependencies_install.html"
-    status: "pending"
-    
-  - id: "engines"
-    title: "Engines"
-    en_file: "guides/en/engines.html"
-    tr_file: "guides/tr/engines.html"
-    status: "pending"
-    
-  - id: "error_reporting"
-    title: "Error Reporting"
-    en_file: "guides/en/error_reporting.html"
-    tr_file: "guides/tr/error_reporting.html"
-    status: "pending"
-    
-  - id: "form_helpers"
-    title: "Form Helpers"
-    en_file: "guides/en/form_helpers.html"
-    tr_file: "guides/tr/form_helpers.html"
-    status: "pending"
-    
-  - id: "generators"
-    title: "Generators"
-    en_file: "guides/en/generators.html"
-    tr_file: "guides/tr/generators.html"
-    status: "pending"
-    
-  - id: "getting_started"
-    title: "Getting Started"
-    en_file: "guides/en/getting_started.html"
-    tr_file: "guides/tr/getting_started.html"
-    status: "completed"
-    
-  - id: "getting_started_with_devcontainer"
-    title: "Getting Started With Devcontainer"
-    en_file: "guides/en/getting_started_with_devcontainer.html"
-    tr_file: "guides/tr/getting_started_with_devcontainer.html"
-    status: "pending"
-    
-  - id: "i18n"
-    title: "I18n"
-    en_file: "guides/en/i18n.html"
-    tr_file: "guides/tr/i18n.html"
-    status: "pending"
-    
-  - id: "initialization"
-    title: "Initialization"
-    en_file: "guides/en/initialization.html"
-    tr_file: "guides/tr/initialization.html"
-    status: "pending"
-    
-  - id: "install_ruby_on_rails"
-    title: "Install Ruby On Rails"
-    en_file: "guides/en/install_ruby_on_rails.html"
-    tr_file: "guides/tr/install_ruby_on_rails.html"
-    status: "pending"
-    
-  - id: "layouts_and_rendering"
-    title: "Layouts And Rendering"
-    en_file: "guides/en/layouts_and_rendering.html"
-    tr_file: "guides/tr/layouts_and_rendering.html"
-    status: "pending"
-    
-  - id: "maintenance_policy"
-    title: "Maintenance Policy"
-    en_file: "guides/en/maintenance_policy.html"
-    tr_file: "guides/tr/maintenance_policy.html"
-    status: "pending"
-    
-  - id: "plugins"
-    title: "Plugins"
-    en_file: "guides/en/plugins.html"
-    tr_file: "guides/tr/plugins.html"
-    status: "pending"
-    
-  - id: "rails_on_rack"
-    title: "Rails On Rack"
-    en_file: "guides/en/rails_on_rack.html"
-    tr_file: "guides/tr/rails_on_rack.html"
-    status: "pending"
-    
-  - id: "routing"
-    title: "Routing"
-    en_file: "guides/en/routing.html"
-    tr_file: "guides/tr/routing.html"
-    status: "pending"
-    
-  - id: "ruby_on_rails_guides_guidelines"
-    title: "Ruby On Rails Guides Guidelines"
-    en_file: "guides/en/ruby_on_rails_guides_guidelines.html"
-    tr_file: "guides/tr/ruby_on_rails_guides_guidelines.html"
-    status: "pending"
-    
-  - id: "security"
-    title: "Security"
-    en_file: "guides/en/security.html"
-    tr_file: "guides/tr/security.html"
-    status: "pending"
-    
-  - id: "testing"
-    title: "Testing"
-    en_file: "guides/en/testing.html"
-    tr_file: "guides/tr/testing.html"
-    status: "pending"
-    
-  - id: "threading_and_code_execution"
-    title: "Threading And Code Execution"
-    en_file: "guides/en/threading_and_code_execution.html"
-    tr_file: "guides/tr/threading_and_code_execution.html"
-    status: "pending"
-    
-  - id: "tuning_performance_for_deployment"
-    title: "Tuning Performance For Deployment"
-    en_file: "guides/en/tuning_performance_for_deployment.html"
-    tr_file: "guides/tr/tuning_performance_for_deployment.html"
-    status: "pending"
-    
-  - id: "upgrading_ruby_on_rails"
-    title: "Upgrading Ruby On Rails"
-    en_file: "guides/en/upgrading_ruby_on_rails.html"
-    tr_file: "guides/tr/upgrading_ruby_on_rails.html"
-    status: "pending"
-    
-  - id: "working_with_javascript_in_rails"
-    title: "Working With Javascript In Rails"
-    en_file: "guides/en/working_with_javascript_in_rails.html"
-    tr_file: "guides/tr/working_with_javascript_in_rails.html"
-    status: "pending"
-    
+- id: getting_started
+  title: Rails ile Başlarken
+  description: Rails ile Başlarken konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/getting_started.html"
+  status: completed
+  has_translation: true
+  last_updated: '2025-06-15'
+- id: active_record_basics
+  title: Active Record Temelleri
+  description: Active Record Temelleri konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/active_record_basics.html"
+  status: pending
+  has_translation: false
+- id: active_record_migrations
+  title: Active Record Migrasyonları
+  description: Active Record Migrasyonları konusunu detaylı olarak ele alan Rails
+    kılavuzu.
+  url: "/rails/guides/active_record_migrations.html"
+  status: pending
+  has_translation: false
+- id: active_record_validations
+  title: Active Record Doğrulamaları
+  description: Active Record Doğrulamaları konusunu detaylı olarak ele alan Rails
+    kılavuzu.
+  url: "/rails/guides/active_record_validations.html"
+  status: pending
+  has_translation: false
+- id: active_record_callbacks
+  title: Active Record Callback'leri
+  description: Active Record Callback'leri konusunu detaylı olarak ele alan Rails
+    kılavuzu.
+  url: "/rails/guides/active_record_callbacks.html"
+  status: pending
+  has_translation: false
+- id: active_record_associations
+  title: Active Record İlişkileri
+  description: Active Record İlişkileri konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/active_record_associations.html"
+  status: pending
+  has_translation: false
+- id: active_record_querying
+  title: Active Record Sorgu Arayüzü
+  description: Active Record Sorgu Arayüzü konusunu detaylı olarak ele alan Rails
+    kılavuzu.
+  url: "/rails/guides/active_record_querying.html"
+  status: pending
+  has_translation: false
+- id: action_controller_overview
+  title: Action Controller'a Genel Bakış
+  description: Action Controller'a Genel Bakış konusunu detaylı olarak ele alan Rails
+    kılavuzu.
+  url: "/rails/guides/action_controller_overview.html"
+  status: completed
+  has_translation: true
+  last_updated: '2025-06-15'
+- id: routing
+  title: Rails Yönlendirme
+  description: Rails Yönlendirme konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/routing.html"
+  status: pending
+  has_translation: false
+- id: action_view_overview
+  title: Action View'a Genel Bakış
+  description: Action View'a Genel Bakış konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/action_view_overview.html"
+  status: pending
+  has_translation: false
+- id: layouts_and_rendering
+  title: Düzenler ve Rendering
+  description: Düzenler ve Rendering konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/layouts_and_rendering.html"
+  status: pending
+  has_translation: false
+- id: action_view_helpers
+  title: Action View Yardımcıları
+  description: Action View Yardımcıları konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/action_view_helpers.html"
+  status: pending
+  has_translation: false
+- id: form_helpers
+  title: Form Yardımcıları
+  description: Form Yardımcıları konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/form_helpers.html"
+  status: pending
+  has_translation: false
+- id: action_controller_callbacks
+  title: Action Controller Callbacks
+  description: Action Controller Callbacks konusunu detaylı olarak ele alan Rails
+    kılavuzu.
+  url: "/rails/guides/action_controller_callbacks.html"
+  status: pending
+  has_translation: false
+- id: action_cable_overview
+  title: Action Cable'a Genel Bakış
+  description: Action Cable'a Genel Bakış konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/action_cable_overview.html"
+  status: completed
+  has_translation: true
+  last_updated: '2025-06-15'
+- id: testing
+  title: Rails Uygulamalarını Test Etme
+  description: Rails Uygulamalarını Test Etme konusunu detaylı olarak ele alan Rails
+    kılavuzu.
+  url: "/rails/guides/testing.html"
+  status: pending
+  has_translation: false
+- id: security
+  title: Rails Güvenlik Kılavuzu
+  description: Rails Güvenlik Kılavuzu konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/security.html"
+  status: pending
+  has_translation: false
+- id: debugging_rails_applications
+  title: Rails Uygulamalarında Hata Ayıklama
+  description: Rails Uygulamalarında Hata Ayıklama konusunu detaylı olarak ele alan
+    Rails kılavuzu.
+  url: "/rails/guides/debugging_rails_applications.html"
+  status: pending
+  has_translation: false
+- id: configuring
+  title: Rails Uygulamalarını Yapılandırma
+  description: Rails Uygulamalarını Yapılandırma konusunu detaylı olarak ele alan
+    Rails kılavuzu.
+  url: "/rails/guides/configuring.html"
+  status: pending
+  has_translation: false
+- id: command_line
+  title: Rails Komut Satırı
+  description: Rails Komut Satırı konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/command_line.html"
+  status: pending
+  has_translation: false
+- id: asset_pipeline
+  title: Asset Pipeline
+  description: Asset Pipeline konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/asset_pipeline.html"
+  status: pending
+  has_translation: false
+- id: engines
+  title: Rails Engine'ları
+  description: Rails Engine'ları konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/engines.html"
+  status: pending
+  has_translation: false
+- id: i18n
+  title: I18n
+  description: I18n konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/i18n.html"
+  status: pending
+  has_translation: false
+- id: api_app
+  title: Rails API Uygulamaları
+  description: Rails API Uygulamaları konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/api_app.html"
+  status: pending
+  has_translation: false
+- id: active_job_basics
+  title: Active Job Temelleri
+  description: Active Job Temelleri konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/active_job_basics.html"
+  status: pending
+  has_translation: false
+- id: active_storage_overview
+  title: Active Storage Overview
+  description: Active Storage Overview konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/active_storage_overview.html"
+  status: pending
+  has_translation: false
+- id: action_mailbox_basics
+  title: Action Mailbox Basics
+  description: Action Mailbox Basics konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/action_mailbox_basics.html"
+  status: pending
+  has_translation: false
+- id: action_text_overview
+  title: Action Text Overview
+  description: Action Text Overview konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/action_text_overview.html"
+  status: pending
+  has_translation: false
+- id: caching_with_rails
+  title: Rails ile Önbellekleme
+  description: Rails ile Önbellekleme konusunu detaylı olarak ele alan Rails kılavuzu.
+  url: "/rails/guides/caching_with_rails.html"
+  status: pending
+  has_translation: false
+- id: autoloading_and_reloading_constants
+  title: Sabit Yükleme ve Yeniden Yükleme
+  description: Sabit Yükleme ve Yeniden Yükleme konusunu detaylı olarak ele alan Rails
+    kılavuzu.
+  url: "/rails/guides/autoloading_and_reloading_constants.html"
+  status: pending
+  has_translation: false

@@ -110,28 +110,29 @@ body {
   top: 100%;
   right: 0;
   background-color: #fff;
-  width: 650px;
-  max-width: 90vw;
+  width: 1050px; /* buradan daha fazla sütun eklenmesi için sayıyı değiştirebilirim*/
+  max-width: 95vw; /*daha fazla sütun*/
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   border-radius: 6px;
   padding: 16px;
+  overflow-x: auto;
 }
 
 .dropdown-content.multi-column {
   display: none;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 30px;
 }
 
 .dropdown-column {
   flex: 1;
-  min-width: 180px;
-  max-width: 200px;
+  min-width: 150px; /*bunları küçülterek sütunların sığmasını sağlayabiliriz*/
+  max-width: 180px;
 }
 
 .dropdown-column h4 {
-  color: #CC0000; /* Rails kırmızısı */
+  color: #d30001; /* Rails kırmızısı */
   font-size: 0.85em;
   font-weight: 600;
   margin: 0 0 8px 0;
@@ -326,13 +327,19 @@ body {
 .guide-body h3 {
     color: #333;
     margin: 1.5rem 0 1rem 0;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
 }
 
 .guide-body h4 {
     color: #333;
     margin: 1rem 0 0.5rem 0;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+}
+
+.guide-body h5 {
+    color: #333;
+    margin: 0.5rem 0 0.5rem 0;
+    font-size: 1.1rem;
 }
 
 .guide-body p {
@@ -489,8 +496,9 @@ body {
     background: #333;
     color: #fff;
     text-align: center;
-    padding: 2rem 0;
+    padding: 1.5rem 0;
     margin-top: 3rem;
+    font-size: small;
 }
 
 .footer a {
@@ -512,6 +520,7 @@ body {
     flex: 1;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    font-size: 0.95rem;
 }
 
 .feedback h3 {
@@ -569,6 +578,22 @@ body {
     pointer-events: none;
 }
 
+@media (max-width: 1200px){
+    .dropdown-content {
+        width: 650px; /* buradan daha fazla sütun eklenmesi için sayıyı değiştirebilirim*/
+        max-width: 95vw; /*daha fazla sütun*/
+    }
+
+    .dropdown-content.multi-column {
+        gap: 15px;
+    }
+
+    .dropdown-column {
+        flex: 1;
+        min-width: 140px; /*bunları küçülterek sütunların sığmasını sağlayabiliriz*/
+        max-width: 160px;
+    }
+}
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -680,6 +705,7 @@ body {
     }
     .feedback {
         width: 100%;
+        font-size: 0.85rem;;
     }
     .scroll-to-top {
         bottom: 20px;
@@ -691,6 +717,9 @@ body {
     .scroll-to-top svg {
         width: 18px;
         height: 18px;
+    }
+    .guide-alert-content {
+        font-size: 0.85rem;
     }
 }
 

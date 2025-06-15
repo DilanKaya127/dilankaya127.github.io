@@ -1,6 +1,3 @@
-# _plugins/guides_generator.rb
-# Bu dosyayı _plugins klasörüne koyun
-
 Jekyll::Hooks.register :site, :pre_render do |site|
   # Index sayfasını bul
   index_page = site.pages.find { |page| page.name == 'index.md' }
