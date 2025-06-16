@@ -1,0 +1,153 @@
+---
+layout: default
+---
+
+<div class="guide-container">
+  <button id="toc-toggle" class="toc-toggle">☰ İçindekiler</button>
+
+  <aside class="guide-sidebar">
+    <div class="guide-toc">
+      <div id="toc"></div>
+      <button class="toc-close" aria-label="İçindekileri Kapat">✕</button>
+    </div>
+  </aside>
+
+  <article class="guide-content">
+    <div class="guide-body">{{ content }}</div>
+  </article>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toc = document.getElementById("toc");
+    const headings = document.querySelectorAll(
+      ".guide-content h2, .guide-content h3, .guide-content h4"
+    );
+
+    if (headings.length > 0) {
+      const tocList = document.createElement("ul");
+      const headingMap = new Map();
+
+      // Türkçe karakterleri URL-dostu hale getiren fonksiyon
+      function turkishToSlug(text) {
+        const turkishChars = {
+          'ç': 'c', 'Ç': 'c',
+          'ğ': 'g', 'Ğ': 'g',
+          'ı': 'i', 'I': 'i',
+          'İ': 'i', 'i': 'i',
+          'ö': 'o', 'Ö': 'o',
+          'ş': 's', 'Ş': 's',
+          'ü': 'u', 'Ü': 'u'
+        };
+        
+        return text
+          .split('')
+          .map(char => turkishChars[char] || char)
+          .join('')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
+      // Aynı ID'nin tekrarlanmasını önlemek için sayaç
+      const idCounts = new Map();
+
+      headings.forEach(function (heading, index) {
+        // Başlık metninden anlamlı ID oluştur
+        const headingText = heading.textContent.trim();
+        let baseId = turkishToSlug(headingText);
+        
+        // Boş ID kontrolü
+        if (!baseId) {
+          baseId = "heading-" + index;
+        }
+        
+        // Tekrarlanan ID'leri önle
+        let finalId = baseId;
+        if (idCounts.has(baseId)) {
+          const count = idCounts.get(baseId) + 1;
+          idCounts.set(baseId, count);
+          finalId = baseId + "-" + count;
+        } else {
+          idCounts.set(baseId, 1);
+        }
+        
+        heading.id = finalId;
+
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = "#" + finalId;
+        a.textContent = headingText;
+        a.className = "toc-" + heading.tagName.toLowerCase();
+
+        li.appendChild(a);
+        tocList.appendChild(li);
+
+        headingMap.set(finalId, a);
+      });
+
+      toc.appendChild(tocList);
+
+      // Başlıkların görünürlük oranlarını takip et
+      const visibilityMap = new Map();
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const id = entry.target.getAttribute("id");
+            visibilityMap.set(id, entry.intersectionRatio);
+          });
+
+          // En çok görünür olan başlığı bul
+          let mostVisibleId = null;
+          let maxRatio = 0;
+
+          visibilityMap.forEach((ratio, id) => {
+            if (ratio > maxRatio) {
+              mostVisibleId = id;
+              maxRatio = ratio;
+            }
+          });
+
+          if (mostVisibleId) {
+            headingMap.forEach((linkEl) => linkEl.classList.remove("active"));
+            const activeLink = headingMap.get(mostVisibleId);
+            if (activeLink) {
+              activeLink.classList.add("active");
+
+              // Ortalamak için:
+              const linkTop = activeLink.offsetTop;
+              const linkHeight = activeLink.offsetHeight;
+              const tocScrollParent = toc;
+              const tocHeight = tocScrollParent.offsetHeight;
+
+              tocScrollParent.scrollTo({
+                top: linkTop - tocHeight / 2 + linkHeight / 2,
+                behavior: "smooth",
+              });
+            }
+          }
+        },
+        {
+          threshold: [0, 0.25, 0.5, 0.75, 1.0],
+        }
+      );
+
+      headings.forEach((heading) => {
+        observer.observe(heading);
+      });
+
+      const toggleBtn = document.getElementById("toc-toggle");
+      const sidebar = document.querySelector(".guide-sidebar");
+
+      toggleBtn.addEventListener("click", function () {
+        sidebar.classList.toggle("open");
+      });
+      const closeBtn = document.querySelector(".toc-close");
+
+      closeBtn?.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+      });
+    }
+  });
+</script>

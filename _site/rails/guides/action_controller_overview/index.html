@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Action Controller'a Genel Bakış - Rails Dokümantasyonu - Türkçe
+    </title>
+    <link
+      rel="stylesheet"
+      href="/assets/css/rails.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css"
+    />
+
+    <link
+      rel="icon"
+      type="image/svg"
+      href="/assets/images/rails/logo_rails-circle.svg"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-Y6Q8S53SSQ"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-Y6Q8S53SSQ");
+    </script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="header-content">
+          <h1 class="logo">
+            <a href="/rails/">
+              <img
+                src="/assets/images/rails/logo_rails-circle.svg"
+                alt="Rails Logo"
+                class="logo-image"
+              />
+            </a>
+          </h1>
+          <nav class="nav">
+            <a href="/">Ana Sayfa</a>
+            <!-- <a href="https://dilankaya127.github.io">Portföy</a> -->
+
+            <div class="dropdown">
+              <a class="dropbtn">Kılavuzlar</a>
+              <div class="dropdown-content multi-column">
+                 
+                <div class="dropdown-column">
+                  <h4>Buradan Başlayın</h4>
+                  
+                  <a href="/rails/guides/getting_started">Rails ile Başlarken</a>
+                  
+                  <a href="/rails/guides/install_ruby_on_rails">Ruby on Rails İndirme Kılavuzu</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Model</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record Temelleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record Migration</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record Doğrulamaları</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record Callback</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record İlişkileri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record Sorgu Arayüzü</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Model Temelleri</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>View</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action View Overview</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Layout ve Rendering</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action View Helper</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action View Form Helper</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Controller</h4>
+                  
+                  <a href="/rails/guides/action_controller_overview">Action Controller</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action Controller İleri Konular</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Dışarıdan İçeriye Routing</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Diğer Bileşenler</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Support Core Uzantılar</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action Mailer Temelleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action Mailbox Temelleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action Text</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Job Temelleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Storage</a>
+                  
+                  <a href="/rails/guides/action_cable_overview">Action Cable</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Daha Derin Konular</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uluslararasılaştırma API</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uygulamalarını Test Etme</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uygulamalarında Hata Ayıklama</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uygulamalarını Yapılandırma</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Komut Satırı</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Asset Pipeline</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails'te JavaScript ile Çalışma</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Başlatma Süreci</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Otomatik Yükleme ve Yeniden Yükleme</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Support Instrumentation</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">API Özel Uygulamalar için Rails Kullanımı</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Ürün Çıkarmak</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Dağıtım için Performans Ayarlama</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails ile Önbelleğe Alma: Genel Bakış</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uygulamalarının Güvenliğini Sağlama</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uygulamalarında Hata Bildirim</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>İleri Seviye Active Record</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record ve PostgreSQL</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Çoklu Veritabanı</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record Şifreleme</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Bileşik Birincil Anahtarlar</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Rails Uygulamalarını Büyütelim</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Eklentileri Oluşturmanın Temelleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rack'te Rails</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Generator ve Şablonları Oluşturma ve Özelleştirme</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Engine ile Çalışmaya Başlarken</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uygulama Şablonları</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails'te İş Parçacığı Oluşturma ve Kod Yürütme</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Katkıda Bulunun</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Ruby on Rails'e Katkıda Bulunma</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">API Dokümantasyon Yönergeleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Kılavuz Yönergeleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Core Geliştirme Bağımlılıklarını Yükleme</a>
+                  
+                </div>
+                     
+              </div>
+            </div>
+            <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="container">
+        <div class="guide-container">
+  <button id="toc-toggle" class="toc-toggle">☰ İçindekiler</button>
+
+  <aside class="guide-sidebar">
+    <div class="guide-toc">
+      <div id="toc"></div>
+      <button class="toc-close" aria-label="İçindekileri Kapat">✕</button>
+    </div>
+  </aside>
+
+  <article class="guide-content">
+    <div class="guide-body"><p><strong>RESMİ KILAVUZA BU ADRES ÜZERİNDEN ULAŞABİLİRSİNİZ: <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a></strong></p>
+
+<hr />
+
+<h1 id="action-controller">Action Controller</h1>
+
+<p>Bu kılavuzda, Controller’ın nasıl çalıştığını ve uygulamanızdaki istek döngüsüne nasıl uyum sağladığını öğreneceksiniz.</p>
+
+<p>Bu kılavuzu okuduktan sonra şunları yapmayı öğreneceksiniz:</p>
+
+<ul>
+  <li>Bir controller aracılığıyla isteğin akışını takip etmeyi</li>
+  <li>Controller’ınıza aktarılan parametrelere erişmeyi</li>
+  <li>Strong Parameters ve izin değerleri kullanmayı</li>
+  <li>Verileri çerez, oturum ve flash’te depolamayı</li>
+  <li>İstek işleme sırasında kodu yürütmek için action callback’leriyle çalışmayı</li>
+  <li>İstek ve Yanıt Nesnelerini kullanmayı</li>
+</ul>
+
+<h2 id="giriş">Giriş</h2>
+
+<p>Action Controller, Model View Controller (<a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">MVC</a>) desenindeki C’dir. <a href="/rails/guides/missing_pages/currently_being_worked/">Router</a>; bir controller’ı gelen bir istekle eşleştirdikten sonra, controller isteği işlemekten ve uygun çıktıyı üretmekten sorumludur.</p>
+
+<p>Çoğu geleneksel [RESTful] (https://en.wikipedia.org/wiki/Representational_state_transfer) uygulamasında, controller isteği alır, bir modelden veri getirir veya kaydeder ve HTML çıktısı oluşturmak için bir view kullanır.</p>
+
+<p>Bir controller’ın model ve view arasında yer aldığını düşünebilirsiniz. Controller, model verilerini view için kullanılabilir hale getirir, böylece view bu verileri kullanıcıya gösterebilir. Controller ayrıca view’den kullanıcı girdisi alır ve model verilerini buna göre kaydeder veya günceller.</p>
+
+<h2 id="controller-oluşturma">Controller Oluşturma</h2>
+
+<p>Bir controller, <code class="language-plaintext highlighter-rouge">ApplicationController</code>‘dan miras alan ve diğer sınıflar gibi metotlara sahip bir Ruby sınıfıdır. Gelen bir istek router tarafından bir controller ile eşleştirildiğinde, Rails o controller sınıfının bir örneğini oluşturur ve action ile aynı isme sahip metodu çağırır.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ClientsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">new</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Yukarıdaki <code class="language-plaintext highlighter-rouge">ClientsController</code> göz önüne alındığında, bir kullanıcı yeni bir client eklemek için uygulamanızda <code class="language-plaintext highlighter-rouge">/clients/new</code> adresine giderse, Rails <code class="language-plaintext highlighter-rouge">ClientsController</code>‘ın bir örneğini oluşturacak ve <code class="language-plaintext highlighter-rouge">new</code> metodunu çağıracaktır. Eğer <code class="language-plaintext highlighter-rouge">new</code> metodu boşsa, Rails varsayılan olarak otomatik olarak <code class="language-plaintext highlighter-rouge">new.html.erb</code> view’ini render edecektir.</p>
+
+<p>NOT: Buradaki <code class="language-plaintext highlighter-rouge">new</code> metodu, <code class="language-plaintext highlighter-rouge">ClientsController</code>‘ın bir örneği üzerinde çağrılan bir instance metodudur. Bu, <code class="language-plaintext highlighter-rouge">new</code> sınıf metodu (yani <code class="language-plaintext highlighter-rouge">ClientsController.new</code>) ile karıştırılmamalıdır.</p>
+
+<p><code class="language-plaintext highlighter-rouge">new</code> metodunda, controller tipik olarak <code class="language-plaintext highlighter-rouge">Client</code> modelinin bir örneğini oluşturur ve bunu view’da <code class="language-plaintext highlighter-rouge">@client</code> adlı bir instance variable olarak kullanılabilir hale getirir:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">new</span>
+  <span class="vi">@client</span> <span class="o">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">new</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="guide-alert guide-alert-warning">
+  <div class="guide-alert-icon">📝</div>
+  <div class="guide-alert-content">
+    Tüm controller'lar <code>ApplicationController</code>'dan miras alır, o da <a href="https://api.rubyonrails.org/classes/ActionController/Base.html">ActionController::Base</a>'den miras alır. <a href="https://guides.rubyonrails.org/api_app.html">Yalnızca API</a> uygulamaları için <code>ApplicationController</code> <a href="https://edgeapi.rubyonrails.org/classes/ActionController/API.html">ActionController::API</a>'dan miras alır.
+  </div>
+</div>
+
+<h3 id="controller-i̇simlendirme-kuralı">Controller İsimlendirme Kuralı</h3>
+
+<p>Rails, controller adındaki kaynağın çoğul yapılmasını tercih eder. Örneğin, <code class="language-plaintext highlighter-rouge">ClientController</code> yerine <code class="language-plaintext highlighter-rouge">ClientsController</code> ve <code class="language-plaintext highlighter-rouge">SiteAdminController</code> veya <code class="language-plaintext highlighter-rouge">SitesAdminsController</code> yerine <code class="language-plaintext highlighter-rouge">SiteAdminsController</code> tercih edilir. Ancak, çoğul isimler kesinlikle gerekli değildir (örneğin <code class="language-plaintext highlighter-rouge">ApplicationController</code>).</p>
+
+<p>Bu isimlendirme kuralını takip etmek, <a href="/rails/guides/missing_pages/currently_being_worked/">varsayılan route generator’larını</a> (örneğin <code class="language-plaintext highlighter-rouge">resources</code>) <a href="/rails/guides/missing_pages/currently_being_worked/">:controller</a> gibi seçeneklerle nitelendirmeye gerek kalmadan kullanmanıza olanak tanır. Bu kural ayrıca isimlendirilmiş route helper’larını uygulama boyunca tutarlı hale getirir.</p>
+
+<p>Controller isimlendirme kuralı modellerden farklıdır. Controller isimleri için çoğul isimler tercih edilirken, <a href="/rails/guides/missing_pages/currently_being_worked/">model isimleri</a> için tekil form tercih edilir (örneğin <code class="language-plaintext highlighter-rouge">Accounts</code> yerine <code class="language-plaintext highlighter-rouge">Account</code>).</p>
+
+<p>Controller action’ları <code class="language-plaintext highlighter-rouge">public</code> olmalıdır, çünkü yalnızca <code class="language-plaintext highlighter-rouge">public</code> metotlar action olarak çağrılabilir. Action olmaya yönelik <em>olmayan</em> yardımcı metotların görünürlüğünü (<code class="language-plaintext highlighter-rouge">private</code> veya <code class="language-plaintext highlighter-rouge">protected</code> ile) düşürmek de iyi bir yöntemdir.</p>
+
+<div class="guide-alert guide-alert-danger">
+  <div class="guide-alert-icon">❗</div>
+  <div class="guide-alert-content">
+    Bazı metod isimleri Action Controller tarafından rezerve edilmiştir. Bunları yanlışlıkla yeniden tanımlamak <code>SystemStackError</code> ile sonuçlanabilir. Controller'larınızı yalnızca RESTful <a href="/rails/guides/missing_pages/currently_being_worked/">Resource Routing</a> action'larıyla sınırlandırırsanız bu konuda endişelenmenize gerek olmaz.
+  </div>
+</div>
+
+<div class="guide-alert guide-alert-warning">
+  <div class="guide-alert-icon">📝</div>
+  <div class="guide-alert-content">
+    Rezerve edilmiş bir metodu action adı olarak kullanmanız gerekiyorsa geçici bir çözüm olarak şunu yapabilirsiniz: Rezerve edilmiş metot adını, rezerve edilmemiş action metodunuza eşlemek için özel bir route kullanabilirsiniz.
+  </div>
+</div>
+
+<h2 id="parametreler">Parametreler</h2>
+
+<p>Gelen istek tarafından gönderilen veriler, controller’ınızda <a href="https://api.rubyonrails.org/classes/ActionController/StrongParameters.html#method-i-params"><code class="language-plaintext highlighter-rouge">params</code></a> hash’inde mevcuttur. İki tür parametre verisi vardır:</p>
+
+<ul>
+  <li>URL’in bir parçası olarak gönderilen query string parametreleri (örneğin, <code class="language-plaintext highlighter-rouge">http://example.com/accounts?filter=free</code> adresindeki <code class="language-plaintext highlighter-rouge">?</code>‘den sonra).</li>
+  <li>Bir HTML formundan gönderilen POST parametreleri.</li>
+</ul>
+
+<p>Rails query string parametreleri ile POST parametreleri arasında ayrım yapmaz; her ikisi de controller’ınızdaki <code class="language-plaintext highlighter-rouge">params</code> hash’inde mevcuttur. Örneğin:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ClientsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># Bu action "/clients?status=activated" URL'inden HTTP GET isteği ile</span>
+  <span class="c1"># query string parametrelerini alır</span>
+  <span class="k">def</span> <span class="nf">index</span>
+    <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="ss">:status</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"activated"</span>
+      <span class="vi">@clients</span> <span class="o">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">activated</span>
+    <span class="k">else</span>
+      <span class="vi">@clients</span> <span class="o">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">inactivated</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="c1"># Bu action "/clients" URL'ine POST isteği ile request body'sindeki </span>
+  <span class="c1"># form verilerinden parametreleri alır.</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="vi">@client</span> <span class="o">=</span> <span class="no">Client</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:client</span><span class="p">])</span>
+    <span class="k">if</span> <span class="vi">@client</span><span class="p">.</span><span class="nf">save</span>
+      <span class="n">redirect_to</span> <span class="vi">@client</span>
+    <span class="k">else</span>
+      <span class="n">render</span> <span class="s2">"new"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<div class="guide-alert guide-alert-warning">
+  <div class="guide-alert-icon">📝</div>
+  <div class="guide-alert-content">
+    <code>params</code> hash'i sıradan bir Ruby Hash değildir; bunun yerine bir <a href="https://api.rubyonrails.org/classes/ActionController/Parameters.html">ActionController::Parameters</a> nesnesidir. Hash'ten miras almaz, ancak çoğunlukla Hash gibi davranır. <code>params</code>'ı filtrelemek için metotlar sağlar ve bir Hash'ten farklı olarak <code>:foo</code> ve <code>"foo"</code> anahtarları aynı kabul edilir.
+  </div>
+</div>
+
+<h3 id="hash-ve-array-parametreleri">Hash ve Array Parametreleri</h3>
+
+<p><code class="language-plaintext highlighter-rouge">params</code> hash’i tek boyutlu anahtarlar ve değerlerle sınırlı değildir. İç içe array’ler ve hash’ler içerebilir. Bir değer array’i göndermek için, anahtar adının sonuna boş bir çift köşeli parantez <code class="language-plaintext highlighter-rouge">[]</code> ekleyin:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /users?ids[]=1&amp;ids[]=2&amp;ids[]=3
+</code></pre></div></div>
+
+<div class="guide-alert guide-alert-warning">
+  <div class="guide-alert-icon">📝</div>
+  <div class="guide-alert-content">
+     <code>[</code> ve <code>]</code> karakterleri URL'lerde izin verilmediği için bu örnekteki gerçek URL <code>/users?ids%5b%5d=1&amp;ids%5b%5d=2&amp;ids%5b%5d=3</code> olarak kodlanacaktır. Çoğu zaman bu konuda endişelenmenize gerek yoktur çünkü tarayıcı bunu sizin için kodlayacak ve Rails otomatik olarak decode edecektir, ancak bu istekleri sunucuya manuel olarak göndermeniz gerekirse bunu aklınızda bulundurmalısınız.
+  </div>
+</div>
+
+<p><code class="language-plaintext highlighter-rouge">params[:ids]</code>‘in değeri <code class="language-plaintext highlighter-rouge">["1", "2", "3"]</code> array’i olacaktır. Parametre değerlerinin her zaman string olduğuna dikkat edin; Rails türü tahmin etmeye veya cast etmeye çalışmaz.</p>
+
+<div class="guide-alert guide-alert-warning">
+  <div class="guide-alert-icon">📝</div>
+  <div class="guide-alert-content">
+    <code>params</code>'taki <code>[nil]</code> veya <code>[nil, nil, ...]</code> gibi değerler güvenlik nedenleriyle varsayılan olarak <code>[]</code> ile değiştirilir. Daha fazla bilgi için <a href="/rails/guides/missing_pages/currently_being_worked/">Güvenlik Rehberi</a>'ne bakın.
+  </div>
+</div>
+
+<p>Bir hash göndermek için, anahtar adını köşeli parantezlerin içine dahil edersiniz:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;form</span> <span class="na">accept-charset=</span><span class="s">"UTF-8"</span> <span class="na">action=</span><span class="s">"/users"</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"user[name]"</span> <span class="na">value=</span><span class="s">"Acme"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"user[phone]"</span> <span class="na">value=</span><span class="s">"12345"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"user[address][postcode]"</span> <span class="na">value=</span><span class="s">"12345"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"user[address][city]"</span> <span class="na">value=</span><span class="s">"Carrot City"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</code></pre></div></div>
+
+<p>Bu form gönderildiğinde, <code class="language-plaintext highlighter-rouge">params[:user]</code>‘ın değeri <code class="language-plaintext highlighter-rouge">{ "name" =&gt; "Acme", "phone" =&gt; "12345", "address" =&gt; { "postcode" =&gt; "12345", "city" =&gt; "Carrot City" } }</code> olacaktır. <code class="language-plaintext highlighter-rouge">params[:user][:address]</code>‘teki iç içe hash’e dikkat edin.</p>
+
+<p><code class="language-plaintext highlighter-rouge">params</code> nesnesi bir Hash gibi davranır, ancak anahtar olarak sembolleri ve string’leri birbirinin yerine kullanmanıza izin verir.</p>
+
+<h3 id="bileşik-anahtar-parametreleri">Bileşik Anahtar Parametreleri</h3>
+
+<p><a href="/rails/guides/missing_pages/currently_being_worked/">Bileşik anahtar (composite key) parametreleri</a> bir ayırıcı (örneğin, alt çizgi) ile ayrılmış bir parametrede birden fazla değer içerir. Bu nedenle, Active Record’a geçirebilmek için her değeri çıkarmanız gerekir. Bunu yapmak için <code class="language-plaintext highlighter-rouge">extract_value</code> metodunu kullanabilirsiniz.</p>
+
+<p>Örneğin, aşağıdaki controller göz önüne alındığında:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="c1"># URL parametrelerinden composite ID değerini çıkar.</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">params</span><span class="p">.</span><span class="nf">extract_value</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>
+    <span class="vi">@book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Ve bu route:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">get</span> <span class="s2">"/books/:id"</span><span class="p">,</span> <span class="ss">to: </span><span class="s2">"books#show"</span>
+</code></pre></div></div>
+
+<p>Bir kullanıcı <code class="language-plaintext highlighter-rouge">/books/4_2</code> URL’ine istek gönderdiğinde controller, bileşik anahtar değeri <code class="language-plaintext highlighter-rouge">["4", "2"]</code>‘yi çıkaracak ve <code class="language-plaintext highlighter-rouge">Book.find</code>‘a geçecektir. <code class="language-plaintext highlighter-rouge">extract_value</code> metodu herhangi bir sınırlandırılmış parametreden array’leri çıkarmak için kullanılabilir.</p>
+
+<h3 id="json-parametreleri">JSON Parametreleri</h3>
+
+<p>Eğer uygulamanız bir API sunarsa, muhtemelen parametreleri JSON formatında kabul edeceksiniz. İsteğinizin <code class="language-plaintext highlighter-rouge">content-type</code> header’ı <code class="language-plaintext highlighter-rouge">application/json</code> olarak ayarlanmışsa, Rails parametrelerinizi otomatik olarak <code class="language-plaintext highlighter-rouge">params</code> hash’ine yükleyecektir ve normalde yaptığınız gibi bunlara erişebilirsiniz.</p>
+
+<p>Örneğin, bu JSON içeriğini gönderiyorsanız:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nl">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"acme"</span><span class="p">,</span><span class="w"> </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123 Carrot Street"</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Controller’ınız şunu alacaktır:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span> <span class="s2">"user"</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="s2">"name"</span> <span class="o">=&gt;</span> <span class="s2">"acme"</span><span class="p">,</span> <span class="s2">"address"</span> <span class="o">=&gt;</span> <span class="s2">"123 Carrot Street"</span> <span class="p">}</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="wrap-parametre-yapılandırması">Wrap Parametre Yapılandırması</h4>
+
+<p>JSON parametrelerine otomatik olarak controller adını ekleyen [Wrap Parameters][] kullanabilirsiniz. Örneğin, root <code class="language-plaintext highlighter-rouge">:user</code> anahtar öneki olmadan aşağıdaki JSON’u gönderebilirsiniz:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"acme"</span><span class="p">,</span><span class="w"> </span><span class="nl">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123 Carrot Street"</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Bu veriyi <code class="language-plaintext highlighter-rouge">UsersController</code>‘a gönderdiğinizi varsayarak, JSON şu şekilde <code class="language-plaintext highlighter-rouge">:user</code> anahtarı içinde sarmalanacaktır:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span> <span class="ss">name: </span><span class="s2">"acme"</span><span class="p">,</span> <span class="ss">address: </span><span class="s2">"123 Carrot Street"</span><span class="p">,</span> <span class="ss">user: </span><span class="p">{</span> <span class="ss">name: </span><span class="s2">"acme"</span><span class="p">,</span> <span class="ss">address: </span><span class="s2">"123 Carrot Street"</span> <span class="p">}</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>NOT: Wrap Parameters, controller adıyla aynı olan bir anahtar içinde hash’e parametrelerin bir klonunu ekler. Sonuç olarak, hem parametrelerin orijinal versiyonu hem de “sarmalanmış” versiyonu params hash’inde bulunacaktır.</p>
+
+<p>Bu özellik, controller’ınızın adına dayalı olarak seçilen bir anahtarla parametreleri klonlar ve sarmalar. Varsayılan olarak <code class="language-plaintext highlighter-rouge">true</code> olarak yapılandırılmıştır. Parametreleri sarmalamasını istemiyorsanız bunu <code class="language-plaintext highlighter-rouge">false</code> olarak <a href="../configuring/config-action-controller-wrap-parameters-by-default">yapılandırabilirsiniz</a>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">config</span><span class="p">.</span><span class="nf">action_controller</span><span class="p">.</span><span class="nf">wrap_parameters_by_default</span> <span class="o">=</span> <span class="kp">false</span>
+</code></pre></div></div>
+
+<p>Ayrıca anahtarın adını veya sarmalamak istediğiniz belirli parametreleri özelleştirebilirsiniz, daha fazla bilgi için <a href="https://api.rubyonrails.org/classes/ActionController/ParamsWrapper.html">API dokümantasyonu</a>‘na bakın.</p>
+
+<p>[Wrap Parameters]:
+    https://api.rubyonrails.org/classes/ActionController/ParamsWrapper/Options/ClassMethods.html#method-i-wrap_parameters</p>
+
+<h3 id="routing-parameters">Routing Parameters</h3>
+
+<p><code class="language-plaintext highlighter-rouge">routes.rb</code> dosyasındaki route bildirimin bir parçası olarak belirtilen parametreler de <code class="language-plaintext highlighter-rouge">params</code> hash’inde kullanılabilir hale getirilir. Örneğin, bir client için <code class="language-plaintext highlighter-rouge">:status</code> parametresini yakalayan bir route ekleyebiliriz:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">get</span> <span class="s2">"/clients/:status"</span><span class="p">,</span> <span class="ss">to: </span><span class="s2">"clients#index"</span><span class="p">,</span> <span class="ss">foo: </span><span class="s2">"bar"</span>
+</code></pre></div></div>
+
+<p>Bir kullanıcı <code class="language-plaintext highlighter-rouge">/clients/active</code> URL’ine gittiğinde, <code class="language-plaintext highlighter-rouge">params[:status]</code> “active” olarak ayarlanacaktır. Bu route kullanıldığında, <code class="language-plaintext highlighter-rouge">params[:foo]</code> da sanki query string’de geçirilmiş gibi “bar” olarak ayarlanacaktır.</p>
+
+<p>Route bildirimi tarafından tanımlanan <code class="language-plaintext highlighter-rouge">:id</code> gibi diğer parametreler de kullanılabilir olacaktır.</p>
+
+<p>NOT: Yukarıdaki örnekte, controller’ınız ayrıca <code class="language-plaintext highlighter-rouge">params[:action]</code>‘ı “index” ve <code class="language-plaintext highlighter-rouge">params[:controller]</code>‘ı “clients” olarak alacaktır. <code class="language-plaintext highlighter-rouge">params</code> hash’i her zaman <code class="language-plaintext highlighter-rouge">:controller</code> ve <code class="language-plaintext highlighter-rouge">:action</code> anahtarlarını içerecektir, ancak bu değerlere erişmek için [<code class="language-plaintext highlighter-rouge">controller_name</code>][] ve [<code class="language-plaintext highlighter-rouge">action_name</code>][] metotlarını kullanmanız önerilir.</p>
+
+<p>[<code class="language-plaintext highlighter-rouge">controller_name</code>]:
+    https://api.rubyonrails.org/classes/ActionController/Metal.html#method-i-controller_name
+[<code class="language-plaintext highlighter-rouge">action_name</code>]:
+    https://api.rubyonrails.org/classes/AbstractController/Base.html#method-i-action_name</p>
+
+<h3 id="default_url_options-metodu"><code class="language-plaintext highlighter-rouge">default_url_options</code> Metodu</h3>
+
+<p>Controller’ınızda <code class="language-plaintext highlighter-rouge">default_url_options</code> adlı bir metod tanımlayarak <a href="https://api.rubyonrails.org/classes/ActionView/RoutingUrlFor.html#method-i-url_for"><code class="language-plaintext highlighter-rouge">url_for</code></a> için global varsayılan parametreler ayarlayabilirsiniz. Örneğin:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ApplicationController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+  <span class="k">def</span> <span class="nf">default_url_options</span>
+    <span class="p">{</span> <span class="ss">locale: </span><span class="no">I18n</span><span class="p">.</span><span class="nf">locale</span> <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Belirtilen varsayılanlar URL’ler oluşturulurken başlangıç noktası olarak kullanılacaktır. <code class="language-plaintext highlighter-rouge">url_for</code>‘a veya <code class="language-plaintext highlighter-rouge">posts_path</code> gibi herhangi bir path helper’a geçirilen seçenekler tarafından geçersiz kılınabilirler. Örneğin, <code class="language-plaintext highlighter-rouge">locale: I18n.locale</code> ayarlayarak, Rails otomatik olarak her URL’e locale’i ekleyecektir:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">posts_path</span> <span class="c1"># =&gt; "/posts?locale=en"</span>
+</code></pre></div></div>
+
+<p>Gerekirse bu varsayılanı yine de geçersiz kılabilirsiniz:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">posts_path</span><span class="p">(</span><span class="ss">locale: :fr</span><span class="p">)</span> <span class="c1"># =&gt; "/posts?locale=fr"</span>
+</code></pre></div></div>
+
+<p>NOT: Perde arkasında, <code class="language-plaintext highlighter-rouge">posts_path</code> uygun parametrelerle <code class="language-plaintext highlighter-rouge">url_for</code> çağırmanın kısaltmasıdır.</p>
+
+<p>Yukarıdaki örnekte olduğu gibi <code class="language-plaintext highlighter-rouge">ApplicationController</code>‘da <code class="language-plaintext highlighter-rouge">default_url_options</code> tanımlarsanız, bu varsayılanlar tüm URL oluşturma işlemleri için kullanılacaktır. Metod ayrıca belirli bir controller’da da tanımlanabilir, bu durumda yalnızca o controller için oluşturulan URL’lere uygulanır.</p>
+
+<p>Belirli bir istekte, metod gerçekte oluşturulan her URL için çağrılmaz. Performans nedenleriyle döndürülen hash istek başına önbelleğe alınır.</p>
+</div>
+  </article>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toc = document.getElementById("toc");
+    const headings = document.querySelectorAll(
+      ".guide-content h2, .guide-content h3, .guide-content h4"
+    );
+
+    if (headings.length > 0) {
+      const tocList = document.createElement("ul");
+      const headingMap = new Map();
+
+      // Türkçe karakterleri URL-dostu hale getiren fonksiyon
+      function turkishToSlug(text) {
+        const turkishChars = {
+          'ç': 'c', 'Ç': 'c',
+          'ğ': 'g', 'Ğ': 'g',
+          'ı': 'i', 'I': 'i',
+          'İ': 'i', 'i': 'i',
+          'ö': 'o', 'Ö': 'o',
+          'ş': 's', 'Ş': 's',
+          'ü': 'u', 'Ü': 'u'
+        };
+        
+        return text
+          .split('')
+          .map(char => turkishChars[char] || char)
+          .join('')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
+      // Aynı ID'nin tekrarlanmasını önlemek için sayaç
+      const idCounts = new Map();
+
+      headings.forEach(function (heading, index) {
+        // Başlık metninden anlamlı ID oluştur
+        const headingText = heading.textContent.trim();
+        let baseId = turkishToSlug(headingText);
+        
+        // Boş ID kontrolü
+        if (!baseId) {
+          baseId = "heading-" + index;
+        }
+        
+        // Tekrarlanan ID'leri önle
+        let finalId = baseId;
+        if (idCounts.has(baseId)) {
+          const count = idCounts.get(baseId) + 1;
+          idCounts.set(baseId, count);
+          finalId = baseId + "-" + count;
+        } else {
+          idCounts.set(baseId, 1);
+        }
+        
+        heading.id = finalId;
+
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = "#" + finalId;
+        a.textContent = headingText;
+        a.className = "toc-" + heading.tagName.toLowerCase();
+
+        li.appendChild(a);
+        tocList.appendChild(li);
+
+        headingMap.set(finalId, a);
+      });
+
+      toc.appendChild(tocList);
+
+      // Başlıkların görünürlük oranlarını takip et
+      const visibilityMap = new Map();
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const id = entry.target.getAttribute("id");
+            visibilityMap.set(id, entry.intersectionRatio);
+          });
+
+          // En çok görünür olan başlığı bul
+          let mostVisibleId = null;
+          let maxRatio = 0;
+
+          visibilityMap.forEach((ratio, id) => {
+            if (ratio > maxRatio) {
+              mostVisibleId = id;
+              maxRatio = ratio;
+            }
+          });
+
+          if (mostVisibleId) {
+            headingMap.forEach((linkEl) => linkEl.classList.remove("active"));
+            const activeLink = headingMap.get(mostVisibleId);
+            if (activeLink) {
+              activeLink.classList.add("active");
+
+              // Ortalamak için:
+              const linkTop = activeLink.offsetTop;
+              const linkHeight = activeLink.offsetHeight;
+              const tocScrollParent = toc;
+              const tocHeight = tocScrollParent.offsetHeight;
+
+              tocScrollParent.scrollTo({
+                top: linkTop - tocHeight / 2 + linkHeight / 2,
+                behavior: "smooth",
+              });
+            }
+          }
+        },
+        {
+          threshold: [0, 0.25, 0.5, 0.75, 1.0],
+        }
+      );
+
+      headings.forEach((heading) => {
+        observer.observe(heading);
+      });
+
+      const toggleBtn = document.getElementById("toc-toggle");
+      const sidebar = document.querySelector(".guide-sidebar");
+
+      toggleBtn.addEventListener("click", function () {
+        sidebar.classList.toggle("open");
+      });
+      const closeBtn = document.querySelector(".toc-close");
+
+      closeBtn?.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+      });
+    }
+  });
+</script>
+        <!-- <footer class="guide-footer"> -->
+        <div class="feedback">
+          <h3>Geri Bildirim</h3>
+          <p>
+            Bu rehberin kalitesinin iyileştirilmesine yardımcı olmanızı
+            öneririz.
+          </p>
+          <p>
+            Herhangi bir yazım hatası veya olgusal hata görürseniz lütfen
+            katkıda bulunun. Başlamak için,
+            <a
+              href="https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#contributing-to-the-rails-documentation"
+              >dokümantasyon katkıları</a
+            >
+            bölümünü okuyabilirsiniz.
+          </p>
+          <p>
+            Ayrıca eksik veya güncel olmayan içerik de bulabilirsiniz. Lütfen
+            main için eksik olan belgeleri ekleyin. Sorunların main dalda zaten
+            düzeltilip düzeltilmediğini doğrulamak için önce
+            <a href="https://edgeguides.rubyonrails.org/">Edge Guides</a>'ı
+            kontrol ettiğinizden emin olun. Stil ve kurallar için
+            <a
+              href="https://guides.rubyonrails.org/v8.0/ruby_on_rails_guides_guidelines.html"
+              >Ruby on Rails Guides Guidelines</a
+            >'ı kontrol edin.
+          </p>
+          <p>
+            Herhangi bir sebepten dolayı düzeltebileceğiniz bir şey bulursanız
+            ancak kendiniz patch yapamıyorsanız lütfen bir
+            <a href="https://github.com/rails/rails/issues">issue</a> açın.
+          </p>
+          <p>
+            Ve son olarak, Ruby on Rails dokümantasyonu ile ilgili her türlü
+            tartışma resmi
+            <a href="https://discuss.rubyonrails.org/c/rubyonrails-docs/6"
+              >Ruby on Rails Forum</a
+            >'unda memnuniyetle karşılanacaktır.
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Yukarı çık">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="18,15 12,9 6,15"></polyline>
+      </svg>
+    </button>
+
+    <footer class="footer">
+      <div class="container">
+        <p>
+          Bu çalışma <a href=" Creative Commons Attribution-ShareAlike 4.0 International">Creative Commons Attribution-ShareAlike 4.0 International</a> Lisansı kapsamında lisanslanmıştır.
+          </p>
+        <p>
+          "Rails", "Ruby on Rails" ve Rails logosu David Heinemeier Hansson'un ticari markalarıdır. Tüm hakları saklıdır.
+        </p><br/>
+        <p>
+          &copy; 2025 Rails Kılavuzları Türkçe Çevirisi.
+          <a href="https://github.com/DilanKaya127">Dilan Kaya</a> tarafından
+          hazırlanmıştır.
+          Orijinal dokümantasyon
+          <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine
+          aittir.
+        </p>
+        
+
+      </div>
+    </footer>
+
+    <script>
+      hljs.highlightAll();
+      // Yukarı çık butonu işlevselliği
+      const scrollToTopBtn = document.getElementById("scrollToTop");
+
+      // Scroll pozisyonunu kontrol et
+      window.addEventListener("scroll", function () {
+        if (window.pageYOffset > 500) {
+          scrollToTopBtn.classList.add("visible");
+        } else {
+          scrollToTopBtn.classList.remove("visible");
+        }
+      });
+
+      // Butona tıklandığında yukarı çık
+      scrollToTopBtn.addEventListener("click", function () {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
+    </script>
+  </body>
+</html>
