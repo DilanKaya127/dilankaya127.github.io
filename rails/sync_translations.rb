@@ -7,7 +7,7 @@ require 'yaml'
 class TranslationSyncer
   # Yolları ayarlayın
   if ENV["GITHUB_ACTIONS"]
-    RAILS_REPO_PATH = "rails-tr-TR"
+    RAILS_REPO_PATH = File.expand_path("../rails-tr-TR", Dir.pwd)
   else
     RAILS_REPO_PATH = "../../rails-tr-TR"
   end
@@ -360,10 +360,16 @@ class TranslationSyncer
   private
 
   def validate_paths
+    puts "🔍 Current working directory: #{Dir.pwd}"
+    puts "🔍 Looking for Rails repo at: #{RAILS_REPO_PATH}"
+    puts "🔍 Absolute path: #{File.expand_path(RAILS_REPO_PATH)}"
+
     unless Dir.exist?(RAILS_REPO_PATH)
       puts "❌ Rails repository bulunamadı: #{RAILS_REPO_PATH}"
-      puts "   Rails-tr-TR repository'sini klonladığınızdan emin olun"
-      puts "   Örnek: git clone https://github.com/DilanKaya127/rails-tr-TR.git ../rails-tr-TR"
+      puts "📂 Mevcut dizin içeriği:"
+      puts Dir.entries(".").reject { |f| f.start_with?(".") }
+      puts "📂 Üst dizin içeriği:"
+      puts Dir.entries("..").reject { |f| f.start_with?(".") }
       exit 1
     end
 
