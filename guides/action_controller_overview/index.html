@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Action Controller'a Genel Bakış - Rails Dokümantasyonu - Türkçe
+    </title>
+    <link
+      rel="stylesheet"
+      href="/assets/css/rails.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css"
+    />
+
+    <link
+      rel="icon"
+      type="image/svg"
+      href="/assets/images/rails/logo_rails-circle.svg"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-Y6Q8S53SSQ"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-Y6Q8S53SSQ");
+    </script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="container">
+        <div class="header-content">
+          <h1 class="logo">
+            <a href="/rails/">
+              <img
+                src="/assets/images/rails/logo_rails-circle.svg"
+                alt="Rails Logo"
+                class="logo-image"
+              />
+            </a>
+          </h1>
+          <nav class="nav">
+            <a href="/">Ana Sayfa</a>
+            <!-- <a href="https://dilankaya127.github.io">Portföy</a> -->
+
+            <div class="dropdown">
+              <a class="dropbtn">Kılavuzlar</a>
+              <div class="dropdown-content multi-column">
+                 
+                <div class="dropdown-column">
+                  <h4>Buradan Başlayın</h4>
+                  
+                  <a href="/rails/guides/getting_started">Rails ile Başlarken</a>
+                  
+                  <a href="/rails/guides/install_ruby_on_rails">Ruby on Rails İndirme Kılavuzu</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Model</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record Temelleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record Migration</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record Doğrulamaları</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record Callback</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record İlişkileri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record Sorgu Arayüzü</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Model Temelleri</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>View</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action View Overview</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Layout ve Rendering</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action View Helper</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action View Form Helper</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Controller</h4>
+                  
+                  <a href="/rails/guides/action_controller_overview">Action Controller</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action Controller İleri Konular</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Dışarıdan İçeriye Routing</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Diğer Bileşenler</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Support Core Uzantılar</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action Mailer Temelleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action Mailbox Temelleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Action Text</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Job Temelleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Storage</a>
+                  
+                  <a href="/rails/guides/action_cable_overview">Action Cable</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Daha Derin Konular</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uluslararasılaştırma API</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uygulamalarını Test Etme</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uygulamalarında Hata Ayıklama</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uygulamalarını Yapılandırma</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Komut Satırı</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Asset Pipeline</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails'te JavaScript ile Çalışma</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Başlatma Süreci</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Otomatik Yükleme ve Yeniden Yükleme</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Support Instrumentation</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">API Özel Uygulamalar için Rails Kullanımı</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Ürün Çıkarmak</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Dağıtım için Performans Ayarlama</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails ile Önbelleğe Alma: Genel Bakış</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uygulamalarının Güvenliğini Sağlama</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uygulamalarında Hata Bildirim</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>İleri Seviye Active Record</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record ve PostgreSQL</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Çoklu Veritabanı</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Active Record Şifreleme</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Bileşik Birincil Anahtarlar</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Rails Uygulamalarını Büyütelim</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Eklentileri Oluşturmanın Temelleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rack'te Rails</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Generator ve Şablonları Oluşturma ve Özelleştirme</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Engine ile Çalışmaya Başlarken</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Uygulama Şablonları</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails'te İş Parçacığı Oluşturma ve Kod Yürütme</a>
+                  
+                </div>
+                  
+                <div class="dropdown-column">
+                  <h4>Katkıda Bulunun</h4>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Ruby on Rails'e Katkıda Bulunma</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">API Dokümantasyon Yönergeleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Kılavuz Yönergeleri</a>
+                  
+                  <a href="/rails/guides/missing_pages/currently_being_worked">Rails Core Geliştirme Bağımlılıklarını Yükleme</a>
+                  
+                </div>
+                     
+              </div>
+            </div>
+            <a href="https://github.com/dilankaya127/rails-tr-TR">GitHub</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="container">
+        <div class="guide-container">
+  <button id="toc-toggle" class="toc-toggle">☰ İçindekiler</button>
+
+  <aside class="guide-sidebar">
+    <div class="guide-toc">
+      <div id="toc"></div>
+      <button class="toc-close" aria-label="İçindekileri Kapat">✕</button>
+    </div>
+  </aside>
+
+  <article class="guide-content">
+    <div class="guide-body"><p><strong>RESMİ KILAVUZA BU ADRES ÜZERİNDEN ULAŞABİLİRSİNİZ: <a href="https://guides.rubyonrails.org">https://guides.rubyonrails.org</a></strong></p>
+
+<hr />
+
+<h1 id="action-controller">Action Controller</h1>
+
+<p>Bu kılavuzda, denetleyicilerin nasıl çalıştığını ve uygulamanızdaki istek döngüsüne nasıl uyum sağladığını öğreneceksiniz.</p>
+
+<p>Bu kılavuzu okuduktan sonra şunları yapmayı öğreneceksiniz:</p>
+
+<ul>
+  <li>Bir denetleyici aracılığıyla isteğin akışını takip etmek.</li>
+  <li>Denetleyicinize aktarılan parametrelere erişmek.</li>
+  <li>Güçlü Parametreler ve izin değerleri kullanmak.</li>
+  <li>Verileri çerez, oturum ve flash bellekte depolamak.</li>
+  <li>İstek işleme sırasında kodu yürütmek için eylem geri çağırmalarıyla çalışmak.</li>
+  <li>İstek ve Yanıt Nesnelerini kullanmak.</li>
+</ul>
+
+<h2 id="giriş">Giriş</h2>
+
+<p>Action Controller is the C in the Model View Controller
+(<a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">MVC</a>)
+pattern. After the <a href="routing.html">router</a> has matched a controller to an
+incoming request, the controller is responsible for processing the request and
+generating the appropriate output.</p>
+</div>
+  </article>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toc = document.getElementById("toc");
+    const headings = document.querySelectorAll(
+      ".guide-content h2, .guide-content h3, .guide-content h4"
+    );
+
+    if (headings.length > 0) {
+      const tocList = document.createElement("ul");
+      const headingMap = new Map();
+
+      // Türkçe karakterleri URL-dostu hale getiren fonksiyon
+      function turkishToSlug(text) {
+        const turkishChars = {
+          'ç': 'c', 'Ç': 'c',
+          'ğ': 'g', 'Ğ': 'g',
+          'ı': 'i', 'I': 'i',
+          'İ': 'i', 'i': 'i',
+          'ö': 'o', 'Ö': 'o',
+          'ş': 's', 'Ş': 's',
+          'ü': 'u', 'Ü': 'u'
+        };
+        
+        return text
+          .split('')
+          .map(char => turkishChars[char] || char)
+          .join('')
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-+|-+$/g, '');
+      }
+
+      // Aynı ID'nin tekrarlanmasını önlemek için sayaç
+      const idCounts = new Map();
+
+      headings.forEach(function (heading, index) {
+        // Başlık metninden anlamlı ID oluştur
+        const headingText = heading.textContent.trim();
+        let baseId = turkishToSlug(headingText);
+        
+        // Boş ID kontrolü
+        if (!baseId) {
+          baseId = "heading-" + index;
+        }
+        
+        // Tekrarlanan ID'leri önle
+        let finalId = baseId;
+        if (idCounts.has(baseId)) {
+          const count = idCounts.get(baseId) + 1;
+          idCounts.set(baseId, count);
+          finalId = baseId + "-" + count;
+        } else {
+          idCounts.set(baseId, 1);
+        }
+        
+        heading.id = finalId;
+
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = "#" + finalId;
+        a.textContent = headingText;
+        a.className = "toc-" + heading.tagName.toLowerCase();
+
+        li.appendChild(a);
+        tocList.appendChild(li);
+
+        headingMap.set(finalId, a);
+      });
+
+      toc.appendChild(tocList);
+
+      // Başlıkların görünürlük oranlarını takip et
+      const visibilityMap = new Map();
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const id = entry.target.getAttribute("id");
+            visibilityMap.set(id, entry.intersectionRatio);
+          });
+
+          // En çok görünür olan başlığı bul
+          let mostVisibleId = null;
+          let maxRatio = 0;
+
+          visibilityMap.forEach((ratio, id) => {
+            if (ratio > maxRatio) {
+              mostVisibleId = id;
+              maxRatio = ratio;
+            }
+          });
+
+          if (mostVisibleId) {
+            headingMap.forEach((linkEl) => linkEl.classList.remove("active"));
+            const activeLink = headingMap.get(mostVisibleId);
+            if (activeLink) {
+              activeLink.classList.add("active");
+
+              // Ortalamak için:
+              const linkTop = activeLink.offsetTop;
+              const linkHeight = activeLink.offsetHeight;
+              const tocScrollParent = toc;
+              const tocHeight = tocScrollParent.offsetHeight;
+
+              tocScrollParent.scrollTo({
+                top: linkTop - tocHeight / 2 + linkHeight / 2,
+                behavior: "smooth",
+              });
+            }
+          }
+        },
+        {
+          threshold: [0, 0.25, 0.5, 0.75, 1.0],
+        }
+      );
+
+      headings.forEach((heading) => {
+        observer.observe(heading);
+      });
+
+      const toggleBtn = document.getElementById("toc-toggle");
+      const sidebar = document.querySelector(".guide-sidebar");
+
+      toggleBtn.addEventListener("click", function () {
+        sidebar.classList.toggle("open");
+      });
+      const closeBtn = document.querySelector(".toc-close");
+
+      closeBtn?.addEventListener("click", function () {
+        sidebar.classList.remove("open");
+      });
+    }
+  });
+</script>
+        <!-- <footer class="guide-footer"> -->
+        <div class="feedback">
+          <h3>Geri Bildirim</h3>
+          <p>
+            Bu rehberin kalitesinin iyileştirilmesine yardımcı olmanızı
+            öneririz.
+          </p>
+          <p>
+            Herhangi bir yazım hatası veya olgusal hata görürseniz lütfen
+            katkıda bulunun. Başlamak için,
+            <a
+              href="https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#contributing-to-the-rails-documentation"
+              >dokümantasyon katkıları</a
+            >
+            bölümünü okuyabilirsiniz.
+          </p>
+          <p>
+            Ayrıca eksik veya güncel olmayan içerik de bulabilirsiniz. Lütfen
+            main için eksik olan belgeleri ekleyin. Sorunların main dalda zaten
+            düzeltilip düzeltilmediğini doğrulamak için önce
+            <a href="https://edgeguides.rubyonrails.org/">Edge Guides</a>'ı
+            kontrol ettiğinizden emin olun. Stil ve kurallar için
+            <a
+              href="https://guides.rubyonrails.org/v8.0/ruby_on_rails_guides_guidelines.html"
+              >Ruby on Rails Guides Guidelines</a
+            >'ı kontrol edin.
+          </p>
+          <p>
+            Herhangi bir sebepten dolayı düzeltebileceğiniz bir şey bulursanız
+            ancak kendiniz patch yapamıyorsanız lütfen bir
+            <a href="https://github.com/rails/rails/issues">issue</a> açın.
+          </p>
+          <p>
+            Ve son olarak, Ruby on Rails dokümantasyonu ile ilgili her türlü
+            tartışma resmi
+            <a href="https://discuss.rubyonrails.org/c/rubyonrails-docs/6"
+              >Ruby on Rails Forum</a
+            >'unda memnuniyetle karşılanacaktır.
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Yukarı çık">
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="18,15 12,9 6,15"></polyline>
+      </svg>
+    </button>
+
+    <footer class="footer">
+      <div class="container">
+        <p>
+          Bu çalışma <a href=" Creative Commons Attribution-ShareAlike 4.0 International">Creative Commons Attribution-ShareAlike 4.0 International</a> Lisansı kapsamında lisanslanmıştır.
+          </p>
+        <p>
+          "Rails", "Ruby on Rails" ve Rails logosu David Heinemeier Hansson'un ticari markalarıdır. Tüm hakları saklıdır.
+        </p><br/>
+        <p>
+          &copy; 2025 Rails Kılavuzları Türkçe Çevirisi.
+          <a href="https://github.com/DilanKaya127">Dilan Kaya</a> tarafından
+          hazırlanmıştır.
+          Orijinal dokümantasyon
+          <a href="https://guides.rubyonrails.org">Ruby on Rails</a> ekibine
+          aittir.
+        </p>
+        
+
+      </div>
+    </footer>
+
+    <script>
+      hljs.highlightAll();
+      // Yukarı çık butonu işlevselliği
+      const scrollToTopBtn = document.getElementById("scrollToTop");
+
+      // Scroll pozisyonunu kontrol et
+      window.addEventListener("scroll", function () {
+        if (window.pageYOffset > 500) {
+          scrollToTopBtn.classList.add("visible");
+        } else {
+          scrollToTopBtn.classList.remove("visible");
+        }
+      });
+
+      // Butona tıklandığında yukarı çık
+      scrollToTopBtn.addEventListener("click", function () {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      });
+    </script>
+  </body>
+</html>
