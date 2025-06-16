@@ -11,6 +11,9 @@ on:
   workflow_dispatch:
     # Manuel tetikleme için
 
+permissions:
+  contents: write  # Gerekli izinler
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
