@@ -36,7 +36,7 @@ jobs:
     - name: Sync Turkish Translations
       working-directory: rails-site
       run: |
-        ruby sync_translations.rb sync
+        ruby rails/sync_translations.rb sync
 
     - name: Build Jekyll Site
       working-directory: rails-site
