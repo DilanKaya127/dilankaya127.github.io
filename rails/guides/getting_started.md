@@ -3,7 +3,7 @@ layout: guide
 guide_id: getting_started
 title: Rails ile Başlarken
 description: Rails ile Başlarken konusunu detaylı olarak ele alan Rails kılavuzu.
-last_updated: '2025-06-15'
+last_updated: '2025-06-16'
 translation: true
 original_file: getting_started.md
 ---

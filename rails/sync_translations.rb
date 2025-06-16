@@ -6,7 +6,12 @@ require 'yaml'
 
 class TranslationSyncer
   # Yolları ayarlayın
-  RAILS_REPO_PATH = "../../rails-tr-TR" # Rails fork'unuzun yolu
+  if ENV["GITHUB_ACTIONS"]
+    RAILS_REPO_PATH = "rails-tr-TR"
+  else
+    RAILS_REPO_PATH = "../../rails-tr-TR"
+  end
+  # RAILS_REPO_PATH = "../../rails-tr-TR" # Rails fork'unuzun yolu
   RAILS_TR_PATH = "#{RAILS_REPO_PATH}/guides/source/tr-TR"
   JEKYLL_GUIDES_PATH = "./guides"
   DATA_PATH = "./_data"

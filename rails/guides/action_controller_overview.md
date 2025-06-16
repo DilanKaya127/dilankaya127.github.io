@@ -4,7 +4,7 @@ guide_id: action_controller_overview
 title: Action Controller'a Genel Bakış
 description: Action Controller'a Genel Bakış konusunu detaylı olarak ele alan Rails
   kılavuzu.
-last_updated: '2025-06-15'
+last_updated: '2025-06-16'
 translation: true
 original_file: action_controller_overview.md
 ---

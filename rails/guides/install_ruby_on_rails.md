@@ -3,7 +3,7 @@ layout: guide
 guide_id: install_ruby_on_rails
 title: Install Ruby On Rails
 description: Install Ruby On Rails konusunu detaylı olarak ele alan Rails kılavuzu.
-last_updated: '2025-06-15'
+last_updated: '2025-06-16'
 translation: true
 original_file: install_ruby_on_rails.md
 ---

@@ -1,5 +1,5 @@
 ---
-updated_at: '2025-06-15 14:37:27'
+updated_at: '2025-06-16 10:34:35'
 total_guides: 30
 completed_guides: 3
 guides:
@@ -9,7 +9,7 @@ guides:
   url: "/rails/guides/getting_started.html"
   status: completed
   has_translation: true
-  last_updated: '2025-06-15'
+  last_updated: '2025-06-16'
 - id: active_record_basics
   title: Active Record Temelleri
   description: Active Record Temelleri konusunu detaylı olarak ele alan Rails kılavuzu.
@@ -57,7 +57,7 @@ guides:
   url: "/rails/guides/action_controller_overview.html"
   status: completed
   has_translation: true
-  last_updated: '2025-06-15'
+  last_updated: '2025-06-16'
 - id: routing
   title: Rails Yönlendirme
   description: Rails Yönlendirme konusunu detaylı olarak ele alan Rails kılavuzu.
@@ -101,7 +101,7 @@ guides:
   url: "/rails/guides/action_cable_overview.html"
   status: completed
   has_translation: true
-  last_updated: '2025-06-15'
+  last_updated: '2025-06-16'
 - id: testing
   title: Rails Uygulamalarını Test Etme
   description: Rails Uygulamalarını Test Etme konusunu detaylı olarak ele alan Rails
