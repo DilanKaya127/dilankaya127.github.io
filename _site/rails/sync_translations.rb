@@ -6,7 +6,7 @@ require 'yaml'
 
 class TranslationSyncer
   # Yolları ayarlayın
-  RAILS_REPO_PATH = "../../rails-tr-TR"  # Rails fork'unuzun yolu
+  RAILS_REPO_PATH = "../../rails-tr-TR" # Rails fork'unuzun yolu
   RAILS_TR_PATH = "#{RAILS_REPO_PATH}/guides/source/tr-TR"
   JEKYLL_GUIDES_PATH = "./guides"
   DATA_PATH = "./_data"
