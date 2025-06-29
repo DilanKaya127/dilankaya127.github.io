@@ -244,11 +244,11 @@
 <p>Bu kılavuzu okuduktan sonra şunları öğreneceksiniz:</p>
 
 <ul>
-  <li>Rails’i nasıl kuracağınızı, yeni bir Rails uygulaması nasıl oluşturacağınızı ve uygulamanızı bir veritabanına nasıl bağlayacağınızı.</li>
-  <li>Rails uygulamasının genel yapısını.</li>
-  <li>MVC (Model, View, Controller) ve RESTful tasarımının temel ilkelerini.</li>
-  <li>Rails uygulamasının başlangıç parçalarını hızlı bir şekilde nasıl oluşturacağınızı.</li>
-  <li>Kamal kullanarak uygulamanızı üretim ortamına nasıl dağıtacağınızı (deploy edeceğinizi).</li>
+  <li>Rails’i nasıl kuracağınızı, yeni bir Rails uygulaması nasıl oluşturacağınızı ve uygulamanızı bir veritabanına nasıl bağlayacağınızı</li>
+  <li>Rails uygulamasının genel yapısını</li>
+  <li>MVC (Model, View, Controller) ve RESTful tasarımının temel ilkelerini</li>
+  <li>Rails uygulamasının başlangıç parçalarını hızlı bir şekilde nasıl oluşturacağınızı</li>
+  <li>Kamal kullanarak uygulamanızı üretim ortamına nasıl dağıtacağınızı (deploy edeceğinizi)</li>
 </ul>
 
 <h2 id="giriş">Giriş</h2>
@@ -266,7 +266,7 @@
 
 <p>Rails, Ruby programlama dilinde yazılmış bir web uygulaması geliştirme framework’üdür. Her geliştiricinin başlangıç için ihtiyaç duyduğu şeyleri varsayarak web uygulamalarını programlamayı kolaylaştırmak için tasarlanmıştır. Diğer birçok dil ve framework’e göre daha az kod yazarak daha fazlasını başarmanızı sağlar. Deneyimli Rails geliştiricileri, web uygulaması geliştirmeyi daha eğlenceli hale getirdiğini de belirtmektedir.</p>
 
-<p>Rails, inatçı bir yazılımdır. İşleri yapmanın “en iyi” bir yolu olduğu varsayımından hareket eder ve bu yolu teşvik etmek için tasarlanmıştır - ve bazı durumlarda alternatiflerden caydırır. “Rails Yöntemi”ni öğrenirseniz, muhtemelen üretkenliğinizde muazzam bir artış göreceksiniz. Diğer dillerden edindiğiniz eski alışkanlıkları Rails geliştirirken ısrarla sürdürür ve başka yerlerde öğrendiğiniz kalıpları kullanmaya çalışırsanız, daha az mutlu bir deneyim yaşayabilirsiniz.</p>
+<p>Rails, inatçı bir yazılımdır. İşleri yapmanın “en iyi” bir yolu olduğu varsayımından hareket eder ve bu yolu teşvik etmek için tasarlanmıştır -ve bazı durumlarda alternatiflerden caydırır-. “Rails Yöntemi”ni öğrenirseniz, muhtemelen üretkenliğinizde muazzam bir artış göreceksiniz. Diğer dillerden edindiğiniz eski alışkanlıkları Rails geliştirirken ısrarla sürdürür ve başka yerlerde öğrendiğiniz kalıpları kullanmaya çalışırsanız, daha az mutlu bir deneyim yaşayabilirsiniz.</p>
 
 <p>Rails felsefesi iki ana kılavuz ilke içerir:</p>
 
@@ -380,7 +380,7 @@ Bu seçenekleri görmek için <code>rails new --help</code> komutunu çalıştı
     </tr>
     <tr>
       <td>Rakefile</td>
-      <td>Bu dosya komut satırından çalıştırılabilecek görevleri bulur ve yükler. Görev tanımları Rails’in bileşenleri boyunca tanımlanmıştır. <code class="language-plaintext highlighter-rouge">Rakefile</code>ı değiştirmek yerine, uygulamanızın <code class="language-plaintext highlighter-rouge">lib/tasks</code> dizinine dosyalar ekleyerek kendi görevlerinizi eklemelisiniz.</td>
+      <td>Bu dosya komut satırından çalıştırılabilecek görevleri bulur ve yükler. Görev tanımları Rails’in bileşenleri boyunca tanımlanmıştır. <code class="language-plaintext highlighter-rouge">Rakefile</code>‘ı değiştirmek yerine, uygulamanızın <code class="language-plaintext highlighter-rouge">lib/tasks</code> dizinine dosyalar ekleyerek kendi görevlerinizi eklemelisiniz.</td>
     </tr>
     <tr>
       <td>README.md</td>
@@ -472,7 +472,12 @@ Bu seçenekleri görmek için <code>rails new --help</code> komutunu çalıştı
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/rails server
 </code></pre></div></div>
 
-<p>NOT: Komutları bir uygulama dizini içinde çalıştırdığımızda <code class="language-plaintext highlighter-rouge">bin/rails</code> kullanmalıyız. Bu, uygulamanın Rails sürümünün kullanıldığından emin olunmasını sağlar.</p>
+<div class="guide-alert guide-alert-warning">
+  <div class="guide-alert-icon">📝</div>
+  <div class="guide-alert-content">
+    Komutları bir uygulama dizini içinde çalıştırdığımızda <code>bin/rails</code> kullanmalıyız. Bu, uygulamanın Rails sürümünün kullanıldığından emin olunmasını sağlar.
+  </div>
+</div>
 
 <p>Bu, statik dosyaları ve Rails uygulamanızı sunacak olan Puma adlı bir web sunucusunu başlatacaktır:</p>
 
@@ -540,7 +545,12 @@ Tablo ve kayıt oluşturma, güncelleme ve silme gibi veritabanı ile etkileşim
   <li>Bu model için testler ve test fikstürleri.</li>
 </ol>
 
-<p>NOT: Model adları <em>tekildir</em>, çünkü örneklenen bir model veritabanındaki tek bir kaydı temsil eder (yani, veritabanına eklemek için bir <em>product</em> oluşturuyorsunuz).</p>
+<div class="guide-alert guide-alert-warning">
+  <div class="guide-alert-icon">📝</div>
+  <div class="guide-alert-content">
+    Model adları <b>tekildir</b>, çünkü örneklenen bir model veritabanındaki tek bir kaydı temsil eder (yani, veritabanına eklemek için bir <i>product</i> oluşturuyorsunuz).
+  </div>
+</div>
 
 <h3 id="veritabanı-değişiklikleri">Veritabanı Değişiklikleri</h3>
 
@@ -563,11 +573,16 @@ Tablo ve kayıt oluşturma, güncelleme ve silme gibi veritabanı ile etkileşim
 
 <p>Bu migration Rails’e <code class="language-plaintext highlighter-rouge">products</code> adında yeni bir veritabanı tablosu oluşturmasını söylüyor.</p>
 
-<p>NOT: Yukarıdaki modelin aksine, Rails veritabanı tablo adlarını <em>çoğul</em> yapar, çünkü veritabanı her modelin tüm örneklerini tutar (yani, <em>products</em> veritabanı oluşturuyorsunuz).</p>
+<div class="guide-alert guide-alert-warning">
+  <div class="guide-alert-icon">📝</div>
+  <div class="guide-alert-content">
+    Yukarıdaki modelin aksine, Rails veritabanı tablo adlarını <b>çoğul</b> yapar, çünkü veritabanı her modelin tüm örneklerini tutar (yani, <i>products</i> veritabanı oluşturuyorsunuz).
+  </div>
+</div>
 
 <p>Daha sonra <code class="language-plaintext highlighter-rouge">create_table</code> bloğu bu veritabanı tablosunda hangi sütunların ve türlerin tanımlanması gerektiğini belirler.</p>
 
-<p><code class="language-plaintext highlighter-rouge">t.timestamps</code> Rails’e <code class="language-plaintext highlighter-rouge">products</code> tablosunda <code class="language-plaintext highlighter-rouge">name</code> adında bir sütun oluşturmasını ve türünü <code class="language-plaintext highlighter-rouge">string</code> olarak ayarlamasını söyler.</p>
+<p><code class="language-plaintext highlighter-rouge">t.string :name</code> Rails’e <code class="language-plaintext highlighter-rouge">products</code> tablosunda <code class="language-plaintext highlighter-rouge">name</code> adında bir sütun oluşturmasını ve türünü <code class="language-plaintext highlighter-rouge">string</code> olarak ayarlamasını söyler.</p>
 
 <p><code class="language-plaintext highlighter-rouge">t.timestamps</code>, modellerinizde <code class="language-plaintext highlighter-rouge">created_at:datetime</code> ve <code class="language-plaintext highlighter-rouge">updated_at:datetime</code> adında iki sütun tanımlamak için bir kısayoldur. Bu sütunları Rails’teki çoğu Active Record modelinde görürsünüz ve kayıtlar oluşturulurken veya güncellenirken Active Record tarafından otomatik olarak ayarlanırlar.</p>
 
@@ -626,7 +641,7 @@ store(dev)&gt;
 
 <p>Bu sınıfta hiç kod olmaması sizi şaşırtabilir. Rails bu modeli neyin tanımladığını nasıl biliyor?</p>
 
-<p><code class="language-plaintext highlighter-rouge">Product</code> modeli kullanıldığında, Rails sütun adları ve türleri için veritabanı tablosunu sorgulayacak ve bu nitelikler (attribute) için otomatik olarak kod oluşturacaktır. Rails bizi bu şablon kodu yazmaktan kurtarır ve bunun yerine uygulama mantığımıza odaklanabilmemiz için bu işi bizim yerimize perde arkasında halleder.</p>
+<p><code class="language-plaintext highlighter-rouge">Product</code> modeli kullanıldığında, Rails sütun adları ve türleri için veritabanı tablosunu sorgulayacak ve bu öznitelikler (attribute) için otomatik olarak kod oluşturacaktır. Rails bizi bu şablon kodu yazmaktan kurtarır ve bunun yerine uygulama mantığımıza odaklanabilmemiz için bu işi bizim yerimize perde arkasında halleder.</p>
 
 <p>Rails’in Product modeli için hangi sütunları algıladığını görmek için Rails konsolunu kullanalım.</p>
 
@@ -650,7 +665,7 @@ store(dev)&gt;
 </span><span class="p">=&gt;</span> <span class="kt">#&lt;</span><span class="no">Product</span><span class="p">:</span><span class="mh">0x000000012e616c30</span> <span class="ss">id: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">name: </span><span class="s2">"T-Shirt"</span><span class="p">,</span> <span class="ss">created_at: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">updated_at: </span><span class="kp">nil</span><span class="kt">&gt;</span>
 </code></pre></div></div>
 
-<p><code class="language-plaintext highlighter-rouge">product</code> değişkeni <code class="language-plaintext highlighter-rouge">Product</code>‘ın bir örneklenmesidir. Veritabanına kaydedilmemiştir ve bu nedenle bir ID, created_at veya updated_at gibi zaman damgaları yoktur.</p>
+<p><code class="language-plaintext highlighter-rouge">product</code> değişkeni <code class="language-plaintext highlighter-rouge">Product</code>‘ın bir örneklemesidir. Veritabanına kaydedilmemiştir ve bu nedenle bir ID, created_at veya updated_at gibi zaman damgaları yoktur.</p>
 
 <p>Kaydı veritabanına yazmak için <code class="language-plaintext highlighter-rouge">save</code> çağrısı yapabiliriz.</p>
 
@@ -669,7 +684,7 @@ store(dev)&gt;
 </span><span class="gp">=&gt; #&lt;Product:0x00000001221f6260 id: 1, name: "T-Shirt", created_at: "2024-11-09 16:35:01.117836000 +0000", updated_at: "2024-11-09 16:35:01.117836000 +0000"&gt;</span><span class="w">
 </span></code></pre></div></div>
 
-<p><code class="language-plaintext highlighter-rouge">save</code>e benzer şekilde, bir Active Record nesnesini tek bir çağrıda oluşturmak ve kaydetmek için <code class="language-plaintext highlighter-rouge">create</code> kullanabiliriz.</p>
+<p><code class="language-plaintext highlighter-rouge">save</code>‘e benzer şekilde, bir Active Record nesnesini tek bir çağrıda oluşturmak ve kaydetmek için <code class="language-plaintext highlighter-rouge">create</code> kullanabiliriz.</p>
 
 <div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; Product.create(name: "Pants")
   TRANSACTION (0.1ms)  BEGIN immediate TRANSACTION /*application='Store'*/
@@ -683,7 +698,7 @@ store(dev)&gt;
 <p>Active Record modelimizi kullanarak veritabanındaki kayıtlara da bakabiliriz.</p>
 
 <p>Veritabanındaki tüm Product kayıtlarını bulmak için <code class="language-plaintext highlighter-rouge">all</code> metodunu kullanabiliriz.
-Bu bir <em>sınıf</em> metodudur, bu yüzden Product üzerinde kullanabiliriz (yukarıdaki <code class="language-plaintext highlighter-rouge">save</code> gibi product örneklemesi/örneği üzerinde çağıracağımız bir örnekleme metoduna karşılık gelir).</p>
+Bu bir <em>sınıf</em> metodudur, bu yüzden Product üzerinde kullanabiliriz (yukarıdaki <code class="language-plaintext highlighter-rouge">save</code> gibi product örneklemesi üzerinde çağıracağımız bir örnekleme metoduna karşılık gelir).</p>
 
 <div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; Product.all
   Product Load (0.1ms)  SELECT "products".* FROM "products" /* loading for pp */ LIMIT 11 /*application='Store'*/
@@ -709,7 +724,7 @@ Bu bir <em>sınıf</em> metodudur, bu yüzden Product üzerinde kullanabiliriz (
 </span><span class="gp">=&gt; [#&lt;Product:0x000000012184d858 id: 2, name: "Pants", created_at: "2024-11-09 16:36:01.856751000 +0000", updated_at: "2024-11-09 16:36:01.856751000 +0000"&gt;</span><span class="p">]</span>
 </code></pre></div></div>
 
-<p>Bu bir <code class="language-plaintext highlighter-rouge">SELECT</code> SQL sorgusu oluşturur, ancak <code class="language-plaintext highlighter-rouge">"Pants"</code> ile eşleşen bir <code class="language-plaintext highlighter-rouge">name</code>e sahip kayıtları filtrelemek için bir <code class="language-plaintext highlighter-rouge">WHERE</code> cümleciği de ekler. Bu aynı zamanda bir <code class="language-plaintext highlighter-rouge">ActiveRecord::Relation</code> döndürür çünkü birden fazla kayıt aynı isme sahip olabilir.</p>
+<p>Bu bir <code class="language-plaintext highlighter-rouge">SELECT</code> SQL sorgusu oluşturur, ancak <code class="language-plaintext highlighter-rouge">"Pants"</code> ile eşleşen bir <code class="language-plaintext highlighter-rouge">name</code>‘e sahip kayıtları filtrelemek için bir <code class="language-plaintext highlighter-rouge">WHERE</code> cümleciği de ekler. Bu aynı zamanda bir <code class="language-plaintext highlighter-rouge">ActiveRecord::Relation</code> döndürür çünkü birden fazla kayıt aynı isme sahip olabilir.</p>
 
 <p>Kayıtları isme göre artan alfabetik sırada sıralamak için <code class="language-plaintext highlighter-rouge">order(name: :asc)</code> kullanabiliriz.</p>
 
@@ -736,7 +751,7 @@ Bu bir <em>sınıf</em> metodudur, bu yüzden Product üzerinde kullanabiliriz (
 
 <h3 id="kayıtları-güncelleme">Kayıtları Güncelleme</h3>
 
-<p>Kayıtlar 2 şekilde güncellenebilir: <code class="language-plaintext highlighter-rouge">update</code> kullanılarak veya öznitelikler atanarak ve <code class="language-plaintext highlighter-rouge">save</code> çağrısı yapılarak.</p>
+<p>Kayıtlar 2 şekilde güncellenebilir: <code class="language-plaintext highlighter-rouge">update</code> kullanılarak veya öznitelikler atandıktan sonra <code class="language-plaintext highlighter-rouge">save</code> çağrısı yapılarak.</p>
 
 <p>Bir Product örneği üzerinde <code class="language-plaintext highlighter-rouge">update</code> çağrısı yapabilir ve veritabanına kaydedilecek yeni özelliklerin bir Hash’ini iletebiliriz. Bu; öznitelikleri atayacak, doğrulamaları (validations) çalıştıracak ve değişiklikleri tek bir metot çağrısında veritabanına kaydedecektir.</p>
 
@@ -754,7 +769,7 @@ Bunu <code class="language-plaintext highlighter-rouge">Product.all</code> dosya
 <div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; Product.all
 </span></code></pre></div></div>
 
-<p>İki ürün göreceksiniz: Ayakkabı ve Pantolon.</p>
+<p>İki ürün göreceksiniz: Shoes ve Pants.</p>
 
 <div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">  Product Load (0.3ms)  SELECT "products".* FROM "products" /* loading for pp */ LIMIT 11 /*application='Store'*/
 </span><span class="p">=&gt;</span>
@@ -772,7 +787,7 @@ Bunu <code class="language-plaintext highlighter-rouge">Product.all</code> dosya
 
 <p>Alternatif olarak, öznitelikleri atayabilir, değişiklikleri doğrulamaya ve veritabanına kaydetmeye hazır olduğumuzda <code class="language-plaintext highlighter-rouge">save</code> çağrısı yapabiliriz.</p>
 
-<p>“Ayakkabı” adını yeniden “T-Shirt” olarak değiştirelim.</p>
+<p>“Shoes” adını yeniden “T-Shirt” olarak değiştirelim.</p>
 
 <div class="language-irb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">store(dev)&gt; product = Product.find(1)
 store(dev)&gt; product.name = "T-Shirt"
@@ -811,7 +826,7 @@ store(dev)&gt; product.name = "T-Shirt"
 
 <p>Active Record, veritabanına eklenen verilerin belirli kurallara uymasını sağlamanıza olanak tanıyan <em>doğrulamalar</em> (validations) sağlar.</p>
 
-<p>Tüm ürünlerin bir <code class="language-plaintext highlighter-rouge">name</code>e sahip olması gerektiğinden emin olmak için Product modeline bir <code class="language-plaintext highlighter-rouge">presence</code> doğrulaması ekleyelim.</p>
+<p>Tüm ürünlerin bir <code class="language-plaintext highlighter-rouge">name</code>‘e sahip olması gerektiğinden emin olmak için Product modeline bir <code class="language-plaintext highlighter-rouge">presence</code> doğrulaması ekleyelim.</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Product</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">validates</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">presence: </span><span class="kp">true</span>
@@ -855,13 +870,13 @@ store(dev)&gt; product.save
 
 <p>Rails’in “Merhaba” demesini sağlamak için en azından bir <em>route</em>, bir <em>action</em> içeren bir <em>controller</em> ve bir <em>view</em> oluşturmanız gerekir. Route, bir isteği bir controller eylemiyle (action) eşler. Bir controller eylemi, isteği işlemek için gerekli çalışmaları gerçekleştirir ve view için verileri hazırlar. Bir view, verileri istenen biçimde görüntüler.</p>
 
-<p>Uygulanma açısından: Route’lar bir Ruby <a href="https://en.wikipedia.org/wiki/Domain-specific_language">DSL (Domain-Specific Language)</a> dili ile yazılmış kurallardır.Controller’lar Ruby sınıflarıdır ve genel metotları eylemlerdir. View’ler ise genellikle HTML ve Ruby karışımıyla yazılmış şablonlardır.</p>
+<p>Uygulanma açısından: Route’lar bir Ruby <a href="https://en.wikipedia.org/wiki/Domain-specific_language">DSL (Domain-Specific Language)</a> dili ile yazılmış kurallardır. Controller’lar Ruby sınıflarıdır ve genel metotları eylemlerdir. View’ler ise genellikle HTML ve Ruby karışımıyla yazılmış şablonlardır.</p>
 
 <p>Kısaca bu şekilde, ancak bu adımların her birini daha ayrıntılı olarak inceleyeceğiz.</p>
 
 <h2 id="route">Route</h2>
 
-<p>Rails’te route (rota), gelen bir HTTP isteğinin işlenmek üzere uygun controller’a ve eyleme nasıl yönlendirileceğini belirleyen URL’in bir parçasıdır. İlk olarak, URL’ler ve HTTP İstek metotları hakkında hızlı bir hatırlatma yapalım.</p>
+<p>Rails’te route, gelen bir HTTP isteğinin işlenmek üzere uygun controller’a ve eyleme nasıl yönlendirileceğini belirleyen URL’in bir parçasıdır. İlk olarak, URL’ler ve HTTP İstek metotları hakkında hızlı bir hatırlatma yapalım.</p>
 
 <h3 id="urlin-parçaları">URL’in Parçaları</h3>
 
@@ -886,16 +901,16 @@ store(dev)&gt; product.save
 <ul>
   <li>Bir <code class="language-plaintext highlighter-rouge">GET</code> isteği, sunucuya belirli bir URL için verileri almasını söyler (örn,
 bir sayfa yükleme veya bir kayıt getirme).</li>
-  <li>Bir <code class="language-plaintext highlighter-rouge">POST</code> isteği, işlenmek üzere URL’ye veri gönderir (genellikle yeni bir kayıt oluşturur).</li>
-  <li>Bir <code class="language-plaintext highlighter-rouge">PUT</code> veya <code class="language-plaintext highlighter-rouge">PATCH</code> isteği, mevcut bir kaydı güncellemek için bir URL’ye veri gönderir.</li>
-  <li>Bir URL’ye yapılan <code class="language-plaintext highlighter-rouge">DELETE</code> isteği sunucuya bir kaydı silmesini söyler.</li>
+  <li>Bir <code class="language-plaintext highlighter-rouge">POST</code> isteği, işlenmek üzere URL’e veri gönderir (genellikle yeni bir kayıt oluşturur).</li>
+  <li>Bir <code class="language-plaintext highlighter-rouge">PUT</code> veya <code class="language-plaintext highlighter-rouge">PATCH</code> isteği, mevcut bir kaydı güncellemek için bir URL’e veri gönderir.</li>
+  <li>Bir URL’e yapılan <code class="language-plaintext highlighter-rouge">DELETE</code> isteği sunucuya bir kaydı silmesini söyler.</li>
 </ul>
 
 <h3 id="railste-route">Rails’te Route</h3>
 
-<p>Rails’teki bir <code class="language-plaintext highlighter-rouge">route</code> , bir HTTP metodu ile bir URL yolunu eşleştiren bir kod satırını ifade eder. Route ayrıca Rails’e bir isteğe hangi <code class="language-plaintext highlighter-rouge">controller</code> ve <code class="language-plaintext highlighter-rouge">action</code>ın yanıt vermesi gerektiğini söyler.</p>
+<p>Rails’teki bir <code class="language-plaintext highlighter-rouge">route</code> , bir HTTP metodu ile bir URL yolunu eşleştiren bir kod satırını ifade eder. Route ayrıca Rails’e bir isteğe hangi <code class="language-plaintext highlighter-rouge">controller</code> ve <code class="language-plaintext highlighter-rouge">action</code>‘ın yanıt vermesi gerektiğini söyler.</p>
 
-<p>Rails’te bir route (rota) tanımlamak için kod editörünüze geri dönün ve
+<p>Rails’te bir route tanımlamak için kod editörünüze geri dönün ve
 aşağıdaki route’u <code class="language-plaintext highlighter-rouge">config/routes.rb</code> dosyasına ekleyin.</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
@@ -903,11 +918,11 @@ aşağıdaki route’u <code class="language-plaintext highlighter-rouge">config
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>Bu route Rails’e <code class="language-plaintext highlighter-rouge">/products</code> yoluna GET istekleri aramasını söyler. Bu örnekte, isteğin yönlendirileceği yer için <code class="language-plaintext highlighter-rouge">"products#index"</code>i belirttik.</p>
+<p>Bu route Rails’e <code class="language-plaintext highlighter-rouge">/products</code> yoluna GET istekleri aramasını söyler. Bu örnekte, isteğin yönlendirileceği yer için <code class="language-plaintext highlighter-rouge">"products#index"</code>‘i belirttik.</p>
 
 <p>Rails eşleşen bir istek gördüğünde, isteği <code class="language-plaintext highlighter-rouge">ProductsController</code> ve bu controller’ın içindeki <code class="language-plaintext highlighter-rouge">index</code> eylemine gönderecektir. Rails bu şekilde isteği işleyecek ve tarayıcıya bir yanıt döndürecektir.</p>
 
-<p>Route’larımızda protokol, domain (alan adı) veya sorgu parametrelerini belirtmemize gerek olmadığını fark edeceksiniz. Bunun temel nedeni; protokol ve domain’in, isteğin sunucunuza ulaşmasını sağlamasıdır. Buradan, Rails isteği alır ve hangi route’ların tanımlandığına bağlı olarak isteğe yanıt vermek için hangi yolu kullanacağını bilir. Sorgu parametreleri, Rails’in isteğe uygulamak için kullanabileceği seçenekler gibidir, bu nedenle genellikle controller’da verileri filtrelemek için kullanılırlar.</p>
+<p>Route’larımızda protokol, domain (alan adı) veya sorgu parametrelerini belirtmemize gerek olmadığını fark edeceksiniz. Bunun temel nedeni; protokol ve domain’in, isteğin sunucunuza ulaşmasını sağlamasıdır. Buradan, Rails isteği alır ve hangi route’ların tanımlandığına bağlı olarak isteğe yanıt vermek için hangi yolu kullanacağını bilir. Sorgu parametreleri, Rails’in isteğe uygulamak için kullanabileceği seçenekler gibidir; bu nedenle genellikle controller’da verileri filtrelemek için kullanılırlar.</p>
 
 <picture class="flowdiagram">
   <source srcset="/assets/images/rails/getting_started/routing_dark.jpg" media="(prefers-color-scheme:dark)" />
@@ -919,7 +934,7 @@ aşağıdaki route’u <code class="language-plaintext highlighter-rouge">config
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">post</span> <span class="s2">"/products"</span><span class="p">,</span> <span class="ss">to: </span><span class="s2">"products#create"</span>
 </code></pre></div></div>
 
-<p>Burada, Rails’e “/products” adresine POST isteklerini almasını ve bunları <code class="language-plaintext highlighter-rouge">create' eylemini kullanarak </code>ProductsController’ ile işlemesini söyledik.</p>
+<p>Burada, Rails’e “/products” adresine POST isteklerini almasını ve bunları <code class="language-plaintext highlighter-rouge">create</code> eylemini kullanarak <code class="language-plaintext highlighter-rouge">ProductsController</code> ile işlemesini söyledik.</p>
 
 <p>Route’ların belirli kalıplara sahip URL’ler ile eşleşmesi de gerekebilir. Peki bu nasıl çalışır?</p>
 
@@ -937,7 +952,7 @@ aşağıdaki route’u <code class="language-plaintext highlighter-rouge">config
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">get</span> <span class="s2">"/blog/:title"</span><span class="p">,</span> <span class="ss">to: </span><span class="s2">"blog#show"</span>
 </code></pre></div></div>
 
-<p>Rails, <code class="language-plaintext highlighter-rouge">/blog/hello-world</code> içinden <code class="language-plaintext highlighter-rouge">hello-world</code> öğesini yakalayacaktır ve bu, eşleşen başlık ismine (title) sahip blog gönderisini aramak için kullanılabilir.</p>
+<p>Rails, <code class="language-plaintext highlighter-rouge">/blog/hello-world</code> içinden <code class="language-plaintext highlighter-rouge">hello-world</code> öğesini yakalayacaktır ve bu, eşleşen title’a sahip blog gönderisini aramak için kullanılabilir.</p>
 
 <h4 id="crud-routeları">CRUD Route’ları</h4>
 
@@ -980,7 +995,7 @@ aşağıdaki route’u <code class="language-plaintext highlighter-rouge">config
 <div class="guide-alert guide-alert-info">
   <div class="guide-alert-icon">💡</div>
   <div class="guide-alert-content">
-    Tüm bu CRUD eylemlerini istemiyorsanız, tam olarak neye ihtiyacınız olduğunu belirtirsiniz. Ayrıntılar için <a href="../routing/">Routing Kılavuzu</a> bölümüne göz atın.
+    Tüm bu CRUD eylemlerini istemiyorsanız, tam olarak neye ihtiyacınız olduğunu belirtirsiniz. Ayrıntılar için <a href="../routing/">Routing</a> bölümüne göz atın.
   </div>
 </div>
 
@@ -1065,7 +1080,7 @@ aşağıdaki route’u <code class="language-plaintext highlighter-rouge">config
 
 <p>Tarayıcıda http://localhost:3000/products adresini açarsak, Rails product index’ini HTML olarak oluşturacaktır.</p>
 
-<p>Tarayıcımız <code class="language-plaintext highlighter-rouge">/products</code> isteğinde bulundu ve Rails bu route’u <code class="language-plaintext highlighter-rouge">products#index</code> ile eşleştirdi. Rails isteği <code class="language-plaintext highlighter-rouge">ProductsController</code>a gönderdi ve <code class="language-plaintext highlighter-rouge">index</code> action’ını çağırdı. Bu action boş olduğu için, Rails eşleşen şablonu <code class="language-plaintext highlighter-rouge">app/views/products/index.html.erb</code> adresinde işledi ve tarayıcımıza döndürdü. Çok güzel!</p>
+<p>Tarayıcımız <code class="language-plaintext highlighter-rouge">/products</code> isteğinde bulundu ve Rails bu route’u <code class="language-plaintext highlighter-rouge">products#index</code> ile eşleştirdi. Rails isteği <code class="language-plaintext highlighter-rouge">ProductsController</code>‘a gönderdi ve <code class="language-plaintext highlighter-rouge">index</code> action’ını çağırdı. Bu action boş olduğu için, Rails eşleşen şablonu <code class="language-plaintext highlighter-rouge">app/views/products/index.html.erb</code> adresinde işledi ve tarayıcımıza döndürdü. Çok güzel!</p>
 
 <p><code class="language-plaintext highlighter-rouge">config/routes.rb</code> dosyasını açıp bu satırı eklersek eğer, Rails’e ana dizin route’unun Products index action’ını render etmesi/ekranda göstermesi gerektiğini söyleyebiliriz:</p>
 
@@ -1101,7 +1116,7 @@ aşağıdaki route’u <code class="language-plaintext highlighter-rouge">config
 <div class="guide-alert guide-alert-info">
   <div class="guide-alert-icon">💡</div>
   <div class="guide-alert-content">
-    Mevcut olan daha fazla helper görmek için <a href="../action_view_helpers/">Action View Helpers Kılavuzu</a>'na göz atın.
+    Mevcut olan daha fazla helper görmek için <a href="../action_view_helpers/">Action View Helper Kılavuzu</a>'na göz atın.
   </div>
 </div>
 
@@ -1145,13 +1160,13 @@ aşağıdaki route’u <code class="language-plaintext highlighter-rouge">config
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>Buradaki <code class="language-plaintext highlighter-rouge">show</code> action’ı <em>tekil</em> <code class="language-plaintext highlighter-rouge">@product</code> tanımlar çünkü veritabanından tek bir kayıt yüklüyor, yani başka bir deyişle söylemek gerekirse: Bu tek bir ürünü göster, demek. <code class="language-plaintext highlighter-rouge">index</code>‘te çoğul <code class="language-plaintext highlighter-rouge">@products</code> kullanırız çünkü birden fazla ürün yüklüyoruz.</p>
+<p>Buradaki <code class="language-plaintext highlighter-rouge">show</code> action’ı <em>tekil</em> <code class="language-plaintext highlighter-rouge">@product</code> tanımlar çünkü veritabanından tek bir kayıt yüklüyor, yani başka bir deyişle söylemek gerekirse: Bu, tek bir ürünü göster, demek. <code class="language-plaintext highlighter-rouge">index</code>‘te çoğul <code class="language-plaintext highlighter-rouge">@products</code> kullanırız çünkü birden fazla ürün yüklüyoruz.</p>
 
 <p>Veritabanını sorgulamak için istek parametrelerine erişmek amacıyla <code class="language-plaintext highlighter-rouge">params</code> kullanırız. Bu durumda, <code class="language-plaintext highlighter-rouge">/products/:id</code> route’umuzdaki <code class="language-plaintext highlighter-rouge">:id</code>‘yi kullanıyoruz. <code class="language-plaintext highlighter-rouge">/products/1</code> adresini ziyaret ettiğimizde, params hash’i <code class="language-plaintext highlighter-rouge">{id: 1}</code> içerir ve bu da <code class="language-plaintext highlighter-rouge">show</code> action’ımızın veritabanından ID’si <code class="language-plaintext highlighter-rouge">1</code> olan Product’ı yüklemek için <code class="language-plaintext highlighter-rouge">Product.find(1)</code> çağırmasıyla sonuçlanır.</p>
 
 <p>Sırada show action’ı için bir view’e ihtiyacımız var. Rails isimlendirme kurallarını takip ederek, <code class="language-plaintext highlighter-rouge">ProductsController</code>, <code class="language-plaintext highlighter-rouge">app/views</code> içindeki <code class="language-plaintext highlighter-rouge">products</code> alt klasöründe view’leri bekler.</p>
 
-<p><code class="language-plaintext highlighter-rouge">show</code> action’ı <code class="language-plaintext highlighter-rouge">app/views/products/show.html.erb</code>de bir dosya bekler. Bu dosyayı editörümüzde oluşturalım ve aşağıdaki içeriği ekleyelim:</p>
+<p><code class="language-plaintext highlighter-rouge">show</code> action’ı <code class="language-plaintext highlighter-rouge">app/views/products/show.html.erb</code> adında bir dosya bekler. Bu dosyayı editörümüzde oluşturalım ve aşağıdaki içeriği ekleyelim:</p>
 
 <div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;h1&gt;</span><span class="cp">&lt;%=</span> <span class="vi">@product</span><span class="p">.</span><span class="nf">name</span> <span class="cp">%&gt;</span><span class="nt">&lt;/h1&gt;</span>
 
@@ -1175,7 +1190,7 @@ aşağıdaki route’u <code class="language-plaintext highlighter-rouge">config
 
 <p>Bu sayfayı tarayıcınızda yenileyin. Çalıştığını göreceksiniz, ancak daha iyisini yapabiliriz.</p>
 
-<p>Rails, path’ler ve URL’ler oluşturmak için helper metotları sağlar. <code class="language-plaintext highlighter-rouge">bin/rails routes</code> komutunu çalıştırdığınızda Prefix sütununu göreceksiniz. Bu prefix, Ruby kodu ile URL oluşturmak için kullanabileceğiniz helper’larla eşleşir.</p>
+<p>Rails, path’ler ve URL’ler oluşturmak için helper metotları sağlar. <code class="language-plaintext highlighter-rouge">bin/rails routes</code> komutunu çalıştırdığınızda Prefix sütununu göreceksiniz. Bu prefix’ler, Ruby kodu ile URL oluşturmak için kullanabileceğiniz helper’larla eşleşir.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                                  Prefix Verb   URI Pattern                                                                                       Controller#Action
                                 products GET    /products(.:format)                                                                               products#index
@@ -1197,9 +1212,9 @@ aşağıdaki route’u <code class="language-plaintext highlighter-rouge">config
 
 <p>URL helper’ları tarayıcı dışında görüntülenecek e-postaları render etmek için faydalıdır.</p>
 
-<p><code class="language-plaintext highlighter-rouge">link_to</code> helper’ıyla birleştirildiğinde, anchor etiketleri oluşturabilir ve bunu Ruby’de temiz bir şekilde yapmak için URL helper’ını kullanabiliriz. <code class="language-plaintext highlighter-rouge">link_to</code> link (<code class="language-plaintext highlighter-rouge">product.name</code>) için görüntülecek içeriği  ve <code class="language-plaintext highlighter-rouge">href</code> özelliği için link verilecek path veya URL’i (<code class="language-plaintext highlighter-rouge">product</code>) kabul eder.</p>
+<p><code class="language-plaintext highlighter-rouge">link_to</code> helper’ıyla birleştirildiğinde, anchor etiketleri oluşturabilir ve bunu Ruby’de temiz bir şekilde yapmak için URL helper’ını kullanabiliriz. <code class="language-plaintext highlighter-rouge">link_to</code>, (<code class="language-plaintext highlighter-rouge">product.name</code>) linki için görüntülecek içeriği  ve <code class="language-plaintext highlighter-rouge">href</code> özelliği için link verilecek path veya URL’i (<code class="language-plaintext highlighter-rouge">product</code>) kabul eder.</p>
 
-<p>Bu helper’ları kullanmak için refactor edelim:</p>
+<p>Bu helper’ları kullanmak için kodu refactor edelim:</p>
 
 <pre><code class="language-erb#6">&lt;h1&gt;Products&lt;/h1&gt;
 
@@ -2378,7 +2393,7 @@ Unsubscribe: &lt;%= unsubscribe_url(token: params[:subscriber].generate_token_fo
 <div class="guide-alert guide-alert-info">
   <div class="guide-alert-icon">💡</div>
   <div class="guide-alert-content">
-    Her pin, bir JavaScript paket adını (örn. <code>"@hotwired/turbo-rails"</code>) belirli bir dosya veya URL'ye (örn. <code>"turbo.min.js"</code>) eşleştirir. <code>pin_all_from</code> bir dizindeki tüm dosyaları (örn. <code>app/javascript/controllers</code>) bir ad alanına (örn. <code>"controllers"</code>) eşleştirir.
+    Her pin, bir JavaScript paket adını (örn. <code>"@hotwired/turbo-rails"</code>) belirli bir dosya veya URL'e (örn. <code>"turbo.min.js"</code>) eşleştirir. <code>pin_all_from</code> bir dizindeki tüm dosyaları (örn. <code>app/javascript/controllers</code>) bir ad alanına (örn. <code>"controllers"</code>) eşleştirir.
   </div>
 </div>
 
@@ -2606,7 +2621,7 @@ sunucuda indirilebilmesi ve çalıştırılabilmesi için uygulamanın image’i
 
 <span class="c1"># Image host için kimlik bilgileri.</span>
 <span class="na">registry</span><span class="pi">:</span>
-  <span class="c1"># Docker Hub kullanmıyorsanız kayıt sunucusunu belirtin</span>
+  <span class="c1"># Docker Hub kullanmıyorsanız kayıt sunucusunu belirtin.</span>
   <span class="c1"># server: registry.digitalocean.com / ghcr.io / ...</span>
   <span class="na">username</span><span class="pi">:</span> <span class="s">your-user</span>
 </code></pre></div></div>

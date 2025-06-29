@@ -245,7 +245,7 @@ gerçek zamanlı özellikleri Rails uygulamanıza nasıl dahil edeceğinizi öğ
 <p>Bu kılavuzu okuduktan sonra şunları bileceksiniz:</p>
 
 <ul>
-  <li>Action Cable’ın ne olduğunu, backend ve frontende nasıl entegre edeceğinizi</li>
+  <li>Action Cable’ın ne olduğunu, backend ve frontend’e nasıl entegre edeceğinizi</li>
   <li>Action Cable’ı nasıl kuracağınızı</li>
   <li>Kanalları nasıl kuracağınızı</li>
   <li>Action Cable’ı çalıştırmak için dağıtım ve mimari kurulumunu</li>
@@ -267,7 +267,7 @@ Hem Action Cable hem WebSocket daha az bilinen bazı terminolojiler sunar:</p>
 
 <h3 id="bağlantılar">Bağlantılar</h3>
 
-<p><em>Bağlantılar (Connections)</em> istemci-sunucu ilişkisinin temelini oluşturur. Tek bir Action Cable sunucusu birden fazla bağlantının üstesinden gelebilir. Her bir WebSocket bağlantısı için bir bağlantı örneği vardır. Tek bir kullanıcı eğer birden fazla tarayıcı sekmesi veya cihaz kullanıyorsa uygulamanıza açık birden fazla Websocket’e sahip olabilir.</p>
+<p><em>Bağlantılar (Connections)</em> istemci-sunucu ilişkisinin temelini oluşturur. Tek bir Action Cable sunucusu birden fazla bağlantının üstesinden gelebilir. Her bir WebSocket bağlantısı için bir bağlantı örneği vardır. Tek bir kullanıcı eğer birden fazla tarayıcı sekmesi veya cihaz kullanıyorsa uygulamanıza açık birden fazla WebSocket’e sahip olabilir.</p>
 
 <h3 id="tüketiciler">Tüketiciler</h3>
 
@@ -997,7 +997,7 @@ Bu durum gelecekte değişebilir. <a href="https://github.com/rails/rails/issues
 
 <h2 id="dağıtım">Dağıtım</h2>
 
-<p>Action Cable, WebSockets ve iş parçacıklarının bir kombinasyonu tarafından desteklenmektedir. Hem framework tesisatı hem de kullanıcı tarafından belirtilen kanal çalışması Ruby’nin yerel iş parçacığı desteği kullanılarak dahili olarak ele alınır. Bu, herhangi bir iş parçacığı güvenliği günahı işlemediğiniz sürece mevcut tüm Rails modellerinizi sorunsuz bir şekilde kullanabileceğiniz anlamına gelir.</p>
+<p>Action Cable, WebSocket ve iş parçacıklarının bir kombinasyonu tarafından desteklenmektedir. Hem framework tesisatı hem de kullanıcı tarafından belirtilen kanal çalışması Ruby’nin yerel iş parçacığı desteği kullanılarak dahili olarak ele alınır. Bu, herhangi bir iş parçacığı güvenliği günahı işlemediğiniz sürece mevcut tüm Rails modellerinizi sorunsuz bir şekilde kullanabileceğiniz anlamına gelir.</p>
 
 <p>Action Cable sunucusu Rack socket hijacking API’ını uygular, böylece uygulama sunucusunun çok iş parçacıklı olup olmadığına bakılmaksızın bağlantıları dahili olarak yönetmek için çok iş parçacıklı bir modelin kullanılmasına izin verir.</p>
 
