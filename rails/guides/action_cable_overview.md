@@ -3,7 +3,7 @@ layout: guide
 guide_id: action_cable_overview
 title: Action Cable'a Genel Bakış
 description: Action Cable'a Genel Bakış konusunu detaylı olarak ele alan Rails kılavuzu.
-last_updated: '2025-06-16'
+last_updated: '2025-07-01'
 translation: true
 original_file: action_cable_overview.md
 ---

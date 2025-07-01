@@ -3,7 +3,7 @@ layout: guide
 guide_id: getting_started
 title: Rails ile Başlarken
 description: Rails ile Başlarken konusunu detaylı olarak ele alan Rails kılavuzu.
-last_updated: '2025-06-16'
+last_updated: '2025-07-01'
 translation: true
 original_file: getting_started.md
 ---
@@ -41,7 +41,7 @@ Rails'in Felsefesi
 
 Rails, Ruby programlama dilinde yazılmış bir web uygulaması geliştirme framework'üdür. Her geliştiricinin başlangıç için ihtiyaç duyduğu şeyleri varsayarak web uygulamalarını programlamayı kolaylaştırmak için tasarlanmıştır. Diğer birçok dil ve framework'e göre daha az kod yazarak daha fazlasını başarmanızı sağlar. Deneyimli Rails geliştiricileri, web uygulaması geliştirmeyi daha eğlenceli hale getirdiğini de belirtmektedir.
 
-Rails, inatçı bir yazılımdır. İşleri yapmanın “en iyi” bir yolu olduğu varsayımından hareket eder ve bu yolu teşvik etmek için tasarlanmıştır - ve bazı durumlarda alternatiflerden caydırır. “Rails Yöntemi”ni öğrenirseniz, muhtemelen üretkenliğinizde muazzam bir artış göreceksiniz. Diğer dillerden edindiğiniz eski alışkanlıkları Rails geliştirirken ısrarla sürdürür ve başka yerlerde öğrendiğiniz kalıpları kullanmaya çalışırsanız, daha az mutlu bir deneyim yaşayabilirsiniz.
+Rails, inatçı bir yazılımdır. İşleri yapmanın “en iyi” bir yolu olduğu varsayımından hareket eder ve bu yolu teşvik etmek için tasarlanmıştır -ve bazı durumlarda alternatiflerden caydırır-. “Rails Yöntemi”ni öğrenirseniz, muhtemelen üretkenliğinizde muazzam bir artış göreceksiniz. Diğer dillerden edindiğiniz eski alışkanlıkları Rails geliştirirken ısrarla sürdürür ve başka yerlerde öğrendiğiniz kalıpları kullanmaya çalışırsanız, daha az mutlu bir deneyim yaşayabilirsiniz.
 
 Rails felsefesi iki ana kılavuz ilke içerir:
 
@@ -121,7 +121,7 @@ Yeni bir Rails uygulamasında yer alan dosya ve dizinlere hızlıca bir göz ata
 |lib/|Uygulamanız için genişletilmiş modüller.|
 |log/|Uygulama log dosyaları.|
 |public/|Statik dosyaları ve derlenmiş assetleri içerir. Uygulamanız çalışırken, bu dizin olduğu gibi gösterilecektir.|
-|Rakefile|Bu dosya komut satırından çalıştırılabilecek görevleri bulur ve yükler. Görev tanımları Rails'in bileşenleri boyunca tanımlanmıştır. `Rakefile`ı değiştirmek yerine, uygulamanızın `lib/tasks` dizinine dosyalar ekleyerek kendi görevlerinizi eklemelisiniz.|
+|Rakefile|Bu dosya komut satırından çalıştırılabilecek görevleri bulur ve yükler. Görev tanımları Rails'in bileşenleri boyunca tanımlanmıştır. `Rakefile`'ı değiştirmek yerine, uygulamanızın `lib/tasks` dizinine dosyalar ekleyerek kendi görevlerinizi eklemelisiniz.|
 |README.md|Bu, uygulamanız için kısa bir kullanım kılavuzudur. Uygulamanızın ne yaptığını, nasıl kurulacağını vb. başkalarına anlatmak için bu dosyayı düzenlemelisiniz.|
 |script/|Tek seferlik veya genel amaçlı [script](https://github.com/rails/rails/blob/main/railties/lib/rails/generators/rails/script/USAGE) ve [benchmark](https://github.com/rails/rails/blob/main/railties/lib/rails/generators/rails/benchmark/USAGE)  içerir.|
 |storage/|Disk Hizmeti (Disk Service) için SQLite veritabanlarını ve Active Storage dosyalarını içerir. Bu konu [Active Storage](../active_storage_overview/) bölümünde ele alınmıştır.|
@@ -169,7 +169,12 @@ Bu, başlangıçta uygulamanın veritabanını oluşturacaktır.
 $ bin/rails server
 ```
 
-NOT: Komutları bir uygulama dizini içinde çalıştırdığımızda `bin/rails` kullanmalıyız. Bu, uygulamanın Rails sürümünün kullanıldığından emin olunmasını sağlar.
+<div class="guide-alert guide-alert-warning">
+  <div class="guide-alert-icon">📝</div>
+  <div class="guide-alert-content">
+    Komutları bir uygulama dizini içinde çalıştırdığımızda <code>bin/rails</code> kullanmalıyız. Bu, uygulamanın Rails sürümünün kullanıldığından emin olunmasını sağlar.
+  </div>
+</div>
 
 Bu, statik dosyaları ve Rails uygulamanızı sunacak olan Puma adlı bir web sunucusunu başlatacaktır:
 
@@ -239,7 +244,12 @@ Bu komut birkaç şey yaparak şunları oluşturur:
 2. `app/models/product.rb` içinde bir Active Record modeli.
 3. Bu model için testler ve test fikstürleri.
 
-NOT: Model adları *tekildir*, çünkü örneklenen bir model veritabanındaki tek bir kaydı temsil eder (yani, veritabanına eklemek için bir _product_ oluşturuyorsunuz).
+<div class="guide-alert guide-alert-warning">
+  <div class="guide-alert-icon">📝</div>
+  <div class="guide-alert-content">
+    Model adları <b>tekildir</b>, çünkü örneklenen bir model veritabanındaki tek bir kaydı temsil eder (yani, veritabanına eklemek için bir <i>product</i> oluşturuyorsunuz).
+  </div>
+</div>
 
 ### Veritabanı Değişiklikleri
 
@@ -263,11 +273,16 @@ end
 
 Bu migration Rails'e `products` adında yeni bir veritabanı tablosu oluşturmasını söylüyor.
 
-NOT: Yukarıdaki modelin aksine, Rails veritabanı tablo adlarını _çoğul_ yapar, çünkü veritabanı her modelin tüm örneklerini tutar (yani, _products_ veritabanı oluşturuyorsunuz).
+<div class="guide-alert guide-alert-warning">
+  <div class="guide-alert-icon">📝</div>
+  <div class="guide-alert-content">
+    Yukarıdaki modelin aksine, Rails veritabanı tablo adlarını <b>çoğul</b> yapar, çünkü veritabanı her modelin tüm örneklerini tutar (yani, <i>products</i> veritabanı oluşturuyorsunuz).
+  </div>
+</div>
 
 Daha sonra `create_table` bloğu bu veritabanı tablosunda hangi sütunların ve türlerin tanımlanması gerektiğini belirler.
 
-`t.timestamps` Rails'e `products` tablosunda `name` adında bir sütun oluşturmasını ve türünü `string` olarak ayarlamasını söyler.
+`t.string :name` Rails'e `products` tablosunda `name` adında bir sütun oluşturmasını ve türünü `string` olarak ayarlamasını söyler.
 
 `t.timestamps`, modellerinizde `created_at:datetime` ve `updated_at:datetime` adında iki sütun tanımlamak için bir kısayoldur. Bu sütunları Rails'teki çoğu Active Record modelinde görürsünüz ve kayıtlar oluşturulurken veya güncellenirken Active Record tarafından otomatik olarak ayarlanırlar.
 
@@ -334,7 +349,7 @@ end
 
 Bu sınıfta hiç kod olmaması sizi şaşırtabilir. Rails bu modeli neyin tanımladığını nasıl biliyor?
 
-`Product` modeli kullanıldığında, Rails sütun adları ve türleri için veritabanı tablosunu sorgulayacak ve bu nitelikler (attribute) için otomatik olarak kod oluşturacaktır. Rails bizi bu şablon kodu yazmaktan kurtarır ve bunun yerine uygulama mantığımıza odaklanabilmemiz için bu işi bizim yerimize perde arkasında halleder.
+`Product` modeli kullanıldığında, Rails sütun adları ve türleri için veritabanı tablosunu sorgulayacak ve bu öznitelikler (attribute) için otomatik olarak kod oluşturacaktır. Rails bizi bu şablon kodu yazmaktan kurtarır ve bunun yerine uygulama mantığımıza odaklanabilmemiz için bu işi bizim yerimize perde arkasında halleder.
 
 Rails'in Product modeli için hangi sütunları algıladığını görmek için Rails konsolunu kullanalım.
 
@@ -361,7 +376,7 @@ store(dev)> product = Product.new(name: "T-Shirt")
 => #<Product:0x000000012e616c30 id: nil, name: "T-Shirt", created_at: nil, updated_at: nil>
 ```
 
-`product` değişkeni `Product`'ın bir örneklenmesidir. Veritabanına kaydedilmemiştir ve bu nedenle bir ID, created_at veya updated_at gibi zaman damgaları yoktur.
+`product` değişkeni `Product`'ın bir örneklemesidir. Veritabanına kaydedilmemiştir ve bu nedenle bir ID, created_at veya updated_at gibi zaman damgaları yoktur.
 
 Kaydı veritabanına yazmak için `save` çağrısı yapabiliriz.
 
@@ -382,7 +397,7 @@ store(dev)> product
 => #<Product:0x00000001221f6260 id: 1, name: "T-Shirt", created_at: "2024-11-09 16:35:01.117836000 +0000", updated_at: "2024-11-09 16:35:01.117836000 +0000">
 ```
 
-`save`e benzer şekilde, bir Active Record nesnesini tek bir çağrıda oluşturmak ve kaydetmek için `create` kullanabiliriz.
+`save`'e benzer şekilde, bir Active Record nesnesini tek bir çağrıda oluşturmak ve kaydetmek için `create` kullanabiliriz.
 
 ```irb
 store(dev)> Product.create(name: "Pants")
@@ -397,7 +412,7 @@ store(dev)> Product.create(name: "Pants")
 Active Record modelimizi kullanarak veritabanındaki kayıtlara da bakabiliriz.
 
 Veritabanındaki tüm Product kayıtlarını bulmak için `all` metodunu kullanabiliriz.
-Bu bir _sınıf_ metodudur, bu yüzden Product üzerinde kullanabiliriz (yukarıdaki `save` gibi product örneklemesi/örneği üzerinde çağıracağımız bir örnekleme metoduna karşılık gelir).
+Bu bir _sınıf_ metodudur, bu yüzden Product üzerinde kullanabiliriz (yukarıdaki `save` gibi product örneklemesi üzerinde çağıracağımız bir örnekleme metoduna karşılık gelir).
 
 ```irb
 store(dev)> Product.all
@@ -425,7 +440,7 @@ store(dev)> Product.where(name: "Pants")
 => [#<Product:0x000000012184d858 id: 2, name: "Pants", created_at: "2024-11-09 16:36:01.856751000 +0000", updated_at: "2024-11-09 16:36:01.856751000 +0000">]
 ```
 
-Bu bir `SELECT` SQL sorgusu oluşturur, ancak `"Pants"` ile eşleşen bir `name`e sahip kayıtları filtrelemek için bir `WHERE` cümleciği de ekler. Bu aynı zamanda bir `ActiveRecord::Relation` döndürür çünkü birden fazla kayıt aynı isme sahip olabilir.
+Bu bir `SELECT` SQL sorgusu oluşturur, ancak `"Pants"` ile eşleşen bir `name`'e sahip kayıtları filtrelemek için bir `WHERE` cümleciği de ekler. Bu aynı zamanda bir `ActiveRecord::Relation` döndürür çünkü birden fazla kayıt aynı isme sahip olabilir.
 
 Kayıtları isme göre artan alfabetik sırada sıralamak için `order(name: :asc)` kullanabiliriz.
 
@@ -454,7 +469,7 @@ Bu kez, veritabanından yalnızca tek bir kayıt aldığımız için `ActiveReco
 
 ### Kayıtları Güncelleme
 
-Kayıtlar 2 şekilde güncellenebilir: `update` kullanılarak veya öznitelikler atanarak ve `save` çağrısı yapılarak.
+Kayıtlar 2 şekilde güncellenebilir: `update` kullanılarak veya öznitelikler atandıktan sonra `save` çağrısı yapılarak.
 
 Bir Product örneği üzerinde `update` çağrısı yapabilir ve veritabanına kaydedilecek yeni özelliklerin bir Hash'ini iletebiliriz. Bu; öznitelikleri atayacak, doğrulamaları (validations) çalıştıracak ve değişiklikleri tek bir metot çağrısında veritabanına kaydedecektir.
 
@@ -474,7 +489,7 @@ Bunu `Product.all` dosyasını tekrar çalıştırarak görün.
 store(dev)> Product.all
 ```
 
-İki ürün göreceksiniz: Ayakkabı ve Pantolon.
+İki ürün göreceksiniz: Shoes ve Pants.
 
 ```irb
   Product Load (0.3ms)  SELECT "products".* FROM "products" /* loading for pp */ LIMIT 11 /*application='Store'*/
@@ -493,7 +508,7 @@ store(dev)> Product.all
 
 Alternatif olarak, öznitelikleri atayabilir, değişiklikleri doğrulamaya ve veritabanına kaydetmeye hazır olduğumuzda `save` çağrısı yapabiliriz.
 
-"Ayakkabı" adını yeniden "T-Shirt" olarak değiştirelim.
+"Shoes" adını yeniden "T-Shirt" olarak değiştirelim.
 
 ```irb
 store(dev)> product = Product.find(1)
@@ -535,7 +550,7 @@ store(dev)> Product.all
 
 Active Record, veritabanına eklenen verilerin belirli kurallara uymasını sağlamanıza olanak tanıyan *doğrulamalar* (validations) sağlar.
 
-Tüm ürünlerin bir `name`e sahip olması gerektiğinden emin olmak için Product modeline bir `presence` doğrulaması ekleyelim.
+Tüm ürünlerin bir `name`'e sahip olması gerektiğinden emin olmak için Product modeline bir `presence` doğrulaması ekleyelim.
 
 ```ruby
 class Product < ApplicationRecord
@@ -585,14 +600,14 @@ Bir İsteğin Rails'teki Yolculuğu
 
 Rails'in "Merhaba" demesini sağlamak için en azından bir _route_, bir _action_ içeren bir _controller_ ve bir _view_ oluşturmanız gerekir. Route, bir isteği bir controller eylemiyle (action) eşler. Bir controller eylemi, isteği işlemek için gerekli çalışmaları gerçekleştirir ve view için verileri hazırlar. Bir view, verileri istenen biçimde görüntüler.
 
-Uygulanma açısından: Route'lar bir Ruby [DSL (Domain-Specific Language)](https://en.wikipedia.org/wiki/Domain-specific_language) dili ile yazılmış kurallardır.Controller'lar Ruby sınıflarıdır ve genel metotları eylemlerdir. View'ler ise genellikle HTML ve Ruby karışımıyla yazılmış şablonlardır.
+Uygulanma açısından: Route'lar bir Ruby [DSL (Domain-Specific Language)](https://en.wikipedia.org/wiki/Domain-specific_language) dili ile yazılmış kurallardır. Controller'lar Ruby sınıflarıdır ve genel metotları eylemlerdir. View'ler ise genellikle HTML ve Ruby karışımıyla yazılmış şablonlardır.
 
 Kısaca bu şekilde, ancak bu adımların her birini daha ayrıntılı olarak inceleyeceğiz.
 
 Route
 -----
 
-Rails'te route (rota), gelen bir HTTP isteğinin işlenmek üzere uygun controller'a ve eyleme nasıl yönlendirileceğini belirleyen URL'in bir parçasıdır. İlk olarak, URL'ler ve HTTP İstek metotları hakkında hızlı bir hatırlatma yapalım.
+Rails'te route, gelen bir HTTP isteğinin işlenmek üzere uygun controller'a ve eyleme nasıl yönlendirileceğini belirleyen URL'in bir parçasıdır. İlk olarak, URL'ler ve HTTP İstek metotları hakkında hızlı bir hatırlatma yapalım.
 
 ### URL'in Parçaları
 
@@ -615,15 +630,15 @@ HTTP istekleri, sunucuya belirli bir URL için hangi eylemi gerçekleştirmesi g
 
 - Bir `GET` isteği, sunucuya belirli bir URL için verileri almasını söyler (örn,
   bir sayfa yükleme veya bir kayıt getirme).
-- Bir `POST` isteği, işlenmek üzere URL'ye veri gönderir (genellikle yeni bir kayıt oluşturur).
-- Bir `PUT` veya `PATCH` isteği, mevcut bir kaydı güncellemek için bir URL'ye veri gönderir.
-- Bir URL'ye yapılan `DELETE` isteği sunucuya bir kaydı silmesini söyler.
+- Bir `POST` isteği, işlenmek üzere URL'e veri gönderir (genellikle yeni bir kayıt oluşturur).
+- Bir `PUT` veya `PATCH` isteği, mevcut bir kaydı güncellemek için bir URL'e veri gönderir.
+- Bir URL'e yapılan `DELETE` isteği sunucuya bir kaydı silmesini söyler.
 
 ### Rails'te Route
 
-Rails'teki bir `route` , bir HTTP metodu ile bir URL yolunu eşleştiren bir kod satırını ifade eder. Route ayrıca Rails'e bir isteğe hangi `controller` ve `action`ın yanıt vermesi gerektiğini söyler.
+Rails'teki bir `route` , bir HTTP metodu ile bir URL yolunu eşleştiren bir kod satırını ifade eder. Route ayrıca Rails'e bir isteğe hangi `controller` ve `action`'ın yanıt vermesi gerektiğini söyler.
 
-Rails'te bir route (rota) tanımlamak için kod editörünüze geri dönün ve
+Rails'te bir route tanımlamak için kod editörünüze geri dönün ve
 aşağıdaki route'u `config/routes.rb` dosyasına ekleyin.
 
 ```ruby
@@ -632,11 +647,11 @@ Rails.application.routes.draw do
 end
 ```
 
-Bu route Rails'e `/products` yoluna GET istekleri aramasını söyler. Bu örnekte, isteğin yönlendirileceği yer için `"products#index"`i belirttik.
+Bu route Rails'e `/products` yoluna GET istekleri aramasını söyler. Bu örnekte, isteğin yönlendirileceği yer için `"products#index"`'i belirttik.
 
 Rails eşleşen bir istek gördüğünde, isteği `ProductsController` ve bu controller'ın içindeki `index` eylemine gönderecektir. Rails bu şekilde isteği işleyecek ve tarayıcıya bir yanıt döndürecektir.
 
-Route'larımızda protokol, domain (alan adı) veya sorgu parametrelerini belirtmemize gerek olmadığını fark edeceksiniz. Bunun temel nedeni; protokol ve domain'in, isteğin sunucunuza ulaşmasını sağlamasıdır. Buradan, Rails isteği alır ve hangi route'ların tanımlandığına bağlı olarak isteğe yanıt vermek için hangi yolu kullanacağını bilir. Sorgu parametreleri, Rails'in isteğe uygulamak için kullanabileceği seçenekler gibidir, bu nedenle genellikle controller'da verileri filtrelemek için kullanılırlar.
+Route'larımızda protokol, domain (alan adı) veya sorgu parametrelerini belirtmemize gerek olmadığını fark edeceksiniz. Bunun temel nedeni; protokol ve domain'in, isteğin sunucunuza ulaşmasını sağlamasıdır. Buradan, Rails isteği alır ve hangi route'ların tanımlandığına bağlı olarak isteğe yanıt vermek için hangi yolu kullanacağını bilir. Sorgu parametreleri, Rails'in isteğe uygulamak için kullanabileceği seçenekler gibidir; bu nedenle genellikle controller'da verileri filtrelemek için kullanılırlar.
 
 <picture class="flowdiagram">
   <source srcset="/assets/images/rails/getting_started/routing_dark.jpg" media="(prefers-color-scheme:dark)">
@@ -649,7 +664,7 @@ Başka bir örneğe bakalım. Bu satırı önceki route'tan sonra ekleyin:
 post "/products", to: "products#create"
 ```
 
-Burada, Rails'e "/products" adresine POST isteklerini almasını ve bunları `create' eylemini kullanarak `ProductsController' ile işlemesini söyledik.
+Burada, Rails'e "/products" adresine POST isteklerini almasını ve bunları `create` eylemini kullanarak `ProductsController` ile işlemesini söyledik.
 
 Route'ların belirli kalıplara sahip URL'ler ile eşleşmesi de gerekebilir. Peki bu nasıl çalışır?
 
@@ -669,7 +684,7 @@ Route parametrelerinin Integer olması da gerekmez.
 get "/blog/:title", to: "blog#show"
 ```
 
-Rails, `/blog/hello-world` içinden `hello-world` öğesini yakalayacaktır ve bu, eşleşen başlık ismine (title) sahip blog gönderisini aramak için kullanılabilir.
+Rails, `/blog/hello-world` içinden `hello-world` öğesini yakalayacaktır ve bu, eşleşen title'a sahip blog gönderisini aramak için kullanılabilir.
 
 #### CRUD Route'ları
 
@@ -801,7 +816,7 @@ Bunu tarayıcımızda görelim. İlk olarak, Rails sunucusunu başlatmak için t
 
 Tarayıcıda http://localhost:3000/products adresini açarsak, Rails product index'ini HTML olarak oluşturacaktır.
 
-Tarayıcımız `/products` isteğinde bulundu ve Rails bu route'u `products#index` ile eşleştirdi. Rails isteği `ProductsController`a gönderdi ve `index` action'ını çağırdı. Bu action boş olduğu için, Rails eşleşen şablonu `app/views/products/index.html.erb` adresinde işledi ve tarayıcımıza döndürdü. Çok güzel!
+Tarayıcımız `/products` isteğinde bulundu ve Rails bu route'u `products#index` ile eşleştirdi. Rails isteği `ProductsController`'a gönderdi ve `index` action'ını çağırdı. Bu action boş olduğu için, Rails eşleşen şablonu `app/views/products/index.html.erb` adresinde işledi ve tarayıcımıza döndürdü. Çok güzel!
 
 `config/routes.rb` dosyasını açıp bu satırı eklersek eğer, Rails'e ana dizin route'unun Products index action'ını render etmesi/ekranda göstermesi gerektiğini söyleyebiliriz:
 
@@ -840,7 +855,7 @@ ERB, [Embedded Ruby](https://docs.ruby-lang.org/en/master/ERB.html)'nin kısaltm
 <div class="guide-alert guide-alert-info">
   <div class="guide-alert-icon">💡</div>
   <div class="guide-alert-content">
-    Mevcut olan daha fazla helper görmek için <a href="../action_view_helpers/">Action View Helpers Kılavuzu</a>'na göz atın.
+    Mevcut olan daha fazla helper görmek için <a href="../action_view_helpers/">Action View Helper Kılavuzu</a>'na göz atın.
   </div>
 </div>
 
@@ -886,13 +901,13 @@ class ProductsController < ApplicationController
 end
 ```
 
-Buradaki `show` action'ı *tekil* `@product` tanımlar çünkü veritabanından tek bir kayıt yüklüyor, yani başka bir deyişle söylemek gerekirse: Bu tek bir ürünü göster, demek. `index`'te çoğul `@products` kullanırız çünkü birden fazla ürün yüklüyoruz.
+Buradaki `show` action'ı *tekil* `@product` tanımlar çünkü veritabanından tek bir kayıt yüklüyor, yani başka bir deyişle söylemek gerekirse: Bu, tek bir ürünü göster, demek. `index`'te çoğul `@products` kullanırız çünkü birden fazla ürün yüklüyoruz.
 
 Veritabanını sorgulamak için istek parametrelerine erişmek amacıyla `params` kullanırız. Bu durumda, `/products/:id` route'umuzdaki `:id`'yi kullanıyoruz. `/products/1` adresini ziyaret ettiğimizde, params hash'i `{id: 1}` içerir ve bu da `show` action'ımızın veritabanından ID'si `1` olan Product'ı yüklemek için `Product.find(1)` çağırmasıyla sonuçlanır.
 
 Sırada show action'ı için bir view'e ihtiyacımız var. Rails isimlendirme kurallarını takip ederek, `ProductsController`, `app/views` içindeki `products` alt klasöründe view'leri bekler.
 
-`show` action'ı `app/views/products/show.html.erb`de bir dosya bekler. Bu dosyayı editörümüzde oluşturalım ve aşağıdaki içeriği ekleyelim:
+`show` action'ı `app/views/products/show.html.erb` adında bir dosya bekler. Bu dosyayı editörümüzde oluşturalım ve aşağıdaki içeriği ekleyelim:
 
 ```erb
 <h1><%= @product.name %></h1>
@@ -918,7 +933,7 @@ Index sayfasının her ürün için show sayfasına link vermesi faydalı olur, 
 
 Bu sayfayı tarayıcınızda yenileyin. Çalıştığını göreceksiniz, ancak daha iyisini yapabiliriz.
 
-Rails, path'ler ve URL'ler oluşturmak için helper metotları sağlar. `bin/rails routes` komutunu çalıştırdığınızda Prefix sütununu göreceksiniz. Bu prefix, Ruby kodu ile URL oluşturmak için kullanabileceğiniz helper'larla eşleşir.
+Rails, path'ler ve URL'ler oluşturmak için helper metotları sağlar. `bin/rails routes` komutunu çalıştırdığınızda Prefix sütununu göreceksiniz. Bu prefix'ler, Ruby kodu ile URL oluşturmak için kullanabileceğiniz helper'larla eşleşir.
 
 ```
                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
@@ -939,9 +954,9 @@ Bu route prefix'leri bize aşağıdaki gibi helper'lar verir:
 
 URL helper'ları tarayıcı dışında görüntülenecek e-postaları render etmek için faydalıdır.
 
-`link_to` helper'ıyla birleştirildiğinde, anchor etiketleri oluşturabilir ve bunu Ruby'de temiz bir şekilde yapmak için URL helper'ını kullanabiliriz. `link_to` link (`product.name`) için görüntülecek içeriği  ve `href` özelliği için link verilecek path veya URL'i (`product`) kabul eder.
+`link_to` helper'ıyla birleştirildiğinde, anchor etiketleri oluşturabilir ve bunu Ruby'de temiz bir şekilde yapmak için URL helper'ını kullanabiliriz. `link_to`, (`product.name`) linki için görüntülecek içeriği  ve `href` özelliği için link verilecek path veya URL'i (`product`) kabul eder.
 
-Bu helper'ları kullanmak için refactor edelim:
+Bu helper'ları kullanmak için kodu refactor edelim:
 
 ```erb#6
 <h1>Products</h1>
@@ -1212,7 +1227,7 @@ Yeni ürün oluşturmak için zaten bir form yazdık. Bunu edit ve update için 
 
 Formu `app/views/products/_form.html.erb` adlı bir dosyaya taşıyabiliriz. Dosya adı bunun bir partial olduğunu belirtmek için alt çizgi ile başlar.
 
-Ayrıca herhangi bir instance variable'ı, partial'ı render ettiğimizde tanımlayabileceğimiz bir local variable (yerel değişken) ile değiştirmek istiyoruz. Bunu `@product`'ı `product` ile değiştirerek yapacağız.
+Ayrıca herhangi bir instance variable'ı (örnek değişken), partial'ı render ettiğimizde tanımlayabileceğimiz bir local variable (yerel değişken) ile değiştirmek istiyoruz. Bunu `@product`'ı `product` ile değiştirerek yapacağız.
 
 ```erb#1
 <%= form_with model: product do |form| %>
@@ -1230,7 +1245,7 @@ Ayrıca herhangi bir instance variable'ı, partial'ı render ettiğimizde tanım
 <div class="guide-alert guide-alert-info">
   <div class="guide-alert-icon">💡</div>
   <div class="guide-alert-content">
-    Local variable'lar kullanmak partial'ların aynı sayfada her seferinde farklı bir değerle birden fazla kez yeniden kullanılmasına olanak tanır. Bu, index sayfası gibi öğe listelerini render ederken işe yarar.
+    Local variable'lar kullanmak, partial'ların aynı sayfada her seferinde farklı bir değerle birden fazla kez yeniden kullanılmasına olanak tanır. Bu, index sayfası gibi öğe listelerini render ederken işe yarar.
   </div>
 </div>
 
@@ -2198,7 +2213,7 @@ pin "@rails/actiontext", to: "actiontext.esm.js"
 <div class="guide-alert guide-alert-info">
   <div class="guide-alert-icon">💡</div>
   <div class="guide-alert-content">
-    Her pin, bir JavaScript paket adını (örn. <code>"@hotwired/turbo-rails"</code>) belirli bir dosya veya URL'ye (örn. <code>"turbo.min.js"</code>) eşleştirir. <code>pin_all_from</code> bir dizindeki tüm dosyaları (örn. <code>app/javascript/controllers</code>) bir ad alanına (örn. <code>"controllers"</code>) eşleştirir.
+    Her pin, bir JavaScript paket adını (örn. <code>"@hotwired/turbo-rails"</code>) belirli bir dosya veya URL'e (örn. <code>"turbo.min.js"</code>) eşleştirir. <code>pin_all_from</code> bir dizindeki tüm dosyaları (örn. <code>app/javascript/controllers</code>) bir ad alanına (örn. <code>"controllers"</code>) eşleştirir.
   </div>
 </div>
 

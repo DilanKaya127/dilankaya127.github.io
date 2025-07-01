@@ -260,7 +260,7 @@ Bu kılavuz, Ruby on Rails core geliştirme için bir ortamın nasıl kurulacağ
 
 <strong><a href="https://guides.rubyonrails.org/maintenance_policy.html">Bakım Politikası</a></strong>
 
-Ruby on Rails'in şu anda hangi sürümlerin desteklendiğini ve yeni sürümlerin ne zaman çıkacağını buradan takip edebilirsiniz.
+Ruby on Rails'te şu anda hangi sürümlerin desteklendiğini ve yeni sürümlerin ne zaman çıkacağını buradan takip edebilirsiniz.
 
 ## Sürüm Notları
 

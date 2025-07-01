@@ -65,6 +65,19 @@ module Jekyll
         end
       end
 
+      # HTML linklerindeki ../dosya_adi/ formatını kontrol et
+      content.gsub!(/<a\s+href="\.\.\/([^\/"]+)\/">([^<]+)<\/a>/) do |match|
+        file_path = Regexp.last_match(1)
+        link_text = Regexp.last_match(2)
+
+        unless existing_files.include?(file_path)
+          modified = true
+          "<a href=\"{% link rails/guides/missing_pages/currently_being_worked.md %}\">#{link_text}</a>"
+        else
+          match
+        end
+      end
+
       # HTML linklerindeki ../dosya_adi/#anchor formatını kontrol et
       content.gsub!(/<a\s+href="\.\.\/([^\/]+)\/#[^"]+">([^<]+)<\/a>/) do |match|
         file_path = Regexp.last_match(1)
